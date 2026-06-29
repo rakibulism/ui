@@ -1,10 +1,10 @@
 /**
- * @rakibulism/ui — global styles
+ * rakibulism-ui — global styles
  *
  * Exposes the design tokens as CSS custom properties and applies a light
  * reset plus font-rendering optimizations. Import once at your app root:
  *
- *   import '@rakibulism/ui/styles';
+ *   import 'rakibulism-ui/styles';
  *
  * This import is optional — components ship their own scoped styles. Import
  * it when you want the CSS variables or the baseline reset.

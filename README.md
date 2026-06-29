@@ -1,9 +1,9 @@
-# @rakibulism/ui
+# rakibulism-ui
 
 A code-first design system and React component library — type-safe, tree-shakeable, and themeable via design tokens.
 
-[![npm](https://img.shields.io/npm/v/@rakibulism/ui.svg)](https://www.npmjs.com/package/@rakibulism/ui)
-[![license](https://img.shields.io/npm/l/@rakibulism/ui.svg)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/rakibulism-ui.svg)](https://www.npmjs.com/package/rakibulism-ui)
+[![license](https://img.shields.io/npm/l/rakibulism-ui.svg)](./LICENSE)
 
 ## Features
 
@@ -16,11 +16,11 @@ A code-first design system and React component library — type-safe, tree-shake
 ## Installation
 
 ```bash
-npm install @rakibulism/ui
+npm install rakibulism-ui
 # or
-yarn add @rakibulism/ui
+yarn add rakibulism-ui
 # or
-pnpm add @rakibulism/ui
+pnpm add rakibulism-ui
 ```
 
 `react` and `react-dom` (v18+) are peer dependencies.
@@ -29,8 +29,8 @@ pnpm add @rakibulism/ui
 
 ```tsx
 import { useState } from 'react';
-import { Button, Input, Card } from '@rakibulism/ui';
-import '@rakibulism/ui/styles'; // optional — see "Styling" below
+import { Button, Input, Card } from 'rakibulism-ui';
+import 'rakibulism-ui/styles'; // optional — see "Styling" below
 
 export default function App() {
   const [email, setEmail] = useState('');
@@ -114,7 +114,7 @@ Accepts all standard `<div>` attributes and forwards a `ref`.
 Import tokens directly to build custom components or styles:
 
 ```ts
-import { colors, spacing, typography, shadows, radius } from '@rakibulism/ui/tokens';
+import { colors, spacing, typography, shadows, radius } from 'rakibulism-ui/tokens';
 
 const customStyle = {
   color: colors.primary[500],           // #3B82F6
@@ -143,7 +143,7 @@ The global stylesheet is **optional**. Import it once at your app root to get:
 - A light reset (`box-sizing`, margin reset) and font-rendering optimizations
 
 ```ts
-import '@rakibulism/ui/styles';
+import 'rakibulism-ui/styles';
 ```
 
 Because every component reads these CSS variables (with sensible hardcoded fallbacks), overriding a variable re-themes the whole library:
@@ -159,7 +159,7 @@ Because every component reads these CSS variables (with sensible hardcoded fallb
 Every component and token ships with types. Component prop types are exported for reuse:
 
 ```ts
-import type { ButtonProps, InputProps, CardProps } from '@rakibulism/ui';
+import type { ButtonProps, InputProps, CardProps } from 'rakibulism-ui';
 ```
 
 ## Development
