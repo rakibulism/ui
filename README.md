@@ -4,6 +4,10 @@ A code-first design system and React component library — type-safe, tree-shake
 
 [![npm](https://img.shields.io/npm/v/rakibulism-ui.svg)](https://www.npmjs.com/package/rakibulism-ui)
 [![license](https://img.shields.io/npm/l/rakibulism-ui.svg)](./LICENSE)
+[![website](https://img.shields.io/website?url=https%3A%2F%2Fui-rakibulism.vercel.app&label=demo)](https://ui-rakibulism.vercel.app)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frakibulism%2Fui)
+
+🔗 **Live demo:** [ui-rakibulism.vercel.app](https://ui-rakibulism.vercel.app)
 
 ## Features
 
