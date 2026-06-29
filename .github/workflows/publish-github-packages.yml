@@ -1,0 +1,41 @@
+name: Publish to GitHub Packages
+
+# GitHub Packages requires the package to be scoped to the repo owner, so this
+# workflow publishes under the name @rakibulism/ui (the public npm release stays
+# unscoped as rakibulism-ui). Runs on v* tags and can be triggered manually.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  github-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # lets the built-in GITHUB_TOKEN publish to GitHub Packages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@rakibulism'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Scope package name to the repo owner
+        run: |
+          npm pkg set name=@rakibulism/ui
+          npm pkg set publishConfig.registry=https://npm.pkg.github.com
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
