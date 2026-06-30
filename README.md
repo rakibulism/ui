@@ -265,6 +265,81 @@ show({ title: 'Saved', description: 'Your changes were saved.', variant: 'succes
 
 A click-triggered dropdown that closes on outside click, Escape, or selecting an item. No positioning library — absolutely positioned relative to the trigger.
 
+### Tabs
+
+```tsx
+<Tabs defaultValue="profile">
+  <TabList>
+    <Tab value="profile">Profile</Tab>
+    <Tab value="settings">Settings</Tab>
+  </TabList>
+  <TabPanel value="profile">Profile content</TabPanel>
+  <TabPanel value="settings">Settings content</TabPanel>
+</Tabs>
+```
+
+| Component  | Prop          | Type                       | Description                          |
+| ---------- | ------------- | ---------------------------- | --------------------------------------- |
+| `Tabs`     | `value`       | `string`                     | Active tab (controlled)                |
+| `Tabs`     | `defaultValue`| `string`                     | Initial active tab (uncontrolled)       |
+| `Tabs`     | `onChange`    | `(value: string) => void`    | Called when the active tab changes      |
+| `Tab`      | `value`       | `string`                     | Value this tab activates                |
+| `TabPanel` | `value`       | `string`                     | Only rendered when its value is active  |
+
+`TabList` implements roving-tabindex keyboard navigation — Left/Right arrows move focus and selection between tabs.
+
+### Accordion
+
+```tsx
+<Accordion type="single" defaultValue="item-1">
+  <AccordionItem value="item-1" title="What is this?">
+    <p>Content for item one</p>
+  </AccordionItem>
+  <AccordionItem value="item-2" title="Another question">
+    <p>Content for item two</p>
+  </AccordionItem>
+</Accordion>
+```
+
+| Prop          | Type                       | Default    | Description                                  |
+| ------------- | ---------------------------- | ---------- | --------------------------------------------- |
+| `type`        | `'single' \| 'multiple'`      | `'single'` | Whether one or multiple items can be open      |
+| `value`       | `string \| string[]`          | —          | Open item(s) (controlled)                      |
+| `defaultValue`| `string \| string[]`          | —          | Initial open item(s) (uncontrolled)            |
+| `onChange`    | `(value) => void`             | —          | Called with the new open item(s)                |
+
+`AccordionItem` takes a `value` and `title`; its children are the collapsible panel content.
+
+### Breadcrumbs
+
+```tsx
+<Breadcrumbs>
+  <BreadcrumbItem href="/">Home</BreadcrumbItem>
+  <BreadcrumbItem href="/docs">Docs</BreadcrumbItem>
+  <BreadcrumbItem isCurrent>Components</BreadcrumbItem>
+</Breadcrumbs>
+```
+
+| Component        | Prop        | Type        | Description                                  |
+| ---------------- | ----------- | ------------- | --------------------------------------------- |
+| `Breadcrumbs`     | `separator` | `ReactNode`   | Separator rendered between items (default `'/'`) |
+| `BreadcrumbItem`  | `isCurrent` | `boolean`     | Renders as non-interactive text for the current page |
+
+### Pagination
+
+```tsx
+<Pagination page={page} totalPages={12} onPageChange={setPage} />
+```
+
+| Prop           | Type                       | Default | Description                              |
+| -------------- | ---------------------------- | ------- | ------------------------------------------ |
+| `page`         | `number`                     | —       | Current page (1-indexed)                   |
+| `totalPages`   | `number`                     | —       | Total number of pages                      |
+| `onPageChange` | `(page: number) => void`     | —       | Called with the newly selected page         |
+| `siblingCount` | `number`                     | `1`     | Pages shown on each side of the current page |
+
+Collapses long ranges with an ellipsis automatically.
+
 ## Design Tokens
 
 Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
