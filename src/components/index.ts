@@ -33,3 +33,15 @@ export type { ToastOptions, ToastVariant } from './Toast/Toast';
 
 export { Menu, MenuItem } from './Menu/Menu';
 export type { MenuProps, MenuItemProps } from './Menu/Menu';
+
+export { Tabs, TabList, Tab, TabPanel } from './Tabs/Tabs';
+export type { TabsProps, TabProps, TabPanelProps } from './Tabs/Tabs';
+
+export { Accordion, AccordionItem } from './Accordion/Accordion';
+export type { AccordionProps, AccordionItemProps } from './Accordion/Accordion';
+
+export { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs/Breadcrumbs';
+export type { BreadcrumbsProps, BreadcrumbItemProps } from './Breadcrumbs/Breadcrumbs';
+
+export { Pagination } from './Pagination/Pagination';
+export type { PaginationProps } from './Pagination/Pagination';
