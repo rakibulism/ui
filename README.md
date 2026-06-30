@@ -340,6 +340,83 @@ A click-triggered dropdown that closes on outside click, Escape, or selecting an
 
 Collapses long ranges with an ellipsis automatically.
 
+### Badge
+
+```tsx
+<Badge variant="success">Active</Badge>
+<Badge variant="error" size="sm">3</Badge>
+```
+
+| Prop      | Type                                                       | Default  | Description |
+| --------- | ------------------------------------------------------------ | -------- | ------------ |
+| `variant` | `'primary' \| 'gray' \| 'success' \| 'error' \| 'warning'`   | `'gray'` | Color        |
+| `size`    | `'sm' \| 'md'`                                                | `'md'`   | Size         |
+
+### Avatar
+
+```tsx
+<Avatar name="Ada Lovelace" src="/ada.jpg" />
+<Avatar name="Grace Hopper" size="lg" />
+```
+
+| Prop   | Type                       | Default | Description                                    |
+| ------ | ---------------------------- | ------- | ------------------------------------------------ |
+| `src`  | `string`                     | —       | Image source                                     |
+| `name` | `string`                     | —       | Used to derive fallback initials (e.g. "Ada Lovelace" → "AL") |
+| `size` | `'sm' \| 'md' \| 'lg'`         | `'md'`  | Size                                             |
+
+Falls back to initials automatically if `src` is missing or the image fails to load.
+
+### Spinner
+
+```tsx
+<Spinner size="sm" />
+```
+
+| Prop   | Type                       | Default | Description |
+| ------ | ---------------------------- | ------- | ------------ |
+| `size` | `'sm' \| 'md' \| 'lg'`         | `'md'`  | Size         |
+
+A standalone loading indicator (separate from `Button`'s built-in `isLoading` spinner). Announces itself via `role="status"`.
+
+### Skeleton
+
+```tsx
+<Skeleton variant="circular" width={40} height={40} />
+<Skeleton variant="text" />
+```
+
+| Prop      | Type                                      | Default  | Description        |
+| --------- | -------------------------------------------- | -------- | -------------------- |
+| `variant` | `'text' \| 'circular' \| 'rectangular'`       | `'text'` | Placeholder shape    |
+| `width`   | `number \| string`                            | —        | Override width        |
+| `height`  | `number \| string`                            | —        | Override height       |
+
+### Progress
+
+```tsx
+<Progress value={40} />
+```
+
+| Prop    | Type             | Default | Description       |
+| ------- | ------------------ | ------- | -------------------- |
+| `value` | `number`           | —       | Current value        |
+| `max`   | `number`           | `100`   | Maximum value         |
+| `size`  | `'sm' \| 'md'`      | `'md'`  | Track thickness       |
+
+### Divider
+
+```tsx
+<Divider />
+<Divider label="OR" />
+<Divider orientation="vertical" />
+```
+
+| Prop          | Type                              | Default        | Description                          |
+| ------------- | ------------------------------------ | -------------- | --------------------------------------- |
+| `orientation` | `'horizontal' \| 'vertical'`          | `'horizontal'` | Direction of the rule                   |
+| `label`       | `ReactNode`                           | —              | Optional centered label (horizontal only) |
+
 ## Design Tokens
 
 Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.

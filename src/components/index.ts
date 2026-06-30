@@ -45,3 +45,21 @@ export type { BreadcrumbsProps, BreadcrumbItemProps } from './Breadcrumbs/Breadc
 
 export { Pagination } from './Pagination/Pagination';
 export type { PaginationProps } from './Pagination/Pagination';
+
+export { Badge } from './Badge/Badge';
+export type { BadgeProps, BadgeVariant, BadgeSize } from './Badge/Badge';
+
+export { Avatar } from './Avatar/Avatar';
+export type { AvatarProps, AvatarSize } from './Avatar/Avatar';
+
+export { Spinner } from './Spinner/Spinner';
+export type { SpinnerProps, SpinnerSize } from './Spinner/Spinner';
+
+export { Skeleton } from './Skeleton/Skeleton';
+export type { SkeletonProps, SkeletonVariant } from './Skeleton/Skeleton';
+
+export { Progress } from './Progress/Progress';
+export type { ProgressProps, ProgressSize } from './Progress/Progress';
+
+export { Divider } from './Divider/Divider';
+export type { DividerProps } from './Divider/Divider';
