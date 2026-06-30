@@ -464,6 +464,10 @@ Because every component reads these CSS variables (with sensible hardcoded fallb
 }
 ```
 
+### A note on auto-injected CSS in CommonJS
+
+The CJS build (`require()`) auto-injects component styles the same way the ESM build does, via a `require('./assets/...css')` at the top of the bundle. This works wherever a bundler or test runner handles `.css` requires — which is the default in Jest/CRA/Next.js setups, since those already mock CSS imports for your own app's stylesheets. It will fail if you `require()` the package directly in plain Node with no CSS handling at all (rare for a UI library, but possible in custom test runners or scripts) — in that case, mock `.css` requires the same way your own styles are handled, e.g. `moduleNameMapper: { '\\.css$': 'identity-obj-proxy' }` in Jest.
+
 ## TypeScript
 
 Every component and token ships with types. Component prop types are exported for reuse:
