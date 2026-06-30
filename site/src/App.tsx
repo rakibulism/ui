@@ -3,6 +3,33 @@ import {
   Button,
   Input,
   Card,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  Switch,
+  Textarea,
+  Select,
+  Tooltip,
+  Modal,
+  ToastProvider,
+  useToast,
+  Menu,
+  MenuItem,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  Accordion,
+  AccordionItem,
+  Breadcrumbs,
+  BreadcrumbItem,
+  Pagination,
+  Badge,
+  Avatar,
+  Spinner,
+  Skeleton,
+  Progress,
+  Divider,
   colors,
   spacing,
   typography,
@@ -297,6 +324,204 @@ function CardsSection() {
   );
 }
 
+function FormsSection() {
+  const [country, setCountry] = useState('us');
+  const [plan, setPlan] = useState('pro');
+  const [notifications, setNotifications] = useState(true);
+
+  return (
+    <Section
+      id="forms"
+      eyebrow="Components"
+      title="Form primitives"
+      intro="Checkbox, Radio, Switch, Textarea, and Select — styled natively for full keyboard and screen reader support."
+    >
+      <Reveal className="panel">
+        <div className="forms-grid">
+          <div className="form-demo-cell">
+            <span className="demo-cell-label">Checkbox</span>
+            <Checkbox label="Subscribe to updates" defaultChecked />
+          </div>
+          <div className="form-demo-cell">
+            <span className="demo-cell-label">Radio</span>
+            <RadioGroup name="plan-demo" value={plan} onChange={setPlan}>
+              <Radio value="free" label="Free" />
+              <Radio value="pro" label="Pro" />
+            </RadioGroup>
+          </div>
+          <div className="form-demo-cell">
+            <span className="demo-cell-label">Switch</span>
+            <Switch
+              label="Notifications"
+              checked={notifications}
+              onChange={(e) => setNotifications(e.target.checked)}
+            />
+          </div>
+          <div className="form-demo-cell form-demo-cell-wide">
+            <span className="demo-cell-label">Textarea</span>
+            <Textarea placeholder="Tell us about yourself" helperText="Max 500 characters" />
+          </div>
+          <div className="form-demo-cell form-demo-cell-wide">
+            <span className="demo-cell-label">Select</span>
+            <Select value={country} onChange={(e) => setCountry(e.target.value)}>
+              <option value="us">United States</option>
+              <option value="bd">Bangladesh</option>
+              <option value="uk">United Kingdom</option>
+            </Select>
+          </div>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
+function OverlaysSection() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const { show } = useToast();
+
+  return (
+    <Section
+      id="overlays"
+      eyebrow="Components"
+      title="Overlays"
+      intro="Tooltip, Modal, Toast, and Menu — React portals and CSS only, no positioning library."
+    >
+      <Reveal className="panel">
+        <div className="overlay-row">
+          <Tooltip content="Saves your changes" placement="top">
+            <Button variant="secondary">Hover for tooltip</Button>
+          </Tooltip>
+
+          <Button variant="secondary" onClick={() => setModalOpen(true)}>
+            Open modal
+          </Button>
+          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Confirm action">
+            <p>This is a portal-rendered dialog with focus handling and Escape-to-close.</p>
+          </Modal>
+
+          <Button
+            variant="secondary"
+            onClick={() =>
+              show({
+                title: 'Saved',
+                description: 'Your changes were saved.',
+                variant: 'success',
+              })
+            }
+          >
+            Show toast
+          </Button>
+
+          <Menu trigger={<Button variant="secondary">Open menu</Button>}>
+            <MenuItem>Edit</MenuItem>
+            <MenuItem destructive>Delete</MenuItem>
+          </Menu>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
+function NavigationSection() {
+  const [page, setPage] = useState(5);
+
+  return (
+    <Section
+      id="navigation"
+      eyebrow="Components"
+      title="Navigation"
+      intro="Tabs, Accordion, Breadcrumbs, and Pagination for moving through content."
+    >
+      <Reveal className="panel">
+        <Breadcrumbs>
+          <BreadcrumbItem href="#">Home</BreadcrumbItem>
+          <BreadcrumbItem href="#">Library</BreadcrumbItem>
+          <BreadcrumbItem isCurrent>Components</BreadcrumbItem>
+        </Breadcrumbs>
+      </Reveal>
+
+      <Reveal className="panel" delay={60}>
+        <Tabs defaultValue="profile">
+          <TabList>
+            <Tab value="profile">Profile</Tab>
+            <Tab value="settings">Settings</Tab>
+          </TabList>
+          <TabPanel value="profile">Profile panel content goes here.</TabPanel>
+          <TabPanel value="settings">Settings panel content goes here.</TabPanel>
+        </Tabs>
+      </Reveal>
+
+      <Reveal className="panel" delay={120}>
+        <Accordion type="single" defaultValue="item-1">
+          <AccordionItem value="item-1" title="What is rakibulism-ui?">
+            <p>A code-first React component library with design tokens.</p>
+          </AccordionItem>
+          <AccordionItem value="item-2" title="Does it require Tailwind?">
+            <p>
+              No — tokens are sourced from Tailwind&apos;s palette, but there&apos;s no
+              runtime dependency.
+            </p>
+          </AccordionItem>
+        </Accordion>
+      </Reveal>
+
+      <Reveal className="panel pagination-panel" delay={180}>
+        <Pagination page={page} totalPages={12} onPageChange={setPage} />
+      </Reveal>
+    </Section>
+  );
+}
+
+function FeedbackSection() {
+  return (
+    <Section
+      id="feedback"
+      eyebrow="Components"
+      title="Feedback & display"
+      intro="Badge, Avatar, Spinner, Skeleton, Progress, and Divider."
+    >
+      <Reveal className="panel">
+        <div className="feedback-row">
+          <Badge variant="primary">New</Badge>
+          <Badge variant="success">Active</Badge>
+          <Badge variant="error">Failed</Badge>
+          <Badge variant="warning">Pending</Badge>
+          <Badge variant="gray" size="sm">
+            v0.2
+          </Badge>
+        </div>
+      </Reveal>
+
+      <Reveal className="panel" delay={60}>
+        <div className="feedback-row">
+          <Avatar name="Ada Lovelace" size="sm" />
+          <Avatar name="Grace Hopper" />
+          <Avatar name="Alan Turing" size="lg" />
+          <Spinner size="sm" />
+          <Spinner />
+        </div>
+      </Reveal>
+
+      <Reveal className="panel" delay={120}>
+        <div className="skeleton-row">
+          <Skeleton variant="circular" width={40} height={40} />
+          <div className="skeleton-lines">
+            <Skeleton variant="text" width="60%" />
+            <Skeleton variant="text" width="90%" />
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal className="panel" delay={180}>
+        <Progress value={65} />
+        <div className="divider-demo">
+          <Divider label="OR" />
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
 function Swatch({ name, value }: { name: string; value: string }) {
   return (
     <div className="swatch">
@@ -438,6 +663,14 @@ function UsageSection() {
 
 export function App() {
   return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
+  );
+}
+
+function AppContent() {
+  return (
     <div className="page">
       <header className="nav">
         <a className="brand" href="#top">
@@ -495,6 +728,10 @@ export function App() {
         <ButtonsSection />
         <InputsSection />
         <CardsSection />
+        <FormsSection />
+        <OverlaysSection />
+        <NavigationSection />
+        <FeedbackSection />
         <TokensSection />
         <UsageSection />
       </main>
