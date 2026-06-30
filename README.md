@@ -115,6 +115,8 @@ Accepts all standard `<div>` attributes and forwards a `ref`.
 
 ## Design Tokens
 
+Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
+
 Import tokens directly to build custom components or styles:
 
 ```ts
@@ -131,7 +133,7 @@ const customStyle = {
 
 | Token        | Examples                                                        |
 | ------------ | --------------------------------------------------------------- |
-| `colors`     | `primary` (50–900), `gray` (50–900), `success`, `error`, `warning`, `white`, `black` |
+| `colors`     | `primary`, `gray`, `success`, `error`, `warning` (each 50–950, Tailwind-sourced), plus `white`, `black` |
 | `spacing`    | `0`–`24` on a 4px scale (`spacing[4]` → `16px`)                  |
 | `typography` | `fontFamily`, `fontSize` (`xs`–`4xl`), `fontWeight`, `lineHeight` |
 | `shadows`    | `sm`, `base`, `md`, `lg`, `xl`                                   |
