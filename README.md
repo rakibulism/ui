@@ -190,6 +190,81 @@ Same API shape as `Input`. Accepts all standard `<textarea>` attributes and forw
 
 A styled native `<select>` — pass `<option>` children as usual. Staying native preserves keyboard navigation, screen reader support, and the platform's mobile picker UI. Accepts all standard `<select>` attributes and forwards a `ref`.
 
+### Tooltip
+
+```tsx
+<Tooltip content="Saves your changes" placement="top">
+  <Button>Save</Button>
+</Tooltip>
+```
+
+| Prop        | Type                                          | Default | Description                          |
+| ----------- | ---------------------------------------------- | ------- | -------------------------------------- |
+| `content`   | `ReactNode`                                    | —       | Tooltip text or content                |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'`       | `'top'` | Where the tooltip renders               |
+| `children`  | `ReactElement`                                 | —       | A single focusable/hoverable trigger    |
+
+Wraps a single trigger element and shows on hover/focus via pure CSS — no positioning library, so it doesn't measure layout at runtime.
+
+### Modal
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<Button onClick={() => setIsOpen(true)}>Open</Button>
+<Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Confirm">
+  <p>Are you sure?</p>
+</Modal>
+```
+
+| Prop                   | Type         | Default | Description                                  |
+| ---------------------- | ------------ | ------- | --------------------------------------------- |
+| `isOpen`                | `boolean`    | —       | Whether the modal is visible                  |
+| `onClose`                | `() => void` | —       | Called on Escape, backdrop click, or close ×   |
+| `title`                  | `string`     | —       | Optional header title (also sets `aria-labelledby`) |
+| `closeOnBackdropClick`   | `boolean`    | `true`  | Closes when clicking outside the panel         |
+
+Rendered into a portal at `document.body`. Locks body scroll while open. Renders nothing while `isOpen` is `false`.
+
+### Toast
+
+```tsx
+// once, near your app root
+<ToastProvider>
+  <App />
+</ToastProvider>
+
+// anywhere inside
+const { show } = useToast();
+show({ title: 'Saved', description: 'Your changes were saved.', variant: 'success' });
+```
+
+| Option        | Type                                              | Default  | Description                          |
+| ------------- | --------------------------------------------------- | -------- | -------------------------------------- |
+| `title`       | `string`                                            | —        | Toast heading                          |
+| `description` | `string`                                            | —        | Toast body text                        |
+| `variant`     | `'info' \| 'success' \| 'error' \| 'warning'`       | `'info'` | Accent color                           |
+| `duration`    | `number`                                            | `4000`   | Auto-dismiss delay in ms; `0` disables it |
+
+`useToast()` returns `{ show, dismiss }` and must be called within a `ToastProvider`. Toasts render into a portal stacked in the top-right corner.
+
+### Menu
+
+```tsx
+<Menu trigger={<Button>Actions</Button>}>
+  <MenuItem onClick={handleEdit}>Edit</MenuItem>
+  <MenuItem destructive onClick={handleDelete}>Delete</MenuItem>
+</Menu>
+```
+
+| Component  | Prop          | Type                    | Description                                  |
+| ---------- | ------------- | ------------------------ | --------------------------------------------- |
+| `Menu`     | `trigger`     | `ReactElement`            | Trigger element; receives `onClick` to toggle |
+| `Menu`     | `align`       | `'start' \| 'end'`        | Menu alignment relative to the trigger (default `'start'`) |
+| `MenuItem` | `destructive` | `boolean`                 | Renders with red, dangerous-action styling     |
+
+A click-triggered dropdown that closes on outside click, Escape, or selecting an item. No positioning library — absolutely positioned relative to the trigger.
+
 ## Design Tokens
 
 Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
