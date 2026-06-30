@@ -113,6 +113,83 @@ Label, input, and message are wired with the correct `htmlFor` / `aria-described
 
 Accepts all standard `<div>` attributes and forwards a `ref`.
 
+### Checkbox
+
+```tsx
+<Checkbox label="Subscribe to updates" defaultChecked />
+<Checkbox label="Required field" error="You must accept the terms" />
+```
+
+| Prop         | Type     | Description                              |
+| ------------ | -------- | ----------------------------------------- |
+| `label`      | `string` | Label rendered next to the checkbox       |
+| `error`      | `string` | Error message; also styles the checkbox red |
+| `helperText` | `string` | Helper text shown when there's no error    |
+
+A native checkbox styled with `accent-color` for full keyboard and screen reader support. Accepts all standard `<input>` attributes and forwards a `ref`.
+
+### Radio / RadioGroup
+
+```tsx
+<RadioGroup name="plan" value={plan} onChange={setPlan}>
+  <Radio value="free" label="Free" />
+  <Radio value="pro" label="Pro" />
+</RadioGroup>
+```
+
+| Component    | Prop       | Type                          | Description                                  |
+| ------------ | ---------- | ------------------------------ | --------------------------------------------- |
+| `RadioGroup` | `name`     | `string`                       | Shared `name` applied to every `Radio` inside |
+| `RadioGroup` | `value`    | `string`                       | Currently selected value (controlled)         |
+| `RadioGroup` | `onChange` | `(value: string) => void`      | Called with the newly selected value          |
+| `Radio`      | `value`    | `string`                       | Value this radio represents (required)        |
+| `Radio`      | `label`    | `string`                       | Label rendered next to the radio              |
+
+`Radio` reads `name` / `checked` / `onChange` from an ancestor `RadioGroup` automatically — or use it standalone as a plain controlled/uncontrolled radio input.
+
+### Switch
+
+```tsx
+<Switch label="Enable notifications" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
+```
+
+| Prop    | Type     | Description                  |
+| ------- | -------- | ----------------------------- |
+| `label` | `string` | Label rendered next to the switch |
+
+Backed by a native checkbox (`role="switch"`) for accessibility; the track and thumb are purely visual. Accepts all standard `<input>` attributes and forwards a `ref`.
+
+### Textarea
+
+```tsx
+<Textarea label="Bio" placeholder="Tell us about yourself" helperText="Max 500 characters" />
+```
+
+| Prop         | Type     | Description                                |
+| ------------ | -------- | -------------------------------------------- |
+| `label`      | `string` | Optional label rendered above the textarea    |
+| `error`      | `string` | Error message; also styles the field red      |
+| `helperText` | `string` | Helper text shown when there's no error        |
+
+Same API shape as `Input`. Accepts all standard `<textarea>` attributes and forwards a `ref`.
+
+### Select
+
+```tsx
+<Select label="Country" defaultValue="us">
+  <option value="us">United States</option>
+  <option value="bd">Bangladesh</option>
+</Select>
+```
+
+| Prop         | Type     | Description                              |
+| ------------ | -------- | ----------------------------------------- |
+| `label`      | `string` | Optional label rendered above the select  |
+| `error`      | `string` | Error message; also styles the field red  |
+| `helperText` | `string` | Helper text shown when there's no error    |
+
+A styled native `<select>` — pass `<option>` children as usual. Staying native preserves keyboard navigation, screen reader support, and the platform's mobile picker UI. Accepts all standard `<select>` attributes and forwards a `ref`.
+
 ## Design Tokens
 
 Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
