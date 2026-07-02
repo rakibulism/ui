@@ -548,6 +548,40 @@ function Swatch({ name, value }: { name: string; value: string }) {
   );
 }
 
+function ThemingSection() {
+  return (
+    <Section
+      id="theming"
+      eyebrow="Foundations"
+      title="Dark mode"
+      intro='Add data-theme="dark" to <html> — or any container — and every component inside re-themes. Brand shades stay put; surfaces, grays, and tints flip.'
+    >
+      <Reveal>
+        <div className="dark-demo" data-theme="dark">
+          <Card variant="elevated">
+            <h3 className="card-title">Scoped dark theme</h3>
+            <p className="card-text">
+              This panel is just a div with <code>data-theme=&quot;dark&quot;</code>.
+            </p>
+            <div className="dark-demo-row">
+              <Button variant="primary">Primary</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Badge variant="success">Active</Badge>
+              <Badge variant="warning">Pending</Badge>
+            </div>
+            <div className="dark-demo-row">
+              <Input label="Email" placeholder="you@example.com" helperText="Dark-mode input" />
+            </div>
+            <Alert variant="info" title="Heads up">
+              Alerts flip their tints automatically.
+            </Alert>
+          </Card>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
 function TokensSection() {
   const primary = Object.entries(colors.primary);
   const gray = Object.entries(colors.gray);
@@ -748,6 +782,7 @@ function AppContent() {
         <OverlaysSection />
         <NavigationSection />
         <FeedbackSection />
+        <ThemingSection />
         <TokensSection />
         <UsageSection />
       </main>

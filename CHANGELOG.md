@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Dark mode** — the global stylesheet now ships a complete dark theme, activated with `data-theme="dark"` on `<html>` or any container (CSS variables cascade, enabling scoped theming). Surfaces, grays, and color tints flip; brand shades 300-600 stay on-brand. New semantic `--color-surface` token backs component surfaces. Showcase site gained a scoped dark-mode demo.
+
 ### Changed
 
 - README, npm description/keywords, and site hero copy refreshed to reflect the full 23-component catalog, improving npm discoverability.

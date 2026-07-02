@@ -84,6 +84,11 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
+  /* Semantic surface — component backgrounds (cards, inputs, menus, modals).
+     Stays white in light mode; the dark theme remaps it. `--color-white`
+     itself is reserved for text on colored fills and never remapped. */
+  --color-surface: var(--color-white);
+
   /* Spacing */
   --space-0: 0px;
   --space-1: 4px;
@@ -172,4 +177,73 @@ samp,
 pre {
   font-family: var(--font-mono);
   font-size: 1em;
+}
+
+/* --- Dark theme ---------------------------------------------------------
+   Apply `data-theme="dark"` to <html>, <body>, or any container to switch
+   everything inside it. Gray and the tint ends of each hue scale are
+   remapped; brand shades 300-600 keep their light-mode values so buttons,
+   focus rings, and icons stay on-brand. */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-surface: #1f2937;
+
+  /* Gray — inverted (compressed at the dark end so layered surfaces
+     stay distinguishable) */
+  --color-gray-50: #111827;
+  --color-gray-100: #374151;
+  --color-gray-200: #374151;
+  --color-gray-300: #4b5563;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #9ca3af;
+  --color-gray-600: #d1d5db;
+  --color-gray-700: #e5e7eb;
+  --color-gray-800: #f3f4f6;
+  --color-gray-900: #f9fafb;
+  --color-gray-950: #ffffff;
+
+  /* Primary — tints and text shades flipped, 300-600 unchanged */
+  --color-primary-50: #172554;
+  --color-primary-100: #1e3a8a;
+  --color-primary-200: #1e40af;
+  --color-primary-700: #93c5fd;
+  --color-primary-800: #bfdbfe;
+  --color-primary-900: #dbeafe;
+  --color-primary-950: #eff6ff;
+
+  /* Success */
+  --color-success-50: #022c22;
+  --color-success-100: #064e3b;
+  --color-success-200: #065f46;
+  --color-success-700: #6ee7b7;
+  --color-success-800: #a7f3d0;
+  --color-success-900: #d1fae5;
+  --color-success-950: #ecfdf5;
+
+  /* Error */
+  --color-error-50: #450a0a;
+  --color-error-100: #7f1d1d;
+  --color-error-200: #991b1b;
+  --color-error-700: #fca5a5;
+  --color-error-800: #fecaca;
+  --color-error-900: #fee2e2;
+  --color-error-950: #fef2f2;
+
+  /* Warning */
+  --color-warning-50: #451a03;
+  --color-warning-100: #78350f;
+  --color-warning-200: #92400e;
+  --color-warning-700: #fcd34d;
+  --color-warning-800: #fde68a;
+  --color-warning-900: #fef3c7;
+  --color-warning-950: #fffbeb;
+
+  /* Shadows — stronger to stay visible on dark backgrounds */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.45), 0 1px 2px -1px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.45), 0 2px 4px -2px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.55), 0 8px 10px -6px rgba(0, 0, 0, 0.55);
 }
