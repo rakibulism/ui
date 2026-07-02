@@ -11,11 +11,14 @@ A code-first design system and React component library — type-safe, tree-shake
 
 ## Features
 
-- 🎨 **Code-first tokens** — colors, spacing, typography, shadows, and radii defined in TypeScript
-- ⚛️ **React 18+ components** — `Button`, `Input`, `Card` with full prop typing
+- ⚛️ **23 React components** — forms, overlays, navigation, and feedback primitives, all fully typed and accessibility-wired (roles, aria attributes, keyboard navigation)
+- 🎨 **Code-first tokens** — colors (Tailwind-sourced, 50–950 scales), spacing, typography, shadows, and radii defined in TypeScript
 - 🧩 **CSS Modules** — scoped styles, no global class pollution; component CSS is auto-injected
-- 📦 **ESM + CommonJS** — ships both formats with auto-generated `.d.ts` types
-- 🎯 **Themeable** — every component reads CSS variables, so the optional global stylesheet re-themes everything
+- 📦 **ESM + CommonJS** — tree-shakeable, ships both formats with auto-generated `.d.ts` types
+- 🎯 **Themeable** — every component reads CSS variables, so overriding a token re-themes everything
+- ✅ **Tested** — 64 behavior tests gate every change and release; zero runtime dependencies beyond `clsx`
+
+**Components:** Button · Input · Textarea · Select · Checkbox · Radio · Switch · Card · Modal · Tooltip · Toast · Menu · Alert · Tabs · Accordion · Breadcrumbs · Pagination · Badge · Avatar · Spinner · Skeleton · Progress · Divider
 
 ## Installation
 
