@@ -35,7 +35,9 @@
     "site:dev": "vite --config vite.site.config.ts",
     "site:build": "vite build --config vite.site.config.ts",
     "site:preview": "vite preview --config vite.site.config.ts",
-    "prepublishOnly": "npm run type-check && npm run build"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run type-check && npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -57,15 +59,19 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.0.0",
     "vite": "^8.1.0",
     "vite-plugin-dts": "^5.0.3",
-    "vite-plugin-lib-inject-css": "^2.1.1"
+    "vite-plugin-lib-inject-css": "^2.1.1",
+    "vitest": "^4.1.9"
   },
   "dependencies": {
     "clsx": "^2.0.0"

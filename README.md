@@ -482,8 +482,13 @@ import type { ButtonProps, InputProps, CardProps } from 'rakibulism-ui';
 npm install        # install dependencies
 npm run dev        # start Vite in dev mode
 npm run type-check # tsc --noEmit
+npm test           # run the Vitest suite once
+npm run test:watch # run tests in watch mode
 npm run build      # build ESM + CJS + types into dist/
+npm run site:dev   # run the showcase site locally
 ```
+
+CI runs type-check, tests, the library build, and the site build on every pull request and push to `main`. Publishing (`prepublishOnly`) also runs the full suite.
 
 ## License
 
