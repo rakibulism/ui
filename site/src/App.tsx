@@ -30,6 +30,7 @@ import {
   Skeleton,
   Progress,
   Divider,
+  Alert,
   colors,
   spacing,
   typography,
@@ -478,9 +479,24 @@ function FeedbackSection() {
       id="feedback"
       eyebrow="Components"
       title="Feedback & display"
-      intro="Badge, Avatar, Spinner, Skeleton, Progress, and Divider."
+      intro="Alert, Badge, Avatar, Spinner, Skeleton, Progress, and Divider."
     >
       <Reveal className="panel">
+        <div className="alert-stack">
+          <Alert variant="info" title="Heads up">
+            A new version is available.
+          </Alert>
+          <Alert variant="success" title="Saved">
+            Your changes were saved.
+          </Alert>
+          <Alert variant="error" title="Something went wrong">
+            The request failed — try again.
+          </Alert>
+          <Alert variant="warning">Your trial ends in 3 days.</Alert>
+        </div>
+      </Reveal>
+
+      <Reveal className="panel" delay={40}>
         <div className="feedback-row">
           <Badge variant="primary">New</Badge>
           <Badge variant="success">Active</Badge>

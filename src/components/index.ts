@@ -63,3 +63,6 @@ export type { ProgressProps, ProgressSize } from './Progress/Progress';
 
 export { Divider } from './Divider/Divider';
 export type { DividerProps } from './Divider/Divider';
+
+export { Alert } from './Alert/Alert';
+export type { AlertProps, AlertVariant } from './Alert/Alert';

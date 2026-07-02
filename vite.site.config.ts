@@ -19,6 +19,8 @@ export default defineConfig({
     },
   },
   server: {
+    // respect an externally assigned port (e.g. from the preview harness)
+    port: process.env.PORT ? Number(process.env.PORT) : undefined,
     fs: {
       // allow importing the library source that lives outside `site/`
       allow: [resolve(__dirname)],

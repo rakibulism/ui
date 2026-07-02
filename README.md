@@ -417,6 +417,21 @@ A standalone loading indicator (separate from `Button`'s built-in `isLoading` sp
 | `orientation` | `'horizontal' \| 'vertical'`          | `'horizontal'` | Direction of the rule                   |
 | `label`       | `ReactNode`                           | —              | Optional centered label (horizontal only) |
 
+### Alert
+
+```tsx
+<Alert variant="success" title="Saved">Your changes were saved.</Alert>
+<Alert variant="error" onDismiss={() => setVisible(false)}>Something went wrong.</Alert>
+```
+
+| Prop        | Type                                              | Default  | Description                                    |
+| ----------- | --------------------------------------------------- | -------- | ------------------------------------------------ |
+| `variant`   | `'info' \| 'success' \| 'error' \| 'warning'`       | `'info'` | Color and icon                                   |
+| `title`     | `string`                                            | —        | Optional bold heading                            |
+| `onDismiss` | `() => void`                                        | —        | Shows a dismiss button that calls this when clicked |
+
+An inline, persistent callout — unlike `Toast` (transient, portal-rendered), `Alert` renders in place and stays until removed. Uses `role="alert"` for error/warning so screen readers announce it immediately, `role="status"` otherwise.
+
 ## Design Tokens
 
 Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
