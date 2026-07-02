@@ -505,6 +505,10 @@ npm run site:dev   # run the showcase site locally
 
 CI runs type-check, tests, the library build, and the site build on every pull request and push to `main`. Publishing (`prepublishOnly`) also runs the full suite.
 
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, component conventions, and the PR flow. Release history lives in the [CHANGELOG](./CHANGELOG.md).
+
 ## License
 
 [MIT](./LICENSE) © Rakibul Islam
