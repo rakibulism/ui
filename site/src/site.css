@@ -696,6 +696,12 @@ main {
 
 /* --- feedback section --- */
 
+.alert-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .feedback-row {
   display: flex;
   flex-wrap: wrap;
