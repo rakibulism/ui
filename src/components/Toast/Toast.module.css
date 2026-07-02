@@ -18,7 +18,7 @@
   padding: var(--space-3, 12px) var(--space-4, 16px);
   border-radius: var(--radius-md, 8px);
   border-left: 3px solid var(--color-gray-300, #d1d5db);
-  background: var(--color-white, #ffffff);
+  background: var(--color-surface, #ffffff);
   box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -4px rgba(0, 0, 0, 0.1));
   font-family: var(--font-sans, sans-serif);

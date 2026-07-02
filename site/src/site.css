@@ -726,6 +726,30 @@ main {
   margin-top: var(--space-5);
 }
 
+/* --- theming section --- */
+
+.dark-demo {
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: #030712;
+}
+
+.dark-demo .card-title {
+  margin-top: 0;
+}
+
+.dark-demo .card-text code {
+  font-size: var(--font-size-xs);
+}
+
+.dark-demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
 /* --- reveal animation --- */
 
 .reveal {

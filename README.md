@@ -482,6 +482,22 @@ Because every component reads these CSS variables (with sensible hardcoded fallb
 }
 ```
 
+### Dark mode
+
+The global stylesheet ships a complete dark theme. Add `data-theme="dark"` to `<html>`, `<body>`, or **any container** — CSS variables cascade, so everything inside it re-themes:
+
+```html
+<html data-theme="dark">
+  <!-- every component renders dark -->
+</html>
+
+<div data-theme="dark">
+  <!-- or scope it: only this subtree is dark -->
+</div>
+```
+
+Surfaces, grays, and color tints flip automatically; brand shades (300–600) keep their values so buttons, focus rings, and icons stay on-brand. Requires the `rakibulism-ui/styles` import. To follow the OS preference, toggle the attribute from a `prefers-color-scheme` media query listener in your app.
+
 ### A note on auto-injected CSS in CommonJS
 
 The CJS build (`require()`) auto-injects component styles the same way the ESM build does, via a `require('./assets/...css')` at the top of the bundle. This works wherever a bundler or test runner handles `.css` requires — which is the default in Jest/CRA/Next.js setups, since those already mock CSS imports for your own app's stylesheets. It will fail if you `require()` the package directly in plain Node with no CSS handling at all (rare for a UI library, but possible in custom test runners or scripts) — in that case, mock `.css` requires the same way your own styles are handled, e.g. `moduleNameMapper: { '\\.css$': 'identity-obj-proxy' }` in Jest.

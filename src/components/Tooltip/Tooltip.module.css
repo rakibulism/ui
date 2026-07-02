@@ -9,7 +9,7 @@
   padding: var(--space-1, 4px) var(--space-2, 8px);
   border-radius: var(--radius-sm, 4px);
   background: var(--color-gray-900, #111827);
-  color: var(--color-white, #ffffff);
+  color: var(--color-gray-50, #f9fafb);
   font-family: var(--font-sans, sans-serif);
   font-size: var(--font-size-xs, 12px);
   line-height: var(--line-height-normal, 1.5);
