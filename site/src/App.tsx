@@ -717,9 +717,9 @@ function AppContent() {
           </Reveal>
           <Reveal delay={180}>
             <p className="hero-sub">
-              Buttons, inputs, cards, and design tokens — tree-shakeable,
-              themeable via CSS variables, and shipped as ESM + CJS with full
-              TypeScript types.
+              23 accessible components — forms, overlays, navigation, feedback —
+              plus design tokens. Tree-shakeable, themeable via CSS variables,
+              and shipped as ESM + CJS with full TypeScript types.
             </p>
           </Reveal>
           <Reveal delay={270}>

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- README, npm description/keywords, and site hero copy refreshed to reflect the full 23-component catalog, improving npm discoverability.
+
 ## [0.3.0] - 2026-07-02
 
 ### Added

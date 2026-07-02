@@ -1,7 +1,7 @@
 {
   "name": "rakibulism-ui",
   "version": "0.3.0",
-  "description": "Code-first design system and UI components by Rakibul Islam",
+  "description": "Code-first React design system: 23 accessible, type-safe components with Tailwind-sourced design tokens. Tree-shakeable ESM+CJS, themeable via CSS variables, zero styling dependencies.",
   "author": "Rakibul Islam",
   "license": "MIT",
   "type": "module",
@@ -51,8 +51,23 @@
     "ui",
     "design-system",
     "components",
+    "component-library",
     "react",
-    "typescript"
+    "react-components",
+    "typescript",
+    "design-tokens",
+    "css-modules",
+    "css-variables",
+    "accessible",
+    "a11y",
+    "themeable",
+    "tailwind-colors",
+    "button",
+    "input",
+    "modal",
+    "toast",
+    "tabs",
+    "tooltip"
   ],
   "peerDependencies": {
     "react": "^18.0.0",
