@@ -1,3 +1,4 @@
+import * as ToastPrimitive from '@radix-ui/react-toast';
 import {
   createContext,
   useCallback,
@@ -6,7 +7,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import styles from './Toast.module.css';
 
@@ -26,6 +26,7 @@ interface ToastItem {
   title?: string;
   description?: string;
   variant: ToastVariant;
+  duration: number;
 }
 
 interface ToastContextValue {
@@ -42,6 +43,13 @@ let toastCounter = 0;
 /**
  * Renders the toast viewport (portaled to `document.body`) and provides the
  * `useToast` API to descendants. Mount once near the root of the app.
+ *
+ * Wraps Radix `Toast` internally: the public `show`/`dismiss` API stays
+ * imperative (Radix's own API is declarative per-toast JSX), so this keeps
+ * an array of toast items in state and renders one `Toast.Root` per item.
+ * Auto-dismiss timing and pause-on-hover/focus are handled by Radix's
+ * `duration` prop instead of a raw `setTimeout` — the previous version had
+ * no pause-on-hover.
  */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -53,55 +61,52 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback(
     ({ title, description, variant = 'info', duration = 4000 }: ToastOptions) => {
       const id = `toast-${++toastCounter}`;
-      setToasts((current) => [...current, { id, title, description, variant }]);
-      if (duration > 0) {
-        setTimeout(() => dismiss(id), duration);
-      }
+      setToasts((current) => [...current, { id, title, description, variant, duration }]);
       return id;
     },
-    [dismiss],
+    [],
   );
 
   const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
 
   return (
     <ToastContext.Provider value={value}>
-      {children}
-      {typeof document !== 'undefined' &&
-        createPortal(
-          <div className={styles.viewport} aria-label="Notifications">
-            {toasts.map((toast) => (
-              <div
-                key={toast.id}
-                role={toast.variant === 'error' ? 'alert' : 'status'}
-                className={clsx(styles.toast, styles[toast.variant])}
-              >
-                <div className={styles.content}>
-                  {toast.title && <p className={styles.title}>{toast.title}</p>}
-                  {toast.description && (
-                    <p className={styles.description}>{toast.description}</p>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  className={styles.dismissButton}
-                  onClick={() => dismiss(toast.id)}
-                  aria-label="Dismiss"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
-                    <path
-                      d="M5 5l10 10M15 5L5 15"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ))}
-          </div>,
-          document.body,
-        )}
+      <ToastPrimitive.Provider>
+        {children}
+        {toasts.map((toast) => (
+          <ToastPrimitive.Root
+            key={toast.id}
+            role={toast.variant === 'error' ? 'alert' : 'status'}
+            className={clsx(styles.toast, styles[toast.variant])}
+            duration={toast.duration > 0 ? toast.duration : Infinity}
+            onOpenChange={(open) => {
+              if (!open) dismiss(toast.id);
+            }}
+          >
+            <div className={styles.content}>
+              {toast.title && (
+                <ToastPrimitive.Title className={styles.title}>{toast.title}</ToastPrimitive.Title>
+              )}
+              {toast.description && (
+                <ToastPrimitive.Description className={styles.description}>
+                  {toast.description}
+                </ToastPrimitive.Description>
+              )}
+            </div>
+            <ToastPrimitive.Close className={styles.dismissButton} aria-label="Dismiss">
+              <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
+                <path
+                  d="M5 5l10 10M15 5L5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </ToastPrimitive.Close>
+          </ToastPrimitive.Root>
+        ))}
+        <ToastPrimitive.Viewport className={styles.viewport} aria-label="Notifications" />
+      </ToastPrimitive.Provider>
     </ToastContext.Provider>
   );
 }

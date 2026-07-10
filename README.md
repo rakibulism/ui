@@ -16,7 +16,8 @@ A code-first design system and React component library — type-safe, tree-shake
 - 🧩 **CSS Modules** — scoped styles, no global class pollution; component CSS is auto-injected
 - 📦 **ESM + CommonJS** — tree-shakeable, ships both formats with auto-generated `.d.ts` types
 - 🎯 **Themeable** — every component reads CSS variables, so overriding a token re-themes everything
-- ✅ **Tested** — 64 behavior tests gate every change and release; zero runtime dependencies beyond `clsx`
+- ✅ **Tested** — 74 behavior tests gate every change and release
+- ♿ **Radix under the hood** — Modal, Menu, Tooltip, Toast, Tabs, Accordion, and Select wrap Radix UI primitives for real focus traps, keyboard navigation, and collision-aware positioning, styled with this library's own CSS Modules
 
 **Components:** Button · Input · Textarea · Select · Checkbox · Radio · Switch · Card · Modal · Tooltip · Toast · Menu · Alert · Tabs · Accordion · Breadcrumbs · Pagination · Badge · Avatar · Spinner · Skeleton · Progress · Divider
 
@@ -225,13 +226,15 @@ Same API shape as `Input`. Accepts all standard `<textarea>` attributes and forw
 </Select>
 ```
 
-| Prop         | Type     | Description                              |
-| ------------ | -------- | ----------------------------------------- |
-| `label`      | `string` | Optional label rendered above the select  |
-| `error`      | `string` | Error message; also styles the field red  |
-| `helperText` | `string` | Helper text shown when there's no error    |
+| Prop          | Type                     | Description                              |
+| ------------- | ------------------------ | ----------------------------------------- |
+| `label`       | `string`                 | Optional label rendered above the select  |
+| `error`       | `string`                 | Error message; also styles the field red  |
+| `helperText`  | `string`                 | Helper text shown when there's no error    |
+| `placeholder` | `string`                 | Shown in the trigger when nothing is selected |
+| `onChange`    | `(value: string) => void`| Called with the newly selected value       |
 
-A styled native `<select>` — pass `<option>` children as usual. Staying native preserves keyboard navigation, screen reader support, and the platform's mobile picker UI. Accepts all standard `<select>` attributes and forwards a `ref`.
+Pass `<option>` children as usual — wraps Radix `Select` internally, trading the native `<select>` (and its platform mobile picker UI) for a fully custom, consistently-styled listbox across browsers/OSes. `onChange` receives the selected value directly rather than a native change event; the ref forwards to the trigger `<button>`, not a `<select>` element.
 
 ### Tooltip
 
@@ -247,7 +250,7 @@ A styled native `<select>` — pass `<option>` children as usual. Staying native
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right'`       | `'top'` | Where the tooltip renders               |
 | `children`  | `ReactElement`                                 | —       | A single focusable/hoverable trigger    |
 
-Wraps a single trigger element and shows on hover/focus via pure CSS — no positioning library, so it doesn't measure layout at runtime.
+Wraps a single trigger element and shows on hover/focus. Wraps Radix `Tooltip` internally — portaled, with collision-aware positioning, a short hover-intent delay, and Escape-to-dismiss.
 
 ### Modal
 
@@ -267,7 +270,7 @@ const [isOpen, setIsOpen] = useState(false);
 | `title`                  | `string`     | —       | Optional header title (also sets `aria-labelledby`) |
 | `closeOnBackdropClick`   | `boolean`    | `true`  | Closes when clicking outside the panel         |
 
-Rendered into a portal at `document.body`. Locks body scroll while open. Renders nothing while `isOpen` is `false`.
+Rendered into a portal at `document.body`. Locks body scroll while open, traps focus inside while open, and returns focus to the trigger on close. Renders nothing while `isOpen` is `false`. Wraps Radix `Dialog` internally.
 
 ### Toast
 
@@ -289,7 +292,7 @@ show({ title: 'Saved', description: 'Your changes were saved.', variant: 'succes
 | `variant`     | `'info' \| 'success' \| 'error' \| 'warning'`       | `'info'` | Accent color                           |
 | `duration`    | `number`                                            | `4000`   | Auto-dismiss delay in ms; `0` disables it |
 
-`useToast()` returns `{ show, dismiss }` and must be called within a `ToastProvider`. Toasts render into a portal stacked in the top-right corner.
+`useToast()` returns `{ show, dismiss }` and must be called within a `ToastProvider`. Toasts render into a portal stacked in the top-right corner. Wraps Radix `Toast` internally — auto-dismiss pauses on hover/focus.
 
 ### Menu
 
@@ -306,7 +309,7 @@ show({ title: 'Saved', description: 'Your changes were saved.', variant: 'succes
 | `Menu`     | `align`       | `'start' \| 'end'`        | Menu alignment relative to the trigger (default `'start'`) |
 | `MenuItem` | `destructive` | `boolean`                 | Renders with red, dangerous-action styling     |
 
-A click-triggered dropdown that closes on outside click, Escape, or selecting an item. No positioning library — absolutely positioned relative to the trigger.
+A click-triggered dropdown that closes on outside click, Escape, or selecting an item. Wraps Radix `DropdownMenu` internally — adds arrow-key navigation between items and portaled, collision-aware positioning.
 
 ### Tabs
 

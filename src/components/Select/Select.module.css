@@ -11,23 +11,23 @@
   color: var(--color-gray-700, #374151);
 }
 
-.control {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
+/* .select is now the Radix Trigger button — it lays out its own Value +
+   Icon children in a row, so the chevron no longer needs to be absolutely
+   positioned over a separate native <select>. */
 .select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 8px);
   width: 100%;
   height: 40px;
-  padding: 0 var(--space-8, 32px) 0 var(--space-3, 12px);
+  padding: 0 var(--space-3, 12px);
   border: 1px solid var(--color-gray-300, #d1d5db);
   border-radius: var(--radius-md, 8px);
   background-color: var(--color-surface, #ffffff);
   color: var(--color-gray-900, #111827);
   font-family: inherit;
   font-size: var(--font-size-base, 16px);
-  appearance: none;
   cursor: pointer;
   transition:
     border-color 0.15s ease,
@@ -40,7 +40,7 @@
   box-shadow: 0 0 0 3px var(--color-primary-100, #dbeafe);
 }
 
-.select:disabled {
+.select[data-disabled] {
   background-color: var(--color-gray-100, #f3f4f6);
   color: var(--color-gray-500, #6b7280);
   cursor: not-allowed;
@@ -51,12 +51,50 @@
 }
 
 .chevron {
-  position: absolute;
-  right: var(--space-3, 12px);
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
   color: var(--color-icon-default, #6b7280);
-  pointer-events: none;
+}
+
+.menu {
+  z-index: 50;
+  overflow: hidden;
+  min-width: var(--radix-select-trigger-width);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface, #ffffff);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -4px rgba(0, 0, 0, 0.1));
+  animation: ui-select-in 0.12s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.viewport {
+  padding: var(--space-2, 8px);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-gray-700, #374151);
+  font-size: var(--font-size-sm, 14px);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Radix highlights items via arrow-key navigation and hover using
+   data-highlighted rather than moving real DOM focus onto each item. */
+.item[data-highlighted] {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-900, #111827);
+  outline: none;
+}
+
+.item[data-disabled] {
+  color: var(--color-text-muted, #4b5563);
+  cursor: not-allowed;
 }
 
 .helperText {
@@ -69,8 +107,22 @@
   color: var(--color-error-600, #dc2626);
 }
 
+@keyframes ui-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .select {
     transition: none;
+  }
+  .menu {
+    animation: none;
   }
 }

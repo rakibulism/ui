@@ -364,7 +364,7 @@ function FormsSection() {
           </div>
           <div className="form-demo-cell form-demo-cell-wide">
             <span className="demo-cell-label">Select</span>
-            <Select value={country} onChange={(e) => setCountry(e.target.value)}>
+            <Select value={country} onChange={setCountry}>
               <option value="us">United States</option>
               <option value="bd">Bangladesh</option>
               <option value="uk">United Kingdom</option>
@@ -385,7 +385,7 @@ function OverlaysSection() {
       id="overlays"
       eyebrow="Components"
       title="Overlays"
-      intro="Tooltip, Modal, Toast, and Menu — React portals and CSS only, no positioning library."
+      intro="Tooltip, Modal, Toast, and Menu — wrapping Radix UI primitives under the hood for real focus traps, keyboard navigation, and collision-aware positioning."
     >
       <Reveal className="panel">
         <div className="overlay-row">

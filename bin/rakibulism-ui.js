@@ -22,6 +22,10 @@ const EXTRA_DEPS = {
   Tabs: ['@radix-ui/react-tabs'],
   Accordion: ['@radix-ui/react-accordion'],
   Modal: ['@radix-ui/react-dialog'],
+  Menu: ['@radix-ui/react-dropdown-menu'],
+  Tooltip: ['@radix-ui/react-tooltip'],
+  Toast: ['@radix-ui/react-toast'],
+  Select: ['@radix-ui/react-select'],
 };
 
 function listComponents() {

@@ -1,12 +1,13 @@
-import { cloneElement, useId, type ReactElement } from 'react';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import clsx from 'clsx';
+import type { ReactElement, ReactNode } from 'react';
 import styles from './Tooltip.module.css';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 
 export interface TooltipProps {
   /** Tooltip text or content. */
-  content: React.ReactNode;
+  content: ReactNode;
   /** Where the tooltip renders relative to the trigger. @default 'top' */
   placement?: TooltipPlacement;
   /** A single focusable/hoverable element that triggers the tooltip. */
@@ -16,28 +17,27 @@ export interface TooltipProps {
 
 /**
  * Wraps a single trigger element and shows a small label on hover/focus.
- * Pure CSS show/hide — no positioning library — so placement is relative to
- * the trigger via the chosen `placement`, not measured at runtime.
+ * Wraps Radix `Tooltip` internally — the previous version had no JS state
+ * at all (pure CSS `:hover`/`:focus-within` show/hide, always mounted),
+ * so this adds a real open/close state machine: portaled rendering (no
+ * longer clippable by `overflow: hidden` ancestors), Escape-to-dismiss,
+ * and a short hover-intent delay before showing.
  */
-export function Tooltip({
-  content,
-  placement = 'top',
-  children,
-  className,
-}: TooltipProps) {
-  const id = useId();
-  const trigger = cloneElement(children, { 'aria-describedby': id });
-
+export function Tooltip({ content, placement = 'top', children, className }: TooltipProps) {
   return (
-    <span className={clsx(styles.wrapper, className)}>
-      {trigger}
-      <span
-        role="tooltip"
-        id={id}
-        className={clsx(styles.bubble, styles[placement])}
-      >
-        {content}
-      </span>
-    </span>
+    <TooltipPrimitive.Provider delayDuration={200}>
+      <TooltipPrimitive.Root>
+        <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
+        <TooltipPrimitive.Portal>
+          <TooltipPrimitive.Content
+            side={placement}
+            sideOffset={6}
+            className={clsx(styles.bubble, className)}
+          >
+            {content}
+          </TooltipPrimitive.Content>
+        </TooltipPrimitive.Portal>
+      </TooltipPrimitive.Root>
+    </TooltipPrimitive.Provider>
   );
 }

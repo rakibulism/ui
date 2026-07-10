@@ -98,8 +98,12 @@ describe('Textarea', () => {
   });
 });
 
+// Select now wraps Radix's custom listbox instead of a native <select>, so
+// interaction is: click the trigger (role="combobox") to open, then click
+// an option (role="option") to select it. onChange receives the selected
+// value directly rather than a native change event.
 describe('Select', () => {
-  it('renders options and reports changes', () => {
+  it('renders options and reports changes', async () => {
     const onChange = vi.fn();
     render(
       <Select label="Country" defaultValue="us" onChange={onChange}>
@@ -107,11 +111,13 @@ describe('Select', () => {
         <option value="bd">Bangladesh</option>
       </Select>,
     );
-    const select = screen.getByLabelText('Country') as HTMLSelectElement;
-    expect(select.value).toBe('us');
-    fireEvent.change(select, { target: { value: 'bd' } });
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(select.value).toBe('bd');
+    const trigger = screen.getByLabelText('Country');
+    expect(trigger).toHaveTextContent('United States');
+    fireEvent.click(trigger);
+    const option = await screen.findByRole('option', { name: 'Bangladesh' });
+    fireEvent.click(option);
+    expect(onChange).toHaveBeenCalledWith('bd');
+    expect(trigger).toHaveTextContent('Bangladesh');
   });
 
   it('shows helper text when there is no error', () => {

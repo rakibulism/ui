@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-07-10
+
+### Changed
+
+- **`Menu`, `Tooltip`, `Toast`, and `Select` now wrap Radix UI primitives internally** (`@radix-ui/react-dropdown-menu`, `@radix-ui/react-tooltip`, `@radix-ui/react-toast`, `@radix-ui/react-select`), completing the Radix migration started in 0.6.2. Added as regular `dependencies`, externalized in the build.
+- **`Menu` and `Tooltip` gain real accessibility they lacked before**: `Menu` items are now keyboard-navigable with arrow keys and the menu is portaled (previously mouse-only and clippable by `overflow: hidden` ancestors); `Tooltip` previously had no JS state at all (pure CSS `:hover`/`:focus-within`) and now has a real open/close lifecycle with Escape-to-dismiss and a hover-intent delay.
+- **`Toast` auto-dismiss now pauses on hover/focus** (previously a raw, unconditional `setTimeout`).
+- **`MenuItem` now renders as a `div[role="menuitem"]`** (Radix's menu item element) instead of a `<button>`; `onClick` still fires as before.
+
+### Breaking
+
+- **`Select` now wraps Radix `Select` instead of a native `<select>`** — trading the platform's native mobile picker UI and plain `<option>` passthrough for a fully custom, consistently-styled listbox across browsers/OSes. `children` are still plain `<option>` elements (parsed internally), but:
+  - `onChange` now receives the selected value directly (`(value: string) => void`), not a native change event — update `onChange={(e) => setX(e.target.value)}` to `onChange={setX}` (or `onChange={(value) => setX(value)}`).
+  - The forwarded `ref` now points to the trigger `<button>`, not an `HTMLSelectElement`.
+  - A new `placeholder` prop controls the trigger's empty-state text.
+
 ## [0.6.2] - 2026-07-10
 
 ### Changed
@@ -103,7 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.3...HEAD
+[0.6.3]: https://github.com/rakibulism/ui/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/rakibulism/ui/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/rakibulism/ui/compare/v0.5.0...v0.6.1
 [0.5.0]: https://github.com/rakibulism/ui/compare/v0.4.0...v0.5.0
