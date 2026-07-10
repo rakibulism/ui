@@ -22,31 +22,55 @@ A code-first design system and React component library — type-safe, tree-shake
 
 ## Installation
 
+Two ways to use rakibulism-ui: copy component source straight into your
+project (**CLI**), or install it as a package dependency (**Manual**).
+
+### CLI — copy component source into your project
+
+Copies a component's `.tsx` + CSS module directly into `src/components/ui`,
+shadcn-style, so you own and can edit the code. Each component only depends
+on `react`, `react-dom`, and `clsx` — nothing imports from elsewhere in the
+package, so a copied component is fully self-contained.
+
 ```bash
+# npm
+npx rakibulism-ui@latest init
+npx rakibulism-ui@latest add button
+
+# bun
+bunx rakibulism-ui@latest init
+bunx rakibulism-ui@latest add button
+
+# pnpm
+pnpm dlx rakibulism-ui@latest init
+pnpm dlx rakibulism-ui@latest add button
+
+# yarn (Berry/v2+)
+yarn dlx rakibulism-ui@latest init
+yarn dlx rakibulism-ui@latest add button
+```
+
+`init` writes a `rakibulism-ui.json` config and copies design tokens +
+`globals.css`. Run `... list` (with any of the runners above) to see all
+available components.
+
+### Manual — install as a package
+
+```bash
+# npm
 npm install rakibulism-ui
-# or
-yarn add rakibulism-ui
-# or
+
+# bun
+bun add rakibulism-ui
+
+# pnpm
 pnpm add rakibulism-ui
+
+# yarn
+yarn add rakibulism-ui
 ```
 
 `react` and `react-dom` (v18+) are peer dependencies.
-
-### Alternative: copy component source (no package dependency)
-
-Prefer to own the code instead of depending on the package? The CLI copies
-individual components' source (`.tsx` + CSS module) straight into your
-project, shadcn-style:
-
-```bash
-npx rakibulism-ui init         # writes rakibulism-ui.json, copies tokens + globals.css
-npx rakibulism-ui add button   # copies src/components/Button into your project
-npx rakibulism-ui list         # see all available components
-```
-
-Each component only depends on `react`, `react-dom`, and `clsx` — nothing
-imports from elsewhere in the package, so a copied component is fully
-self-contained and yours to edit.
 
 ## Quick Start
 
