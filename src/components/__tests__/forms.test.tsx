@@ -98,10 +98,13 @@ describe('Textarea', () => {
   });
 });
 
-// Select now wraps Radix's custom listbox instead of a native <select>, so
-// interaction is: click the trigger (role="combobox") to open, then click
-// an option (role="option") to select it. onChange receives the selected
-// value directly rather than a native change event.
+// Select now wraps Base UI's custom listbox instead of a native <select>,
+// so interaction is: click the trigger (role="combobox") to open, then
+// select an option (role="option"). onChange receives the selected value
+// directly rather than a native change event. Base UI's Item only commits
+// a plain click as a real selection if a pointerdown preceded it (its
+// "was this an intentional click, not a stray one from the trigger open"
+// guard), so tests fire pointerDown before click, matching a real click.
 describe('Select', () => {
   it('renders options and reports changes', async () => {
     const onChange = vi.fn();
@@ -115,6 +118,7 @@ describe('Select', () => {
     expect(trigger).toHaveTextContent('United States');
     fireEvent.click(trigger);
     const option = await screen.findByRole('option', { name: 'Bangladesh' });
+    fireEvent.pointerDown(option);
     fireEvent.click(option);
     expect(onChange).toHaveBeenCalledWith('bd');
     expect(trigger).toHaveTextContent('Bangladesh');

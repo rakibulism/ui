@@ -1,4 +1,4 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { Menu as MenuPrimitive } from '@base-ui/react/menu';
 import clsx from 'clsx';
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from 'react';
 import styles from './Menu.module.css';
@@ -15,41 +15,39 @@ export interface MenuProps {
 
 /**
  * A click-triggered dropdown menu. Closes on outside click, Escape, or
- * selecting an item. Wraps Radix `DropdownMenu` internally, which adds
+ * selecting an item. Wraps Base UI `Menu` internally, which adds
  * arrow-key navigation between items and portals the menu (the previous
  * hand-rolled version had neither — items were only reachable by pointer,
  * and the menu could be clipped by `overflow: hidden` ancestors).
  */
 export function Menu({ trigger, children, align = 'start', className }: MenuProps) {
   return (
-    <DropdownMenuPrimitive.Root>
-      <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
-      <DropdownMenuPrimitive.Portal>
-        <DropdownMenuPrimitive.Content
-          align={align}
-          sideOffset={8}
-          className={clsx(styles.menu, className)}
-        >
-          {children}
-        </DropdownMenuPrimitive.Content>
-      </DropdownMenuPrimitive.Portal>
-    </DropdownMenuPrimitive.Root>
+    <MenuPrimitive.Root>
+      <MenuPrimitive.Trigger render={trigger} />
+      <MenuPrimitive.Portal>
+        <MenuPrimitive.Positioner align={align} sideOffset={8}>
+          <MenuPrimitive.Popup className={clsx(styles.menu, className)}>
+            {children}
+          </MenuPrimitive.Popup>
+        </MenuPrimitive.Positioner>
+      </MenuPrimitive.Portal>
+    </MenuPrimitive.Root>
   );
 }
 
-export interface MenuItemProps extends ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
+export interface MenuItemProps extends ComponentPropsWithoutRef<typeof MenuPrimitive.Item> {
   /** Renders with destructive (red) styling for dangerous actions. */
   destructive?: boolean;
 }
 
 /**
- * A single actionable row inside a `Menu`. Renders as a Radix menu item
- * (a `div[role="menuitem"]`, not a `<button>` — Radix owns keyboard
+ * A single actionable row inside a `Menu`. Renders as a Base UI menu item
+ * (a `div[role="menuitem"]`, not a `<button>` — Base UI owns keyboard
  * activation and selection); `onClick` still fires as before.
  */
 export function MenuItem({ destructive, className, ...rest }: MenuItemProps) {
   return (
-    <DropdownMenuPrimitive.Item
+    <MenuPrimitive.Item
       className={clsx(styles.item, destructive && styles.destructive, className)}
       {...rest}
     />

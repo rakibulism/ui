@@ -1,4 +1,4 @@
-import * as SelectPrimitive from '@radix-ui/react-select';
+import { Select as SelectPrimitive } from '@base-ui/react/select';
 import { Children, forwardRef, isValidElement, useId, type ReactNode } from 'react';
 import clsx from 'clsx';
 import styles from './Select.module.css';
@@ -16,7 +16,7 @@ export interface SelectProps {
   children: ReactNode;
   value?: string;
   defaultValue?: string;
-  /** Called with the newly selected value (not a change event — Radix's underlying listbox isn't a native `<select>`). */
+  /** Called with the newly selected value (not a change event — the underlying listbox isn't a native `<select>`). */
   onChange?: (value: string) => void;
   disabled?: boolean;
   name?: string;
@@ -36,8 +36,8 @@ function optionsFromChildren(children: ReactNode): OptionData[] {
     if (!isValidElement(child) || child.type !== 'option') return [];
     const props = child.props as { value?: string; disabled?: boolean; children?: ReactNode };
     // A native <option> with no `value` attribute defaults to its text
-    // content, same as the browser does — Radix Select.Item also rejects
-    // an empty-string value (reserved to mean "no selection").
+    // content, same as the browser does — Base UI's Select.Item also
+    // rejects an empty-string value (reserved to mean "no selection").
     const value = props.value ?? (typeof props.children === 'string' ? props.children : '');
     return [{ value: String(value), disabled: props.disabled, label: props.children }];
   });
@@ -45,7 +45,7 @@ function optionsFromChildren(children: ReactNode): OptionData[] {
 
 /**
  * A styled listbox — pass `<option>` elements as children as usual. Wraps
- * Radix `Select`, trading the native `<select>` (and its platform mobile
+ * Base UI `Select`, trading the native `<select>` (and its platform mobile
  * picker UI) for a fully custom, consistently-styled listbox across
  * browsers/OSes. `onChange` now receives the selected value directly
  * rather than a native change event.
@@ -83,9 +83,10 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         </label>
       )}
       <SelectPrimitive.Root
+        items={options.map((option) => ({ value: option.value, label: option.label }))}
         value={value}
         defaultValue={defaultValue}
-        onValueChange={onChange}
+        onValueChange={(next) => onChange?.(next ?? '')}
         disabled={disabled}
         name={name}
         required={required}
@@ -98,7 +99,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           aria-describedby={message ? messageId : undefined}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon className={styles.chevron} asChild>
+          <SelectPrimitive.Icon className={styles.chevron}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path
                 d="M5.5 7.5L10 12l4.5-4.5"
@@ -111,20 +112,22 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
-          <SelectPrimitive.Content className={styles.menu}>
-            <SelectPrimitive.Viewport className={styles.viewport}>
-              {options.map((option) => (
-                <SelectPrimitive.Item
-                  key={option.value}
-                  value={option.value}
-                  disabled={option.disabled}
-                  className={styles.item}
-                >
-                  <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
-                </SelectPrimitive.Item>
-              ))}
-            </SelectPrimitive.Viewport>
-          </SelectPrimitive.Content>
+          <SelectPrimitive.Positioner>
+            <SelectPrimitive.Popup className={styles.menu}>
+              <SelectPrimitive.List className={styles.viewport}>
+                {options.map((option) => (
+                  <SelectPrimitive.Item
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                    className={styles.item}
+                  >
+                    <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                  </SelectPrimitive.Item>
+                ))}
+              </SelectPrimitive.List>
+            </SelectPrimitive.Popup>
+          </SelectPrimitive.Positioner>
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>
       {message && (

@@ -1,4 +1,4 @@
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import styles from './Accordion.module.css';
@@ -16,12 +16,20 @@ export interface AccordionProps {
   className?: string;
 }
 
+function toValueArray(value: string | string[] | undefined): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) return value;
+  return value ? [value] : [];
+}
+
 /**
- * Groups `AccordionItem`s under shared open/closed state. Wraps Radix
+ * Groups `AccordionItem`s under shared open/closed state. Wraps Base UI
  * `Accordion` internally — adds Up/Down/Home/End keyboard navigation
- * between triggers on top of the existing click-to-toggle behavior.
- * `collapsible` is always on for `type="single"` so a single open item can
- * be closed by re-clicking it, matching the previous behavior.
+ * between triggers on top of the existing click-to-toggle behavior. Base
+ * UI's `value` is always an array internally (even for `type="single"`);
+ * this component converts to/from the plain string this library's public
+ * API uses for a single open item, and re-clicking the open item in
+ * single mode closes it by default (no separate `collapsible` prop needed).
  */
 export function Accordion({
   type = 'single',
@@ -31,27 +39,14 @@ export function Accordion({
   children,
   className,
 }: AccordionProps) {
-  if (type === 'multiple') {
-    return (
-      <AccordionPrimitive.Root
-        type="multiple"
-        value={value as string[] | undefined}
-        defaultValue={defaultValue as string[] | undefined}
-        onValueChange={onChange}
-        className={clsx(styles.accordion, className)}
-      >
-        {children}
-      </AccordionPrimitive.Root>
-    );
-  }
+  const multiple = type === 'multiple';
 
   return (
     <AccordionPrimitive.Root
-      type="single"
-      collapsible
-      value={value as string | undefined}
-      defaultValue={defaultValue as string | undefined}
-      onValueChange={onChange}
+      multiple={multiple}
+      value={toValueArray(value)}
+      defaultValue={toValueArray(defaultValue) ?? []}
+      onValueChange={(next: string[]) => onChange?.(multiple ? next : (next[0] ?? ''))}
       className={clsx(styles.accordion, className)}
     >
       {children}
@@ -92,7 +87,7 @@ export function AccordionItem({ value, title, children, className }: AccordionIt
           </svg>
         </AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
-      <AccordionPrimitive.Content className={styles.panel}>{children}</AccordionPrimitive.Content>
+      <AccordionPrimitive.Panel className={styles.panel}>{children}</AccordionPrimitive.Panel>
     </AccordionPrimitive.Item>
   );
 }

@@ -42,7 +42,7 @@ This library ships React components, CSS, and a Node-based scaffolding CLI
 output, unsafe handling of user-controlled props, and anything in the CLI
 that reads/writes files outside the intended project directory. Out of
 scope: vulnerabilities in dependencies themselves (report those upstream,
-e.g. to the [Radix UI](https://github.com/radix-ui/primitives) or
+e.g. to the [Base UI](https://github.com/mui/base-ui) or
 [React](https://github.com/facebook/react) repositories) — though we'll
 happily hear about them too if they specifically affect how this library
 uses them.

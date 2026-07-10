@@ -43,7 +43,7 @@
   transition: transform 0.15s ease;
 }
 
-.trigger[data-state='open'] .chevron {
+.trigger[data-panel-open] .chevron {
   transform: rotate(180deg);
 }
 

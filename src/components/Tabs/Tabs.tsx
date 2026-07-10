@@ -1,4 +1,4 @@
-import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { Tabs as TabsPrimitive } from '@base-ui/react/tabs';
 import clsx from 'clsx';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import styles from './Tabs.module.css';
@@ -17,16 +17,16 @@ export interface TabsProps {
 /**
  * Groups `TabList`/`Tab`/`TabPanel` under shared selection state. Works
  * controlled (pass `value` + `onChange`) or uncontrolled (`defaultValue`).
- * Wraps Radix `Tabs` internally — arrow-key navigation (with Home/End),
+ * Wraps Base UI `Tabs` internally — arrow-key navigation (with Home/End),
  * roving tabindex, and `aria-controls`/`aria-labelledby` linking between
- * tabs and panels are handled by Radix.
+ * tabs and panels are handled by Base UI.
  */
 export function Tabs({ value, defaultValue, onChange, children, className }: TabsProps) {
   return (
     <TabsPrimitive.Root
       value={value}
       defaultValue={defaultValue}
-      onValueChange={onChange}
+      onValueChange={(next) => onChange?.(next)}
       className={clsx(styles.tabs, className)}
     >
       {children}
@@ -40,33 +40,39 @@ export function TabList({
   ...rest
 }: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
   return (
-    <TabsPrimitive.List className={clsx(styles.list, className)} {...rest}>
+    // activateOnFocus: Base UI defaults to manual tab activation (arrow
+    // keys only move focus; Enter/Space selects) — set explicitly to keep
+    // the automatic activation (arrow keys switch immediately) this
+    // library has always had.
+    <TabsPrimitive.List
+      activateOnFocus
+      className={clsx(styles.list, className)}
+      {...rest}
+    >
       {children}
     </TabsPrimitive.List>
   );
 }
 
-export interface TabProps extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>, 'value'> {
+export interface TabProps extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Tab>, 'value'> {
   /** Value this tab activates. */
   value: string;
 }
 
 export function Tab({ value, className, ...rest }: TabProps) {
-  return (
-    <TabsPrimitive.Trigger value={value} className={clsx(styles.tab, className)} {...rest} />
-  );
+  return <TabsPrimitive.Tab value={value} className={clsx(styles.tab, className)} {...rest} />;
 }
 
 export interface TabPanelProps
-  extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Content>, 'value'> {
+  extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Panel>, 'value'> {
   /** Value this panel corresponds to; only rendered when active. */
   value: string;
 }
 
 export function TabPanel({ value, children, className, ...rest }: TabPanelProps) {
   return (
-    <TabsPrimitive.Content value={value} className={clsx(styles.panel, className)} {...rest}>
+    <TabsPrimitive.Panel value={value} className={clsx(styles.panel, className)} {...rest}>
       {children}
-    </TabsPrimitive.Content>
+    </TabsPrimitive.Panel>
   );
 }

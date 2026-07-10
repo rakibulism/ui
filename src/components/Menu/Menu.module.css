@@ -1,6 +1,6 @@
 /* Positioning (previously .root's relative wrapper + .menu's absolute
-   top/left|right offsets) is now handled by Radix's own Popper-based
-   placement via the `align`/`sideOffset` props — Trigger and Content are
+   top/left|right offsets) is now handled by Base UI's own placement
+   engine via the `align`/`sideOffset` props — Trigger and Popup are
    portaled siblings, not parent/child. */
 .menu {
   z-index: 50;
@@ -33,7 +33,7 @@
     color 0.1s ease;
 }
 
-/* Radix highlights items via arrow-key navigation and hover using
+/* Base UI highlights items via arrow-key navigation and hover using
    data-highlighted rather than moving real DOM focus onto each item
    (focus stays on the menu content), so highlighting is styled off that
    attribute instead of :hover/:focus-visible. */

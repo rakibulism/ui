@@ -1,12 +1,5 @@
-import * as ToastPrimitive from '@radix-ui/react-toast';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import { Toast as ToastPrimitive } from '@base-ui/react/toast';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import clsx from 'clsx';
 import styles from './Toast.module.css';
 
@@ -21,14 +14,6 @@ export interface ToastOptions {
   duration?: number;
 }
 
-interface ToastItem {
-  id: string;
-  title?: string;
-  description?: string;
-  variant: ToastVariant;
-  duration: number;
-}
-
 interface ToastContextValue {
   /** Pushes a toast onto the stack and returns its id. */
   show: (toast: ToastOptions) => string;
@@ -38,75 +23,71 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-let toastCounter = 0;
-
 /**
  * Renders the toast viewport (portaled to `document.body`) and provides the
  * `useToast` API to descendants. Mount once near the root of the app.
  *
- * Wraps Radix `Toast` internally: the public `show`/`dismiss` API stays
- * imperative (Radix's own API is declarative per-toast JSX), so this keeps
- * an array of toast items in state and renders one `Toast.Root` per item.
- * Auto-dismiss timing and pause-on-hover/focus are handled by Radix's
- * `duration` prop instead of a raw `setTimeout` — the previous version had
- * no pause-on-hover.
+ * Wraps Base UI `Toast` internally. Base UI's own `useToastManager()` hook
+ * already exposes an imperative `add`/`close` API close to what this
+ * library hand-built over Radix previously, so this is mostly a thin
+ * rename/adapter layer over it (`show`/`dismiss`, `variant` instead of
+ * `type`) to keep the public API unchanged. Auto-dismiss timing and
+ * pause-on-hover/focus are handled by Base UI's `timeout` option.
  */
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
-
-  const dismiss = useCallback((id: string) => {
-    setToasts((current) => current.filter((toast) => toast.id !== id));
-  }, []);
-
-  const show = useCallback(
-    ({ title, description, variant = 'info', duration = 4000 }: ToastOptions) => {
-      const id = `toast-${++toastCounter}`;
-      setToasts((current) => [...current, { id, title, description, variant, duration }]);
-      return id;
-    },
-    [],
+  return (
+    <ToastPrimitive.Provider>
+      <ToastBridge>{children}</ToastBridge>
+    </ToastPrimitive.Provider>
   );
+}
 
-  const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
+function ToastBridge({ children }: { children: ReactNode }) {
+  const manager = ToastPrimitive.useToastManager();
+
+  const value = useMemo<ToastContextValue>(
+    () => ({
+      show: ({ title, description, variant = 'info', duration = 4000 }: ToastOptions) =>
+        manager.add({ title, description, type: variant, timeout: duration }),
+      dismiss: (id: string) => manager.close(id),
+    }),
+    [manager],
+  );
 
   return (
     <ToastContext.Provider value={value}>
-      <ToastPrimitive.Provider>
-        {children}
-        {toasts.map((toast) => (
-          <ToastPrimitive.Root
-            key={toast.id}
-            role={toast.variant === 'error' ? 'alert' : 'status'}
-            className={clsx(styles.toast, styles[toast.variant])}
-            duration={toast.duration > 0 ? toast.duration : Infinity}
-            onOpenChange={(open) => {
-              if (!open) dismiss(toast.id);
-            }}
-          >
-            <div className={styles.content}>
-              {toast.title && (
-                <ToastPrimitive.Title className={styles.title}>{toast.title}</ToastPrimitive.Title>
-              )}
-              {toast.description && (
-                <ToastPrimitive.Description className={styles.description}>
-                  {toast.description}
-                </ToastPrimitive.Description>
-              )}
-            </div>
-            <ToastPrimitive.Close className={styles.dismissButton} aria-label="Dismiss">
-              <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
-                <path
-                  d="M5 5l10 10M15 5L5 15"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </ToastPrimitive.Close>
-          </ToastPrimitive.Root>
-        ))}
-        <ToastPrimitive.Viewport className={styles.viewport} aria-label="Notifications" />
-      </ToastPrimitive.Provider>
+      {children}
+      <ToastPrimitive.Portal>
+        <ToastPrimitive.Viewport className={styles.viewport} aria-label="Notifications">
+          {manager.toasts.map((toast) => (
+            <ToastPrimitive.Root
+              key={toast.id}
+              toast={toast}
+              role={toast.type === 'error' ? 'alert' : 'status'}
+              className={clsx(styles.toast, styles[toast.type as ToastVariant])}
+            >
+              <ToastPrimitive.Content className={styles.content}>
+                {toast.title && <ToastPrimitive.Title className={styles.title}>{toast.title}</ToastPrimitive.Title>}
+                {toast.description && (
+                  <ToastPrimitive.Description className={styles.description}>
+                    {toast.description}
+                  </ToastPrimitive.Description>
+                )}
+              </ToastPrimitive.Content>
+              <ToastPrimitive.Close className={styles.dismissButton} aria-label="Dismiss">
+                <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
+                  <path
+                    d="M5 5l10 10M15 5L5 15"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </ToastPrimitive.Close>
+            </ToastPrimitive.Root>
+          ))}
+        </ToastPrimitive.Viewport>
+      </ToastPrimitive.Portal>
     </ToastContext.Provider>
   );
 }

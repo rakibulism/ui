@@ -19,13 +19,13 @@ const DEFAULT_CONFIG = {
 // Extra runtime deps a component needs beyond the baseline (clsx, always
 // checked separately below). Keep in sync with each component's imports.
 const EXTRA_DEPS = {
-  Tabs: ['@radix-ui/react-tabs'],
-  Accordion: ['@radix-ui/react-accordion'],
-  Modal: ['@radix-ui/react-dialog'],
-  Menu: ['@radix-ui/react-dropdown-menu'],
-  Tooltip: ['@radix-ui/react-tooltip'],
-  Toast: ['@radix-ui/react-toast'],
-  Select: ['@radix-ui/react-select'],
+  Tabs: ['@base-ui/react'],
+  Accordion: ['@base-ui/react'],
+  Modal: ['@base-ui/react'],
+  Menu: ['@base-ui/react'],
+  Tooltip: ['@base-ui/react'],
+  Toast: ['@base-ui/react'],
+  Select: ['@base-ui/react'],
 };
 
 function listComponents() {

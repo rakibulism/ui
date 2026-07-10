@@ -6,9 +6,9 @@ import { ToastProvider, useToast } from '../Toast/Toast';
 import { Menu, MenuItem } from '../Menu/Menu';
 import { Button } from '../Button/Button';
 
-// Radix only mounts the tooltip bubble once it's actually shown (hover or
+// Base UI only mounts the tooltip bubble once it's actually shown (hover or
 // focus), not unconditionally like the previous CSS-only version, so tests
-// focus the trigger first. Placement is reflected via Radix's data-side
+// focus the trigger first. Placement is reflected via Base UI's data-side
 // attribute (it can flip the requested side on collision), not a
 // requested-placement class.
 describe('Tooltip', () => {
@@ -78,9 +78,9 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  // Radix renders the overlay and the dialog panel as siblings (not
+  // Base UI renders the backdrop and the dialog panel as siblings (not
   // parent/child like the previous hand-rolled backdrop), so the backdrop
-  // is queried by its class rather than `dialog.parentElement`. Radix's
+  // is queried by its class rather than `dialog.parentElement`. Its
   // outside-pointerdown listener attaches via a `setTimeout(0)` (to avoid
   // catching the same click that opened the dialog) and defers the actual
   // dismiss to the following click event (to avoid closing on a
@@ -132,12 +132,16 @@ describe('Toast', () => {
     );
   }
 
-  // Radix's toast viewport also renders its own visually-hidden live-region
-  // announcer with role="status", so queries are scoped to the visible
-  // region (role="region" — Radix appends a "(F8)" keyboard-shortcut hint
-  // to whatever aria-label is passed) to find just the rendered toast.
   function getVisibleToast() {
     return within(screen.getByRole('region', { name: /Notifications/ })).getByRole('status');
+  }
+
+  // Base UI's Toast.Close is aria-hidden by design while the toast stack
+  // isn't "expanded" and unfocused (avoids exposing a close button for a
+  // toast that's visually stacked/obscured to assistive tech), so it's
+  // queried by attribute rather than role.
+  function getDismissButton() {
+    return document.querySelector<HTMLButtonElement>('[aria-label="Dismiss"]')!;
   }
 
   it('shows a toast with title, description, and variant styling', () => {
@@ -160,7 +164,7 @@ describe('Toast', () => {
       </ToastProvider>,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Notify' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    fireEvent.click(getDismissButton());
     expect(
       within(screen.getByRole('region', { name: /Notifications/ })).queryByRole('status'),
     ).not.toBeInTheDocument();
@@ -190,8 +194,6 @@ describe('Toast', () => {
   });
 });
 
-// Radix DropdownMenu.Trigger opens on pointerdown (for responsiveness), not
-// click, so tests use fireEvent.pointerDown to open the menu.
 describe('Menu', () => {
   it('opens on trigger click and closes after selecting an item', () => {
     const onEdit = vi.fn();
@@ -203,7 +205,7 @@ describe('Menu', () => {
     );
     const trigger = screen.getByRole('button', { name: 'Actions' });
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    fireEvent.pointerDown(trigger);
+    fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByRole('menu')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('menuitem', { name: 'Edit' }));
@@ -211,7 +213,7 @@ describe('Menu', () => {
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
-  // Same deferred outside-pointerdown listener as Modal (see above) — wait
+  // Same deferred outside-interaction listener as Modal (see above) — wait
   // a tick before firing the outside interaction.
   it('closes on outside click and Escape', async () => {
     render(
@@ -221,12 +223,12 @@ describe('Menu', () => {
     );
     const trigger = screen.getByRole('button', { name: 'Actions' });
 
-    fireEvent.pointerDown(trigger);
+    fireEvent.click(trigger);
     await new Promise((resolve) => setTimeout(resolve, 0));
-    fireEvent.pointerDown(document.body);
+    fireEvent.mouseDown(document.body);
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 
-    fireEvent.pointerDown(trigger);
+    fireEvent.click(trigger);
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
@@ -237,7 +239,7 @@ describe('Menu', () => {
         <MenuItem destructive>Delete</MenuItem>
       </Menu>,
     );
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Actions' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Actions' }));
     expect(screen.getByRole('menuitem', { name: 'Delete' }).className).toContain(
       'destructive',
     );

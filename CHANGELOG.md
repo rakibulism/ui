@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.4] - 2026-07-10
+
+### Changed
+
+- **Swapped Radix UI for Base UI** as the underlying primitive library for `Modal`, `Menu`, `Tooltip`, `Toast`, `Tabs`, `Accordion`, and `Select` — replaces 7 `@radix-ui/react-*` dependencies with a single `@base-ui/react` package (still externalized, not bundled). Public prop APIs are unchanged from the Radix-backed versions (the `Select` breaking changes from 0.6.3 — `onChange` receiving a value instead of a change event, `ref` pointing to the trigger button — carry over as-is, they're not new).
+- `MenuItem` renders as a `div[role="menuitem"]`, same as before.
+- `Toast`'s dismiss button is now `aria-hidden` while the toast stack isn't expanded/focused (a deliberate Base UI accessibility default, avoiding exposing a close control for a visually-stacked/obscured toast to assistive tech) — it's still clickable, just not exposed via `role`-based queries until the stack expands.
+
 ## [0.6.3] - 2026-07-10
 
 ### Changed
@@ -119,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.4...HEAD
+[0.6.4]: https://github.com/rakibulism/ui/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/rakibulism/ui/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/rakibulism/ui/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/rakibulism/ui/compare/v0.5.0...v0.6.1

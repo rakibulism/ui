@@ -425,7 +425,7 @@ function OverlaysSection() {
       id="overlays"
       eyebrow="Components"
       title="Overlays"
-      intro="Tooltip, Modal, Toast, and Menu — wrapping Radix UI primitives under the hood for real focus traps, keyboard navigation, and collision-aware positioning."
+      intro="Tooltip, Modal, Toast, and Menu — wrapping Base UI primitives under the hood for real focus traps, keyboard navigation, and collision-aware positioning."
     >
       <Reveal className="panel">
         <div className="overlay-row">

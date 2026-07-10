@@ -1,8 +1,8 @@
 /* Positioning (previously .wrapper's relative container + .bubble's
    absolute top/bottom/left/right offsets per placement) is now handled by
-   Radix's own Popper-based placement via the `side`/`sideOffset` props —
-   Trigger and Content are portaled siblings, not parent/child. Radix also
-   mounts Content only while open (on hover/focus, not unconditionally),
+   Base UI's own placement engine via the `side`/`sideOffset` props —
+   Trigger and Popup are portaled siblings, not parent/child. Base UI also
+   mounts the popup only while open (on hover/focus, not unconditionally),
    so show/hide is driven by mount/unmount instead of a CSS opacity toggle. */
 .bubble {
   z-index: 50;

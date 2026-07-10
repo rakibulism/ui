@@ -11,7 +11,7 @@
   color: var(--color-gray-700, #374151);
 }
 
-/* .select is now the Radix Trigger button — it lays out its own Value +
+/* .select is now the Base UI Trigger button — it lays out its own Value +
    Icon children in a row, so the chevron no longer needs to be absolutely
    positioned over a separate native <select>. */
 .select {
@@ -60,7 +60,7 @@
 .menu {
   z-index: 50;
   overflow: hidden;
-  min-width: var(--radix-select-trigger-width);
+  min-width: var(--anchor-width);
   border-radius: var(--radius-md, 8px);
   background: var(--color-surface, #ffffff);
   box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -84,7 +84,7 @@
   user-select: none;
 }
 
-/* Radix highlights items via arrow-key navigation and hover using
+/* Base UI highlights items via arrow-key navigation and hover using
    data-highlighted rather than moving real DOM focus onto each item. */
 .item[data-highlighted] {
   background: var(--color-gray-100, #f3f4f6);
