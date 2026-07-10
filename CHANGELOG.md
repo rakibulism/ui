@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-10
+
+### Added
+
+- **`npx rakibulism-ui` CLI** — shadcn-style scaffolding tool that copies component source (`.tsx` + CSS module) directly into a consumer project instead of depending on the published package. `init` writes a `rakibulism-ui.json` config and copies design tokens + `globals.css`; `add <component>` copies one or more self-contained component folders; `list` shows what's available. Ships via the package's `bin` field — no extra install needed beyond `npx`.
+
 ## [0.4.0] - 2026-07-10
 
 ### Added
@@ -80,7 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/rakibulism/ui/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/rakibulism/ui/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/rakibulism/ui/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/rakibulism/ui/compare/v0.1.7...v0.2.0

@@ -32,6 +32,22 @@ pnpm add rakibulism-ui
 
 `react` and `react-dom` (v18+) are peer dependencies.
 
+### Alternative: copy component source (no package dependency)
+
+Prefer to own the code instead of depending on the package? The CLI copies
+individual components' source (`.tsx` + CSS module) straight into your
+project, shadcn-style:
+
+```bash
+npx rakibulism-ui init         # writes rakibulism-ui.json, copies tokens + globals.css
+npx rakibulism-ui add button   # copies src/components/Button into your project
+npx rakibulism-ui list         # see all available components
+```
+
+Each component only depends on `react`, `react-dom`, and `clsx` — nothing
+imports from elsewhere in the package, so a copied component is fully
+self-contained and yours to edit.
+
 ## Quick Start
 
 ```tsx
