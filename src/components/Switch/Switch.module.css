@@ -27,7 +27,10 @@
   flex-shrink: 0;
   padding: 2px;
   border-radius: var(--radius-full, 9999px);
-  background: var(--color-gray-300, #d1d5db);
+  /* border-strong, not gray-300 — the off-state track is the sole visual
+     indicator of switch state and needs 3:1 against the surface; gray-300
+     is only ~1.5:1 in light mode and fails harder in dark mode. */
+  background: var(--color-border-strong, #6b7280);
   transition: background-color 0.15s ease;
 }
 

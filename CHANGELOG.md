@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-07-10
+
+### Fixed
+
+- **WCAG AA color contrast** — a full audit found several confirmed failures: `Button` `danger` variant (white text on `error-500`, ~3.76:1 — now `error-600`, ~4.83:1), placeholder text in `Input`/`Textarea` (`gray-400`, ~2.54:1), icons in `Accordion`/`Toast`/`Modal`/`Select` (`gray-400`, ~2.54:1), the `Breadcrumbs` separator glyph (`gray-300`, ~1.47:1), and `Toast`'s variant left-border indicators (`success-500`/`warning-500` below the 3:1 non-text threshold). Also fixed a **dark-mode-only regression**: `gray-300`, used for `Switch`'s off-state track and other borders, is remapped to a midtone in dark mode and dropped to ~1.94:1 against the dark surface.
+- Introduced semantic color tokens (`--color-text-muted`, `--color-icon-default`, `--color-border-default`, `--color-border-strong`, `--color-indicator-{info,success,error,warning}`) in `rakibulism-ui/styles`, calibrated to hold AA contrast in both themes, replacing a recurring pattern of components hardcoding a borderline `gray-500` (~4.83:1, barely over the 4.5:1 minimum) directly.
+- Added a contrast-ratio regression test (`src/tokens/__tests__/contrast.test.ts`) so a future token change can't silently reintroduce one of these failures.
+
 ## [0.5.0] - 2026-07-10
 
 ### Added
@@ -86,7 +94,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/rakibulism/ui/compare/v0.5.0...v0.6.1
 [0.5.0]: https://github.com/rakibulism/ui/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/rakibulism/ui/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/rakibulism/ui/compare/v0.2.0...v0.3.0

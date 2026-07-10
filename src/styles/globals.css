@@ -89,6 +89,19 @@
      itself is reserved for text on colored fills and never remapped. */
   --color-surface: var(--color-white);
 
+  /* Semantic text/icon/border tokens — calibrated to hold WCAG AA contrast
+     (4.5:1 text, 3:1 icons/non-text UI) against `--color-surface` in BOTH
+     themes. Each aliases a scale step whose value the dark theme already
+     re-maps correctly, so no separate dark-mode override is needed here. */
+  --color-text-muted: var(--color-gray-600);
+  --color-icon-default: var(--color-gray-500);
+  --color-border-default: var(--color-gray-200);
+  --color-border-strong: var(--color-gray-500);
+  --color-indicator-info: var(--color-primary-500);
+  --color-indicator-success: var(--color-success-600);
+  --color-indicator-error: var(--color-error-500);
+  --color-indicator-warning: var(--color-warning-600);
+
   /* Spacing */
   --space-0: 0px;
   --space-1: 4px;

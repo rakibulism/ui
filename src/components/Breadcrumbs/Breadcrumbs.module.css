@@ -18,7 +18,7 @@
 }
 
 .link {
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-text-muted, #4b5563);
   font-size: var(--font-size-sm, 14px);
   text-decoration: none;
   transition: color 0.15s ease;
@@ -42,7 +42,7 @@
 }
 
 .separator {
-  color: var(--color-gray-300, #d1d5db);
+  color: var(--color-text-muted, #4b5563);
   font-size: var(--font-size-sm, 14px);
 }
 

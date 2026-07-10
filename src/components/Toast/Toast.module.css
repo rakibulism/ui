@@ -17,7 +17,7 @@
   gap: var(--space-3, 12px);
   padding: var(--space-3, 12px) var(--space-4, 16px);
   border-radius: var(--radius-md, 8px);
-  border-left: 3px solid var(--color-gray-300, #d1d5db);
+  border-left: 3px solid var(--color-border-strong, #6b7280);
   background: var(--color-surface, #ffffff);
   box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -4px rgba(0, 0, 0, 0.1));
@@ -27,19 +27,23 @@
 }
 
 .info {
-  border-left-color: var(--color-primary-500, #3b82f6);
+  border-left-color: var(--color-indicator-info, #3b82f6);
 }
 
 .success {
-  border-left-color: var(--color-success-500, #10b981);
+  /* success-600, not -500 — the indicator is the sole visual cue for toast
+     type, a non-text UI element needing 3:1; -500 is only ~2.54:1 on the
+     surface color. */
+  border-left-color: var(--color-indicator-success, #059669);
 }
 
 .error {
-  border-left-color: var(--color-error-500, #ef4444);
+  border-left-color: var(--color-indicator-error, #ef4444);
 }
 
 .warning {
-  border-left-color: var(--color-warning-500, #f59e0b);
+  /* warning-600, not -500 — -500 is only ~2.15:1 in light mode. */
+  border-left-color: var(--color-indicator-warning, #d97706);
 }
 
 .content {
@@ -70,7 +74,7 @@
   border: none;
   border-radius: var(--radius-sm, 4px);
   background: transparent;
-  color: var(--color-gray-400, #9ca3af);
+  color: var(--color-icon-default, #6b7280);
   cursor: pointer;
   transition:
     background-color 0.15s ease,

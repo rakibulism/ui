@@ -15,7 +15,7 @@
   padding: var(--space-3, 12px) var(--space-4, 16px);
   border: none;
   background: transparent;
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-text-muted, #4b5563);
   font-family: inherit;
   font-size: var(--font-size-sm, 14px);
   font-weight: var(--font-weight-medium, 500);

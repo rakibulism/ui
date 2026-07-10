@@ -52,7 +52,7 @@
   border: none;
   border-radius: var(--radius-md, 8px);
   background: transparent;
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-icon-default, #6b7280);
   cursor: pointer;
   transition:
     background-color 0.15s ease,

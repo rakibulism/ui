@@ -29,7 +29,7 @@
 }
 
 .textarea::placeholder {
-  color: var(--color-gray-400, #9ca3af);
+  color: var(--color-text-muted, #4b5563);
 }
 
 .textarea:focus {
@@ -55,7 +55,7 @@
 
 .helperText {
   font-size: var(--font-size-sm, 14px);
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-text-muted, #4b5563);
 }
 
 .errorText {

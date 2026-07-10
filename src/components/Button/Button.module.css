@@ -65,7 +65,7 @@
 
 .secondary {
   background-color: var(--color-gray-100, #f3f4f6);
-  border-color: var(--color-gray-300, #d1d5db);
+  border-color: var(--color-border-strong, #6b7280);
   color: var(--color-gray-900, #111827);
 }
 .secondary:not(:disabled):not([aria-disabled='true']):hover {
@@ -87,14 +87,16 @@
 }
 
 .danger {
-  background-color: var(--color-error-500, #ef4444);
+  /* error-600, not error-500 — white text on error-500 is ~3.76:1, under
+     the 4.5:1 WCAG AA minimum for text. error-600 clears it at ~4.83:1. */
+  background-color: var(--color-error-600, #dc2626);
   color: var(--color-white, #ffffff);
 }
 .danger:not(:disabled):not([aria-disabled='true']):hover {
-  background-color: var(--color-error-600, #dc2626);
+  background-color: var(--color-error-700, #b91c1c);
 }
 .danger:not(:disabled):not([aria-disabled='true']):active {
-  background-color: var(--color-error-700, #b91c1c);
+  background-color: var(--color-error-800, #991b1b);
 }
 
 /* --- Loading spinner --- */

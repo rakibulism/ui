@@ -56,7 +56,7 @@
   justify-content: center;
   min-width: 36px;
   height: 36px;
-  color: var(--color-gray-400, #9ca3af);
+  color: var(--color-text-muted, #4b5563);
   font-size: var(--font-size-sm, 14px);
 }
 

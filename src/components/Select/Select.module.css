@@ -55,13 +55,13 @@
   right: var(--space-3, 12px);
   width: 16px;
   height: 16px;
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-icon-default, #6b7280);
   pointer-events: none;
 }
 
 .helperText {
   font-size: var(--font-size-sm, 14px);
-  color: var(--color-gray-500, #6b7280);
+  color: var(--color-text-muted, #4b5563);
 }
 
 .errorText {

@@ -39,7 +39,7 @@
 
 .chevron {
   flex-shrink: 0;
-  color: var(--color-gray-400, #9ca3af);
+  color: var(--color-icon-default, #6b7280);
   transition: transform 0.15s ease;
 }
 
