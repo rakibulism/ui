@@ -1,29 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useRef,
-  useState,
-  type HTMLAttributes,
-  type ButtonHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import * as TabsPrimitive from '@radix-ui/react-tabs';
 import clsx from 'clsx';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import styles from './Tabs.module.css';
-
-interface TabsContextValue {
-  value: string;
-  setValue: (value: string) => void;
-}
-
-const TabsContext = createContext<TabsContextValue | null>(null);
-
-function useTabsContext(component: string): TabsContextValue {
-  const ctx = useContext(TabsContext);
-  if (!ctx) {
-    throw new Error(`<${component}> must be used within <Tabs>`);
-  }
-  return ctx;
-}
 
 export interface TabsProps {
   /** Currently active tab value (controlled). */
@@ -39,88 +17,56 @@ export interface TabsProps {
 /**
  * Groups `TabList`/`Tab`/`TabPanel` under shared selection state. Works
  * controlled (pass `value` + `onChange`) or uncontrolled (`defaultValue`).
+ * Wraps Radix `Tabs` internally — arrow-key navigation (with Home/End),
+ * roving tabindex, and `aria-controls`/`aria-labelledby` linking between
+ * tabs and panels are handled by Radix.
  */
 export function Tabs({ value, defaultValue, onChange, children, className }: TabsProps) {
-  const [internalValue, setInternalValue] = useState(defaultValue ?? '');
-  const activeValue = value ?? internalValue;
-
-  function setValue(next: string) {
-    if (value === undefined) setInternalValue(next);
-    onChange?.(next);
-  }
-
   return (
-    <TabsContext.Provider value={{ value: activeValue, setValue }}>
-      <div className={clsx(styles.tabs, className)}>{children}</div>
-    </TabsContext.Provider>
-  );
-}
-
-/** Roving-tabindex tab strip; arrow keys move focus and selection between tabs. */
-export function TabList({ children, className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  const listRef = useRef<HTMLDivElement>(null);
-
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-    const tabs = Array.from(
-      listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [],
-    );
-    const currentIndex = tabs.findIndex((tab) => tab === document.activeElement);
-    if (currentIndex === -1) return;
-    const delta = event.key === 'ArrowRight' ? 1 : -1;
-    const next = tabs[(currentIndex + delta + tabs.length) % tabs.length];
-    next?.focus();
-    next?.click();
-    event.preventDefault();
-  }
-
-  return (
-    <div
-      ref={listRef}
-      role="tablist"
-      className={clsx(styles.list, className)}
-      onKeyDown={handleKeyDown}
-      {...rest}
+    <TabsPrimitive.Root
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onChange}
+      className={clsx(styles.tabs, className)}
     >
       {children}
-    </div>
+    </TabsPrimitive.Root>
   );
 }
 
-export interface TabProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value'> {
+export function TabList({
+  children,
+  className,
+  ...rest
+}: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
+  return (
+    <TabsPrimitive.List className={clsx(styles.list, className)} {...rest}>
+      {children}
+    </TabsPrimitive.List>
+  );
+}
+
+export interface TabProps extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>, 'value'> {
   /** Value this tab activates. */
   value: string;
 }
 
 export function Tab({ value, className, ...rest }: TabProps) {
-  const { value: active, setValue } = useTabsContext('Tab');
-  const selected = active === value;
-
   return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={selected}
-      tabIndex={selected ? 0 : -1}
-      className={clsx(styles.tab, selected && styles.tabActive, className)}
-      onClick={() => setValue(value)}
-      {...rest}
-    />
+    <TabsPrimitive.Trigger value={value} className={clsx(styles.tab, className)} {...rest} />
   );
 }
 
-export interface TabPanelProps extends HTMLAttributes<HTMLDivElement> {
+export interface TabPanelProps
+  extends Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Content>, 'value'> {
   /** Value this panel corresponds to; only rendered when active. */
   value: string;
 }
 
 export function TabPanel({ value, children, className, ...rest }: TabPanelProps) {
-  const { value: active } = useTabsContext('TabPanel');
-  if (active !== value) return null;
-
   return (
-    <div role="tabpanel" className={clsx(styles.panel, className)} {...rest}>
+    <TabsPrimitive.Content value={value} className={clsx(styles.panel, className)} {...rest}>
       {children}
-    </div>
+    </TabsPrimitive.Content>
   );
 }

@@ -16,6 +16,14 @@ const DEFAULT_CONFIG = {
   stylesDir: 'src/styles/rakibulism-ui',
 };
 
+// Extra runtime deps a component needs beyond the baseline (clsx, always
+// checked separately below). Keep in sync with each component's imports.
+const EXTRA_DEPS = {
+  Tabs: ['@radix-ui/react-tabs'],
+  Accordion: ['@radix-ui/react-accordion'],
+  Modal: ['@radix-ui/react-dialog'],
+};
+
 function listComponents() {
   return fs
     .readdirSync(COMPONENTS_SRC, { withFileTypes: true })
@@ -108,6 +116,8 @@ function cmdAdd(names) {
     console.log(`No ${CONFIG_FILE} found, using defaults (run "rakibulism-ui init" to customize).`);
   }
 
+  const neededExtras = new Set();
+
   for (const requested of names) {
     const match = findComponent(requested);
     if (!match) {
@@ -117,11 +127,13 @@ function cmdAdd(names) {
     const dest = path.join(config.componentsDir, match);
     copyDir(path.join(COMPONENTS_SRC, match), dest);
     console.log(`✓ Added ${match} → ${dest}`);
+    for (const dep of EXTRA_DEPS[match] ?? []) neededExtras.add(dep);
   }
 
-  if (!hasDep('clsx')) {
-    console.log('\nComponents use clsx — install it if you haven\'t:');
-    console.log('  npm install clsx');
+  const missing = ['clsx', ...neededExtras].filter((dep) => !hasDep(dep));
+  if (missing.length > 0) {
+    console.log(`\nInstall the dependencies these components need:`);
+    console.log(`  npm install ${missing.join(' ')}`);
   }
 }
 

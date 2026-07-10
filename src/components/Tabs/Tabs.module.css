@@ -43,11 +43,11 @@
   outline-offset: 2px;
 }
 
-.tabActive {
+.tab[data-state='active'] {
   color: var(--color-primary-600, #2563eb);
 }
 
-.tabActive::after {
+.tab[data-state='active']::after {
   background: var(--color-primary-600, #2563eb);
 }
 

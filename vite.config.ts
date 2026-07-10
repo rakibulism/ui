@@ -42,7 +42,14 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      // @radix-ui/* packages are externalized like react/react-dom rather
+      // than bundled: they're regular `dependencies` so a plain
+      // `npm install rakibulism-ui` installs them, but keeping them out of
+      // dist/index.js lets each consumer's own bundler dedupe/tree-shake
+      // Radix normally instead of every consumer paying for every primitive
+      // regardless of which components they actually use.
+      external: (id) =>
+        ['react', 'react-dom', 'react/jsx-runtime'].includes(id) || id.startsWith('@radix-ui/'),
       output: [
         {
           format: 'es',

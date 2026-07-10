@@ -1,13 +1,7 @@
-import { createContext, useContext, useId, useState, type ReactNode } from 'react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import styles from './Accordion.module.css';
-
-interface AccordionContextValue {
-  isOpen: (value: string) => boolean;
-  toggle: (value: string) => void;
-}
-
-const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 export interface AccordionProps {
   /** Whether one or multiple items can be open at a time. @default 'single' */
@@ -22,7 +16,13 @@ export interface AccordionProps {
   className?: string;
 }
 
-/** Groups `AccordionItem`s under shared open/closed state. */
+/**
+ * Groups `AccordionItem`s under shared open/closed state. Wraps Radix
+ * `Accordion` internally — adds Up/Down/Home/End keyboard navigation
+ * between triggers on top of the existing click-to-toggle behavior.
+ * `collapsible` is always on for `type="single"` so a single open item can
+ * be closed by re-clicking it, matching the previous behavior.
+ */
 export function Accordion({
   type = 'single',
   value,
@@ -31,33 +31,31 @@ export function Accordion({
   children,
   className,
 }: AccordionProps) {
-  const [internal, setInternal] = useState<string | string[]>(
-    defaultValue ?? (type === 'multiple' ? [] : ''),
-  );
-  const current = value ?? internal;
-
-  function toggle(itemValue: string) {
-    let next: string | string[];
-    if (type === 'multiple') {
-      const arr = Array.isArray(current) ? current : [];
-      next = arr.includes(itemValue)
-        ? arr.filter((v) => v !== itemValue)
-        : [...arr, itemValue];
-    } else {
-      next = current === itemValue ? '' : itemValue;
-    }
-    if (value === undefined) setInternal(next);
-    onChange?.(next);
-  }
-
-  function isOpen(itemValue: string) {
-    return Array.isArray(current) ? current.includes(itemValue) : current === itemValue;
+  if (type === 'multiple') {
+    return (
+      <AccordionPrimitive.Root
+        type="multiple"
+        value={value as string[] | undefined}
+        defaultValue={defaultValue as string[] | undefined}
+        onValueChange={onChange}
+        className={clsx(styles.accordion, className)}
+      >
+        {children}
+      </AccordionPrimitive.Root>
+    );
   }
 
   return (
-    <AccordionContext.Provider value={{ isOpen, toggle }}>
-      <div className={clsx(styles.accordion, className)}>{children}</div>
-    </AccordionContext.Provider>
+    <AccordionPrimitive.Root
+      type="single"
+      collapsible
+      value={value as string | undefined}
+      defaultValue={defaultValue as string | undefined}
+      onValueChange={onChange}
+      className={clsx(styles.accordion, className)}
+    >
+      {children}
+    </AccordionPrimitive.Root>
   );
 }
 
@@ -71,29 +69,13 @@ export interface AccordionItemProps {
 }
 
 export function AccordionItem({ value, title, children, className }: AccordionItemProps) {
-  const baseId = useId();
-  const ctx = useContext(AccordionContext);
-  if (!ctx) {
-    throw new Error('AccordionItem must be used within Accordion');
-  }
-  const open = ctx.isOpen(value);
-  const panelId = `${baseId}-panel`;
-  const triggerId = `${baseId}-trigger`;
-
   return (
-    <div className={clsx(styles.item, className)}>
-      <h3 className={styles.heading}>
-        <button
-          type="button"
-          id={triggerId}
-          aria-expanded={open}
-          aria-controls={panelId}
-          className={styles.trigger}
-          onClick={() => ctx.toggle(value)}
-        >
+    <AccordionPrimitive.Item value={value} className={clsx(styles.item, className)}>
+      <AccordionPrimitive.Header className={styles.heading}>
+        <AccordionPrimitive.Trigger className={styles.trigger}>
           <span>{title}</span>
           <svg
-            className={clsx(styles.chevron, open && styles.chevronOpen)}
+            className={styles.chevron}
             viewBox="0 0 20 20"
             fill="none"
             width="16"
@@ -108,13 +90,9 @@ export function AccordionItem({ value, title, children, className }: AccordionIt
               strokeLinejoin="round"
             />
           </svg>
-        </button>
-      </h3>
-      {open && (
-        <div id={panelId} role="region" aria-labelledby={triggerId} className={styles.panel}>
-          {children}
-        </div>
-      )}
-    </div>
+        </AccordionPrimitive.Trigger>
+      </AccordionPrimitive.Header>
+      <AccordionPrimitive.Content className={styles.panel}>{children}</AccordionPrimitive.Content>
+    </AccordionPrimitive.Item>
   );
 }

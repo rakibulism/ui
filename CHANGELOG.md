@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-07-10
+
+### Changed
+
+- **`Tabs`, `Accordion`, and `Modal` now wrap Radix UI primitives internally** (`@radix-ui/react-tabs`, `@radix-ui/react-accordion`, `@radix-ui/react-dialog`), added as regular `dependencies` and externalized in the build (not bundled) so consumers' own bundlers can dedupe/tree-shake them. Public prop APIs are unchanged.
+- **`Modal` gains a real focus trap and focus restoration to the trigger on close** — the previous hand-rolled implementation only set initial focus and let Tab escape to the page behind the dialog.
+- `Accordion` gains Up/Down/Home/End keyboard navigation between headers; `Tabs` gains Home/End on top of the existing arrow-key switching, plus `aria-controls`/`aria-labelledby` linking each tab to its panel.
+- The `npx rakibulism-ui add` CLI now warns about the correct Radix package(s) to install for `Modal`/`Tabs`/`Accordion`, not just `clsx`.
+
 ## [0.6.1] - 2026-07-10
 
 ### Fixed
@@ -94,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/rakibulism/ui/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/rakibulism/ui/compare/v0.5.0...v0.6.1
 [0.5.0]: https://github.com/rakibulism/ui/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/rakibulism/ui/compare/v0.3.0...v0.4.0

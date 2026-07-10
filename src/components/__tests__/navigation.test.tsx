@@ -19,36 +19,48 @@ function renderTabs() {
 }
 
 describe('Tabs', () => {
+  // Radix Tabs.Trigger selects on mousedown (for pointer responsiveness),
+  // not click, so tests use fireEvent.mouseDown to switch tabs.
   it('shows only the active panel and switches on click', () => {
     renderTabs();
     expect(screen.getByText('Panel A')).toBeInTheDocument();
     expect(screen.queryByText('Panel B')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('tab', { name: 'Beta' }));
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Beta' }));
     expect(screen.queryByText('Panel A')).not.toBeInTheDocument();
     expect(screen.getByText('Panel B')).toBeInTheDocument();
   });
 
-  it('sets aria-selected and roving tabindex', () => {
+  it('sets aria-selected, and roving tabindex once a tab has focus', () => {
     renderTabs();
     const alpha = screen.getByRole('tab', { name: 'Alpha' });
     const beta = screen.getByRole('tab', { name: 'Beta' });
     expect(alpha).toHaveAttribute('aria-selected', 'true');
-    expect(alpha).toHaveAttribute('tabindex', '0');
     expect(beta).toHaveAttribute('aria-selected', 'false');
+    // Radix's roving-tabindex group only assigns tabIndex 0 to a specific
+    // item once something has focused it (the group itself is the initial
+    // tab stop before any interaction).
+    fireEvent.focus(alpha);
+    expect(alpha).toHaveAttribute('tabindex', '0');
     expect(beta).toHaveAttribute('tabindex', '-1');
   });
 
-  it('moves selection with arrow keys, wrapping around', () => {
+  // Radix's roving-focus-group moves DOM focus for arrow-key navigation
+  // inside a setTimeout (a macrotask, so the test awaits a tick), then
+  // Tabs.Trigger's own onFocus handler selects the newly-focused tab
+  // (automatic activation mode).
+  it('moves selection with arrow keys, wrapping around', async () => {
     renderTabs();
     const alpha = screen.getByRole('tab', { name: 'Alpha' });
-    alpha.focus();
+    fireEvent.focus(alpha);
     fireEvent.keyDown(alpha, { key: 'ArrowRight' });
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(screen.getByRole('tab', { name: 'Beta' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
     const beta = screen.getByRole('tab', { name: 'Beta' });
     fireEvent.keyDown(beta, { key: 'ArrowRight' });
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(screen.getByRole('tab', { name: 'Alpha' })).toHaveAttribute(
       'aria-selected',
       'true',
@@ -67,7 +79,7 @@ describe('Tabs', () => {
         <TabPanel value="b">Panel B</TabPanel>
       </Tabs>,
     );
-    fireEvent.click(screen.getByRole('tab', { name: 'Beta' }));
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Beta' }));
     expect(onChange).toHaveBeenCalledWith('b');
     // still controlled by `value`, so panel A remains visible
     expect(screen.getByText('Panel A')).toBeInTheDocument();
