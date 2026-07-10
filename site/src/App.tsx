@@ -123,6 +123,21 @@ function SearchIcon() {
   );
 }
 
+// RemixIcon (github.com/Remix-Design/RemixIcon, MIT) — sparkling-2-line and
+// file-copy-line, used as CSS mask-images so the AI-copy button can paint a
+// gradient directly onto the icon's vector shape (see .ai-copy-icon).
+const SPARKLING_PATH =
+  'M17.0007 1.20825 18.3195 3.68108 20.7923 4.99992 18.3195 6.31876 17.0007 8.79159 15.6818 6.31876 13.209 4.99992 15.6818 3.68108 17.0007 1.20825ZM10.6673 9.33325 15.6673 11.9999 10.6673 14.6666 8.00065 19.6666 5.33398 14.6666.333984 11.9999 5.33398 9.33325 8.00065 4.33325 10.6673 9.33325ZM11.4173 11.9999 9.18905 10.8115 8.00065 8.58325 6.81224 10.8115 4.58398 11.9999 6.81224 13.1883 8.00065 15.4166 9.18905 13.1883 11.4173 11.9999ZM19.6673 16.3333 18.0007 13.2083 16.334 16.3333 13.209 17.9999 16.334 19.6666 18.0007 22.7916 19.6673 19.6666 22.7923 17.9999 19.6673 16.3333Z';
+
+const FILE_COPY_PATH =
+  'M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z';
+
+/** Encodes an icon path as a `mask-image: url(...)` data URI. */
+function iconMaskUrl(path: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
 /* --- component demos (live previews inside gallery cards) --- */
 
 function ButtonDemo() {
@@ -244,6 +259,8 @@ type CardDef = {
   label: string;
   caption: string;
   keywords: string;
+  /** Copied to the clipboard by the card's AI-copy button. */
+  prompt: string;
   Demo: ComponentType;
 };
 
@@ -253,6 +270,8 @@ const CARDS: CardDef[] = [
     label: 'Button',
     caption: '4 variants · loading & disabled',
     keywords: 'button variant primary secondary ghost danger loading disabled action',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), build a Button showcase. Import { Button } from 'rakibulism-ui' and render its four variants — primary, secondary, ghost, and danger — in the sm/md/lg sizes, plus the isLoading and isDisabled states. Don't override the library's styling with custom CSS.",
     Demo: ButtonDemo,
   },
   {
@@ -260,6 +279,8 @@ const CARDS: CardDef[] = [
     label: 'Input',
     caption: 'labels, helper & error states',
     keywords: 'input text field form email password helper error label',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), build a form with the Input component: a labeled email field with helper text, a labeled password field showing an error state, and a disabled field. Use the label, helperText, error, and disabled props — they wire up htmlFor/aria-describedby/aria-invalid automatically.",
     Demo: InputDemo,
   },
   {
@@ -267,6 +288,8 @@ const CARDS: CardDef[] = [
     label: 'Select',
     caption: 'native, keyboard accessible',
     keywords: 'select dropdown option country choice picker',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), render a controlled Select with a handful of <option> children (e.g. a list of countries) bound to React state via value/onChange.",
     Demo: SelectDemo,
   },
   {
@@ -274,6 +297,8 @@ const CARDS: CardDef[] = [
     label: 'Form controls',
     caption: 'checkbox · radio · switch',
     keywords: 'checkbox radio switch toggle form control choice',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), build a settings form with a Checkbox (defaultChecked), a Switch bound to controlled boolean state, and a RadioGroup containing two Radio options — showing how each control's label prop and change handler work together.",
     Demo: FormDemo,
   },
   {
@@ -281,6 +306,8 @@ const CARDS: CardDef[] = [
     label: 'Feedback',
     caption: 'badges · avatars · progress',
     keywords: 'badge avatar spinner progress status feedback loading',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), build a feedback/status showcase: a Badge in each of the primary/success/error/warning variants, an Avatar with a name (for the initials fallback) in the sm/md/lg sizes, a Spinner, and a Progress bar set to a fixed value.",
     Demo: FeedbackDemo,
   },
   {
@@ -288,21 +315,74 @@ const CARDS: CardDef[] = [
     label: 'Overlays',
     caption: 'tooltip · modal · toast · menu',
     keywords: 'tooltip modal dialog toast menu overlay popover portal',
+    prompt:
+      "Using the rakibulism-ui React component library (npm install rakibulism-ui), build an overlays showcase: a Tooltip wrapping a trigger Button, a Modal opened from a button click with a title and focus trap, a toast triggered via the useToast() hook (wrap the app in ToastProvider), and a Menu with MenuItem entries including a destructive delete item.",
     Demo: OverlaysDemo,
   },
 ];
 
 /* --- gallery --- */
 
-function GalleryCard({ card }: { card: CardDef }) {
-  const { label, caption, Demo } = card;
+function AiCopyButton({ prompt, label }: { prompt: string; label: string }) {
+  const { show } = useToast();
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(prompt);
+    } catch {
+      /* clipboard unavailable — no-op */
+    }
+    show({
+      title: 'Copied to clipboard',
+      description: `Paste this into your AI agent to build the ${label} component.`,
+      variant: 'success',
+    });
+  }
+
   return (
-    <article className="gcard">
-      <div className="gcard-head">
-        <span className="gcard-label">{label}</span>
-        <span className="gcard-caption">{caption}</span>
+    <Tooltip
+      content="Click to copy the prompt — paste it into your AI agent to quickly get this component."
+      placement="top"
+    >
+      <button
+        type="button"
+        className="ai-copy-btn"
+        onClick={handleCopy}
+        aria-label={`Copy an AI prompt for the ${label} component`}
+      >
+        <span
+          className="ai-copy-icon ai-copy-icon-sparkle"
+          aria-hidden="true"
+          style={{
+            maskImage: iconMaskUrl(SPARKLING_PATH),
+            WebkitMaskImage: iconMaskUrl(SPARKLING_PATH),
+          }}
+        />
+        <span
+          className="ai-copy-icon ai-copy-icon-copy"
+          aria-hidden="true"
+          style={{
+            maskImage: iconMaskUrl(FILE_COPY_PATH),
+            WebkitMaskImage: iconMaskUrl(FILE_COPY_PATH),
+          }}
+        />
+      </button>
+    </Tooltip>
+  );
+}
+
+function GalleryCard({ card }: { card: CardDef }) {
+  const { label, caption, prompt, Demo } = card;
+  return (
+    <article className="component-card-container">
+      <div className="header">
+        <div className="heading">
+          <span className="metric-title">{label}</span>
+          <span className="metric-description">{caption}</span>
+        </div>
+        <AiCopyButton prompt={prompt} label={label} />
       </div>
-      <div className="gcard-preview">
+      <div className="container">
         <Demo />
       </div>
     </article>
@@ -417,22 +497,20 @@ function AppContent() {
       <Header query={query} onQuery={setQuery} inputRef={searchRef} />
 
       <main>
-        <section className="hero">
-          <h1>Just imagine to build, tell to AI</h1>
-          <p className="hero-sub">
-            The design work is done. Fully built, accessible UI library — install &amp; start
-            shipping. All that's left is your idea.
-          </p>
+        <section className="header-section">
+          <div className="header-text-and-description">
+            <h1 className="header-title">Just imagine to build, tell to AI</h1>
+            <p className="header-description">
+              The design work is done. Fully built, accessible UI library — install &amp; start
+              shipping. All that's left is your idea.
+            </p>
+          </div>
         </section>
 
-        <section className="gallery" id="components">
-          <div className="gallery-frame">
+        <section className="content-container" id="components">
+          <div className="dashboard-container">
             {results.length > 0 ? (
-              <div className="gallery-grid">
-                {results.map((card) => (
-                  <GalleryCard key={card.id} card={card} />
-                ))}
-              </div>
+              results.map((card) => <GalleryCard key={card.id} card={card} />)
             ) : (
               <div className="gallery-empty">
                 <p>
