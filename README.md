@@ -14,7 +14,7 @@ A code-first design system and React component library — type-safe, tree-shake
 ## Features
 
 - ⚛️ **23 React components** — forms, overlays, navigation, and feedback primitives, all fully typed and accessibility-wired (roles, aria attributes, keyboard navigation)
-- 🎨 **Code-first tokens** — colors (Tailwind-sourced, 50–950 scales), spacing, typography, shadows, and radii defined in TypeScript
+- 🎨 **Code-first tokens** — colors (a deep-green brand scale plus Tailwind-sourced semantic scales, all 50–950), spacing, typography, shadows, and radii defined in TypeScript
 - 🧩 **CSS Modules** — scoped styles, no global class pollution; component CSS is auto-injected
 - 📦 **ESM + CommonJS** — tree-shakeable, ships both formats with auto-generated `.d.ts` types
 - 🎯 **Themeable** — every component reads CSS variables, so overriding a token re-themes everything
@@ -482,7 +482,7 @@ An inline, persistent callout — unlike `Toast` (transient, portal-rendered), `
 
 ## Design Tokens
 
-Colors are sourced from Tailwind CSS's default palette (`primary` = `blue`, `success` = `emerald`, `error` = `red`, `warning` = `amber`, `gray` = `gray`), so the scales are familiar and battle-tested — no Tailwind dependency required to use them.
+`primary` is this project's own brand color — `#0F453C`, a deep teal-green — generated into a full 50–950 scale anchored exactly at the 600 step (the step used for solid fills like the primary `Button`), so the brand hex renders pixel-for-pixel where it matters most. `success`/`error`/`warning`/`gray` are sourced from Tailwind CSS's default palette (`emerald`/`red`/`amber`/`gray`), so those scales are familiar and battle-tested — no Tailwind dependency required to use any of them.
 
 Import tokens directly to build custom components or styles:
 
@@ -490,7 +490,7 @@ Import tokens directly to build custom components or styles:
 import { colors, spacing, typography, shadows, radius } from 'rakibulism-ui/tokens';
 
 const customStyle = {
-  color: colors.primary[500],           // #3B82F6
+  color: colors.primary[600],           // #0F453C
   padding: spacing[4],                  // 16px
   fontSize: typography.fontSize.base,   // 16px
   boxShadow: shadows.md,
@@ -500,7 +500,7 @@ const customStyle = {
 
 | Token        | Examples                                                        |
 | ------------ | --------------------------------------------------------------- |
-| `colors`     | `primary`, `gray`, `success`, `error`, `warning` (each 50–950, Tailwind-sourced), plus `white`, `black` |
+| `colors`     | `primary` (brand), `gray`, `success`, `error`, `warning` (each 50–950), plus `white`, `black` |
 | `spacing`    | `0`–`24` on a 4px scale (`spacing[4]` → `16px`)                  |
 | `typography` | `fontFamily`, `fontSize` (`xs`–`4xl`), `fontWeight`, `lineHeight` |
 | `shadows`    | `sm`, `base`, `md`, `lg`, `xl`                                   |

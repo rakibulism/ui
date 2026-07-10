@@ -44,11 +44,11 @@
 }
 
 .tab[data-active] {
-  color: var(--color-primary-600, #2563eb);
+  color: var(--color-accent, #0f453c);
 }
 
 .tab[data-active]::after {
-  background: var(--color-primary-600, #2563eb);
+  background: var(--color-accent, #0f453c);
 }
 
 .panel {

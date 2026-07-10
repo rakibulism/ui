@@ -1,25 +1,28 @@
 /**
  * Color palette — the single source of truth for all color values.
  *
- * Sourced from Tailwind CSS's default palette so the scales are battle-tested
- * and consistent with what most consumers already know:
- *   primary = Tailwind `blue`, success = `emerald`, error = `red`,
- *   warning = `amber`, gray = Tailwind `gray`.
+ * `success`/`error`/`warning`/`gray` are sourced from Tailwind CSS's default
+ * palette (emerald/red/amber/gray) so they're battle-tested and consistent
+ * with what most consumers already know. `primary` is this project's own
+ * brand color (#0F453C, a deep teal-green) — the scale is generated with
+ * #0F453C anchored exactly at the 600 step, since that's the step consumed
+ * for solid fills (e.g. the primary Button variant), so the brand hex shows
+ * up pixel-for-pixel where it matters most.
  * Each scale runs 50 (lightest) to 950 (darkest).
  */
 export const colors = {
   primary: {
-    50: '#EFF6FF',
-    100: '#DBEAFE',
-    200: '#BFDBFE',
-    300: '#93C5FD',
-    400: '#60A5FA',
-    500: '#3B82F6', // brand blue
-    600: '#2563EB', // hover state
-    700: '#1D4ED8', // active state
-    800: '#1E40AF',
-    900: '#1E3A8A',
-    950: '#172554',
+    50: '#ECFDFA',
+    100: '#D6FAF4',
+    200: '#AFF3E8',
+    300: '#74E7D3',
+    400: '#29D6B9',
+    500: '#1C8776',
+    600: '#0F453C', // brand anchor — exact input hex
+    700: '#0B3830', // hover state
+    800: '#072E28', // active state
+    900: '#05241F',
+    950: '#031714',
   },
   gray: {
     50: '#F9FAFB',

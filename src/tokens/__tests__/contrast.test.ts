@@ -35,7 +35,12 @@ const semantic = {
   textMuted: { light: colors.gray[600], dark: '#d1d5db' },
   iconDefault: { light: colors.gray[500], dark: '#9ca3af' },
   borderStrong: { light: colors.gray[500], dark: '#9ca3af' },
-  indicatorInfo: { light: colors.primary[500], dark: colors.primary[500] },
+  // --color-accent (and --color-indicator-info, which aliases it): the
+  // brand hue used as text/foreground. primary-600 (#0F453C) is the exact
+  // brand anchor and holds AA in light mode, but at ~16% lightness it's
+  // far too dark to read against the dark theme's surface, so dark mode
+  // overrides it to primary-400 instead — see globals.css.
+  accent: { light: colors.primary[600], dark: colors.primary[400] },
   indicatorSuccess: { light: colors.success[600], dark: colors.success[600] },
   indicatorError: { light: colors.error[500], dark: colors.error[500] },
   indicatorWarning: { light: colors.warning[600], dark: colors.warning[600] },
@@ -46,7 +51,7 @@ describe('WCAG AA contrast — semantic tokens vs surface', () => {
     ['textMuted', semantic.textMuted, AA_TEXT],
     ['iconDefault', semantic.iconDefault, AA_UI],
     ['borderStrong', semantic.borderStrong, AA_UI],
-    ['indicatorInfo', semantic.indicatorInfo, AA_UI],
+    ['accent', semantic.accent, AA_TEXT],
     ['indicatorSuccess', semantic.indicatorSuccess, AA_UI],
     ['indicatorError', semantic.indicatorError, AA_UI],
     ['indicatorWarning', semantic.indicatorWarning, AA_UI],

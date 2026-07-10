@@ -11,22 +11,25 @@
  */
 
 :root {
-  /* Colors are sourced from Tailwind CSS's default palette:
-     primary = blue, success = emerald, error = red, warning = amber,
-     gray = gray. Scales run 50 (lightest) to 950 (darkest). */
+  /* success/error/warning/gray are sourced from Tailwind CSS's default
+     palette (emerald/red/amber/gray). primary is this project's own brand
+     color (#0F453C), anchored exactly at the 600 step — the step consumed
+     for solid fills like the primary Button — so the brand hex renders
+     pixel-for-pixel where it matters most. Scales run 50 (lightest) to
+     950 (darkest). */
 
-  /* Colors — primary (Tailwind blue) */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary-950: #172554;
+  /* Colors — primary (brand) */
+  --color-primary-50: #ecfdfa;
+  --color-primary-100: #d6faf4;
+  --color-primary-200: #aff3e8;
+  --color-primary-300: #74e7d3;
+  --color-primary-400: #29d6b9;
+  --color-primary-500: #1c8776;
+  --color-primary-600: #0f453c;
+  --color-primary-700: #0b3830;
+  --color-primary-800: #072e28;
+  --color-primary-900: #05241f;
+  --color-primary-950: #031714;
 
   /* Colors — gray (Tailwind gray) */
   --color-gray-50: #f9fafb;
@@ -97,10 +100,20 @@
   --color-icon-default: var(--color-gray-500);
   --color-border-default: var(--color-gray-200);
   --color-border-strong: var(--color-gray-500);
-  --color-indicator-info: var(--color-primary-500);
+  --color-indicator-info: var(--color-accent);
   --color-indicator-success: var(--color-success-600);
   --color-indicator-error: var(--color-error-500);
   --color-indicator-warning: var(--color-warning-600);
+
+  /* --color-accent: the brand hue used as TEXT/foreground (hover text,
+     active tab, checkbox/radio accent-color, spinner arc) rather than as a
+     button's own solid fill. primary-600 is an unusually dark anchor
+     (#0F453C, ~16% lightness) — great as a button background with white
+     text, but as foreground-on-surface text it's only ~1.35:1 against the
+     dark theme's surface, far under the 3:1/4.5:1 minimums. This token
+     stays primary-600 in light mode (10.84:1 on white) and is overridden
+     to a lighter step in dark mode below. */
+  --color-accent: var(--color-primary-600);
 
   /* Spacing */
   --space-0: 0px;
@@ -218,13 +231,19 @@ pre {
   --color-gray-950: #ffffff;
 
   /* Primary — tints and text shades flipped, 300-600 unchanged */
-  --color-primary-50: #172554;
-  --color-primary-100: #1e3a8a;
-  --color-primary-200: #1e40af;
-  --color-primary-700: #93c5fd;
-  --color-primary-800: #bfdbfe;
-  --color-primary-900: #dbeafe;
-  --color-primary-950: #eff6ff;
+  --color-primary-50: #031714;
+  --color-primary-100: #05241f;
+  --color-primary-200: #072e28;
+  --color-primary-700: #74e7d3;
+  --color-primary-800: #aff3e8;
+  --color-primary-900: #d6faf4;
+  --color-primary-950: #ecfdfa;
+
+  /* --color-accent overridden to primary-400 here: primary-600 (the brand
+     anchor) is too dark to read as text against the dark surface (see the
+     token's definition comment in :root). primary-400 clears both the 3:1
+     (icons/UI) and 4.5:1 (text) thresholds against the dark surface. */
+  --color-accent: var(--color-primary-400);
 
   /* Success */
   --color-success-50: #022c22;

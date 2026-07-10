@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.5] - 2026-07-10
+
+### Changed
+
+- **Rebranded `primary` from Tailwind blue to a deep teal-green (`#0F453C`)** — this project's own brand color, generated into a full 50–950 scale anchored exactly at the 600 step (the step used for solid fills like the primary `Button`), so the brand hex renders pixel-for-pixel where it matters most. Token names and structure are unchanged; only the hex values differ. `success`/`error`/`warning`/`gray` are untouched.
+
+### Fixed
+
+- **Dark-mode contrast regression introduced by the rebrand**: the new primary-600 is unusually dark (~16% lightness) — perfect as a button background with white text, but as low as ~1.35:1 when used as *text* against the dark theme's surface (previous blue-600 was mid-brightness and worked fine as text in both themes). Added a new `--color-accent` semantic token — stays `primary-600` in light mode, overridden to the lighter `primary-400` in dark mode — and moved the components that use the brand hue as text/foreground (not a solid fill) onto it: `Accordion` hover text, `Breadcrumbs` hover text, `Tabs` active tab text/underline, `Checkbox`/`Radio` `accent-color`, and `Spinner`'s arc. `Button`'s primary fill and `Pagination`'s active-page fill are unaffected (self-contained white-on-fill, already safe in both themes).
+
 ## [0.6.4] - 2026-07-10
 
 ### Changed
@@ -127,7 +137,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.4...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.6.5...HEAD
+[0.6.5]: https://github.com/rakibulism/ui/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/rakibulism/ui/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/rakibulism/ui/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/rakibulism/ui/compare/v0.6.1...v0.6.2

@@ -29,7 +29,7 @@
 }
 
 .trigger:hover {
-  color: var(--color-primary-600, #2563eb);
+  color: var(--color-accent, #0f453c);
 }
 
 .trigger:focus-visible {
