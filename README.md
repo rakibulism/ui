@@ -569,7 +569,7 @@ CI runs type-check, tests, the library build, and the site build on every pull r
 
 ## Contributing
 
-Contributions are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, component conventions, and the PR flow. Release history lives in the [CHANGELOG](./CHANGELOG.md).
+Contributions are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, component conventions, and the PR flow. Release history lives in the [CHANGELOG](./CHANGELOG.md). Everyone participating is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md). Found a security issue? See [SECURITY.md](./SECURITY.md) instead of opening a public issue.
 
 ## License
 
