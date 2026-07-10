@@ -8,6 +8,9 @@
   --text-dark: #0e0d0c;
   --text-secondary: #6e6d6b;
   --border: #eeeeee;
+  --border-strong: #dddbda;
+  --brand-1: #0f453c;
+  --brand-2: #daef3d;
 
   min-height: 100vh;
   background: var(--color-white);
@@ -15,6 +18,15 @@
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Trims the invisible leading space above/below glyphs that font metrics
+   add by default, so text aligns to its visual cap-height/baseline instead
+   of the font's full line-height box. Unsupported browsers ignore this
+   safely — no fallback needed. */
+* {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 a {
@@ -253,128 +265,164 @@ p {
 }
 
 /* --- layout --- */
+/* main-container's sections are full-bleed (align-self: stretch, no outer
+   max-width) — each section manages its own padding, same as .top-bar. */
 
-main {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 var(--space-8);
-}
+/* --- hero (header-section) --- */
 
-@media (max-width: 640px) {
-  main {
-    padding: 0 var(--space-4);
-  }
-}
-
-/* --- hero --- */
-
-.hero {
-  text-align: center;
-  padding: var(--space-16) 0 var(--space-12);
-}
-
-.hero h1 {
-  max-width: 820px;
-  margin: 0 auto;
-  font-size: clamp(2.25rem, 5.5vw, 3.5rem);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.05;
-  color: var(--color-gray-900);
-}
-
-.hero-sub {
-  max-width: 620px;
-  margin: var(--space-5) auto 0;
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-gray-500);
-}
-
-/* --- gallery --- */
-
-.gallery {
-  padding-bottom: var(--space-16);
-}
-
-.gallery-frame {
-  padding: var(--space-6);
-  background: var(--color-gray-50);
-  border: 1px solid var(--color-gray-100);
-  border-radius: 28px;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
-}
-
-@media (max-width: 960px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .gallery-frame {
-    padding: var(--space-4);
-  }
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.gcard {
+.header-section {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-4);
+  padding: 44px;
+  border-bottom: 1px solid transparent;
+}
+
+.header-text-and-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  max-width: 470px;
+}
+
+.header-title {
+  margin: 0;
+  text-align: center;
+  font-size: 34px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: var(--text-dark);
+}
+
+.header-description {
+  text-align: center;
+  font-size: 15px;
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+  color: var(--text-dark);
+}
+
+/* --- gallery (content-container / dashboard-container) --- */
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-2);
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
   padding: var(--space-5);
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
-  border-radius: 20px;
+  background: #f7f7f7;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.component-card-container {
+  --card-radius: 10px;
+  --card-border-width: 1px;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 360px;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-style: solid;
+  border-color: var(--border-strong);
+  border-width: var(--card-border-width);
+  border-radius: var(--card-radius);
+  outline: none;
+  overflow: hidden;
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     transform 0.18s ease;
 }
 
-.gcard:hover {
+.component-card-container:hover {
   border-color: var(--color-gray-300);
   box-shadow: 0 12px 30px -16px rgba(17, 24, 39, 0.22);
   transform: translateY(-2px);
 }
 
-.gcard-head {
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+}
+
+.heading {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.gcard-label {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-gray-900);
-}
-
-.gcard-caption {
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
-}
-
-.gcard-preview {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  flex: 1;
-  min-height: 220px;
-  padding: var(--space-5);
-  border: 1px solid var(--color-gray-100);
-  border-radius: 14px;
+  gap: 10px;
+}
+
+.metric-title {
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+}
+
+.metric-description {
+  font-size: 11px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-secondary);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--space-4);
+  height: 370px;
+  padding: var(--space-4);
+  box-sizing: border-box;
   background: var(--color-white);
-  background-image: radial-gradient(var(--color-gray-100) 1px, transparent 1px);
-  background-size: 16px 16px;
+  border-style: solid;
+  border-color: var(--border-strong);
+  border-width: var(--card-border-width);
+  /* Pulled out by exactly the border width on the 3 sides flush with the
+     card, so this border coincides with the card's own border instead of
+     doubling it up. Top corners use a concentric radius (card radius minus
+     this border width); the bottom corners are left square since they're
+     clipped smooth by the card's own overflow:hidden + border-radius. */
+  margin: 0 calc(var(--card-border-width) * -1) calc(var(--card-border-width) * -1)
+    calc(var(--card-border-width) * -1);
+  border-radius: calc(var(--card-radius) - var(--card-border-width))
+    calc(var(--card-radius) - var(--card-border-width)) 0 0;
+  outline: none;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .header-section {
+    padding: var(--space-6) var(--space-4);
+  }
+  .dashboard-container {
+    padding: var(--space-3);
+  }
+  .component-card-container {
+    min-width: 0;
+    flex-basis: 100%;
+  }
 }
 
 /* --- demo layout helpers (inside previews) --- */
@@ -383,8 +431,9 @@ main {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-3);
+  width: 100%;
 }
 
 .demo-stack {
@@ -398,12 +447,85 @@ main {
   align-items: flex-start;
 }
 
-.gcard-preview :where(.demo-stack) > * {
+.container :where(.demo-stack) > * {
   width: 100%;
 }
 
-.gcard-preview :where(.demo-stack-start) > * {
+.container :where(.demo-stack-start) > * {
   width: auto;
+}
+
+/* --- AI-copy button (gallery card header icon) --- */
+/* The icon frame itself stays neutral on hover — the gradient is painted
+   onto the vector glyph via a masked, panning gradient background. */
+
+.ai-copy-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.ai-copy-btn:hover,
+.ai-copy-btn:focus-visible {
+  background: var(--color-gray-100);
+}
+
+.ai-copy-btn:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.ai-copy-icon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  background: var(--text-secondary);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  transition:
+    opacity 0.18s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ai-copy-icon-copy {
+  opacity: 0;
+  transform: scale(0.6) rotate(14deg);
+  background: linear-gradient(120deg, var(--brand-1), var(--brand-2), var(--brand-1));
+  background-size: 220% 100%;
+  background-position: 0% 0%;
+  transition:
+    opacity 0.18s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ai-copy-btn:hover .ai-copy-icon-sparkle,
+.ai-copy-btn:focus-visible .ai-copy-icon-sparkle {
+  opacity: 0;
+  transform: scale(0.6) rotate(-14deg);
+}
+
+.ai-copy-btn:hover .ai-copy-icon-copy,
+.ai-copy-btn:focus-visible .ai-copy-icon-copy {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  background-position: 100% 0%;
 }
 
 /* --- empty search state --- */
@@ -412,6 +534,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-height: 240px;
   color: var(--color-gray-500);
   font-size: var(--font-size-base);
@@ -464,4 +587,13 @@ main {
   margin-top: var(--space-5);
   font-size: var(--font-size-sm);
   color: var(--color-gray-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-text,
+  .component-card-container,
+  .ai-copy-btn,
+  .ai-copy-icon {
+    transition: none;
+  }
 }
