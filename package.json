@@ -1,6 +1,6 @@
 {
   "name": "rakibulism-ui",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Code-first React design system: 23 accessible, type-safe components with Tailwind-sourced design tokens. Tree-shakeable ESM+CJS, themeable via CSS variables, zero styling dependencies.",
   "author": "Rakibul Islam",
   "license": "MIT",

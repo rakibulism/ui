@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-10
+
 ### Added
 
 - **Dark mode** — the global stylesheet now ships a complete dark theme, activated with `data-theme="dark"` on `<html>` or any container (CSS variables cascade, enabling scoped theming). Surfaces, grays, and color tints flip; brand shades 300-600 stay on-brand. New semantic `--color-surface` token backs component surfaces. Showcase site gained a scoped dark-mode demo.
@@ -78,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/rakibulism/ui/pull/15
 [#16]: https://github.com/rakibulism/ui/pull/16
 [#17]: https://github.com/rakibulism/ui/pull/17
-[Unreleased]: https://github.com/rakibulism/ui/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/rakibulism/ui/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/rakibulism/ui/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/rakibulism/ui/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/rakibulism/ui/compare/v0.1.7...v0.2.0
 [0.1.7]: https://github.com/rakibulism/ui/compare/v0.1.0...v0.1.7
