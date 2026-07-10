@@ -1,13 +1,18 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
 import {
   Button,
   Input,
-  Card,
   Checkbox,
   Radio,
   RadioGroup,
   Switch,
-  Textarea,
   Select,
   Tooltip,
   Modal,
@@ -15,46 +20,26 @@ import {
   useToast,
   Menu,
   MenuItem,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  Accordion,
-  AccordionItem,
-  Breadcrumbs,
-  BreadcrumbItem,
-  Pagination,
   Badge,
   Avatar,
   Spinner,
-  Skeleton,
   Progress,
-  Divider,
-  Alert,
-  colors,
-  spacing,
-  typography,
-  shadows,
-  radius,
-  type ButtonVariant,
-  type ButtonSize,
 } from 'rakibulism-ui';
 
 const PKG = 'rakibulism-ui';
 const NPM_URL = `https://www.npmjs.com/package/${PKG}`;
 const GH_URL = 'https://github.com/rakibulism/ui';
+const X_URL = 'https://x.com/rakibulism';
 
-/* --- small building blocks --- */
+/* --- brand + icons --- */
 
-function Logo() {
-  // Rendered inline (not <img src="/favicon.svg">) so it can appear more
-  // than once per page (header + footer) without an extra network request.
-  // The mask needs a unique id per instance to avoid colliding when both
-  // render at once.
+function Logo({ size = 28 }: { size?: number }) {
+  // Rendered inline so it can appear more than once per page without an extra
+  // network request. The mask needs a unique id per instance.
   const maskId = useId();
   return (
     <span className="logo" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 280 280" fill="none">
+      <svg width={size} height={size} viewBox="0 0 280 280" fill="none">
         <mask
           id={maskId}
           style={{ maskType: 'alpha' }}
@@ -99,653 +84,294 @@ function Logo() {
   );
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="eyebrow">{children}</p>;
+// Brand marks sourced from github.com/rakibulism/brands-logo — kept in their
+// official colors rather than currentColor, since these are brand logos.
+function GitHubIcon() {
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 256 250" aria-hidden="true">
+      <path
+        fill="#161614"
+        d="M128.001 0C57.317 0 0 57.307 0 128.001c0 56.554 36.676 104.535 87.535 121.46c6.397 1.185 8.746-2.777 8.746-6.158c0-3.052-.12-13.135-.174-23.83c-35.61 7.742-43.124-15.103-43.124-15.103c-5.823-14.795-14.213-18.73-14.213-18.73c-11.613-7.944.876-7.78.876-7.78c12.853.902 19.621 13.19 19.621 13.19c11.417 19.568 29.945 13.911 37.249 10.64c1.149-8.272 4.466-13.92 8.127-17.116c-28.431-3.236-58.318-14.212-58.318-63.258c0-13.975 5-25.394 13.188-34.358c-1.329-3.224-5.71-16.242 1.24-33.874c0 0 10.749-3.44 35.21 13.121c10.21-2.836 21.16-4.258 32.038-4.307c10.878.049 21.837 1.47 32.066 4.307c24.431-16.56 35.165-13.12 35.165-13.12c6.967 17.63 2.584 30.65 1.255 33.873c8.207 8.964 13.173 20.383 13.173 34.358c0 49.163-29.944 59.988-58.447 63.157c4.591 3.972 8.682 11.762 8.682 23.704c0 17.126-.148 30.91-.148 35.126c0 3.407 2.304 7.398 8.792 6.14C219.37 232.5 256 184.537 256 128.002C256 57.307 198.691 0 128.001 0m-80.06 182.34c-.282.636-1.283.827-2.194.39c-.929-.417-1.45-1.284-1.15-1.922c.276-.655 1.279-.838 2.205-.399c.93.418 1.46 1.293 1.139 1.931m6.296 5.618c-.61.566-1.804.303-2.614-.591c-.837-.892-.994-2.086-.375-2.66c.63-.566 1.787-.301 2.626.591c.838.903 1 2.088.363 2.66m4.32 7.188c-.785.545-2.067.034-2.86-1.104c-.784-1.138-.784-2.503.017-3.05c.795-.547 2.058-.055 2.861 1.075c.782 1.157.782 2.522-.019 3.08m7.304 8.325c-.701.774-2.196.566-3.29-.49c-1.119-1.032-1.43-2.496-.726-3.27c.71-.776 2.213-.558 3.315.49c1.11 1.03 1.45 2.505.701 3.27m9.442 2.81c-.31 1.003-1.75 1.459-3.199 1.033c-1.448-.439-2.395-1.613-2.103-2.626c.301-1.01 1.747-1.484 3.207-1.028c1.446.436 2.396 1.602 2.095 2.622m10.744 1.193c.036 1.055-1.193 1.93-2.715 1.95c-1.53.034-2.769-.82-2.786-1.86c0-1.065 1.202-1.932 2.733-1.958c1.522-.03 2.768.818 2.768 1.868m10.555-.405c.182 1.03-.875 2.088-2.387 2.37c-1.485.271-2.861-.365-3.05-1.386c-.184-1.056.893-2.114 2.376-2.387c1.514-.263 2.868.356 3.061 1.403"
+      />
+    </svg>
+  );
 }
 
-function CopyCommand({ command }: { command: string }) {
-  const [copied, setCopied] = useState(false);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(command);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    } catch {
-      /* clipboard unavailable — no-op */
-    }
-  }
-
+function NpmIcon() {
   return (
-    <div className="copy-command">
-      <code>
-        <span className="copy-prompt">$</span> {command}
-      </code>
-      <button
-        type="button"
-        className="copy-btn"
-        onClick={copy}
-        aria-label="Copy install command"
-      >
-        {copied ? 'Copied' : 'Copy'}
-      </button>
+    <svg width="100%" height="100%" viewBox="0 0 256 256" aria-hidden="true">
+      <path fill="#c12127" d="M0 256V0h256v256z" />
+      <path fill="#fff" d="M48 48h160v160h-32V80h-48v128H48z" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+      <path d="M389.2 48h70.6L305.6 224.2L487 464H345L233.7 318.6L106.5 464H35.8l164.9-188.5L26.8 48h145.6l100.5 132.9zm-24.8 373.8h39.1L151.1 88h-42z" />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="m20 20-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* --- component demos (live previews inside gallery cards) --- */
+
+function ButtonDemo() {
+  return (
+    <div className="demo-cluster">
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="primary" isLoading>
+        Loading
+      </Button>
     </div>
   );
 }
 
-/** Reveals children with a subtle fade-up once they scroll into view. */
-function Reveal({
-  children,
-  className = '',
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.12 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
+function InputDemo() {
   return (
-    <div
-      ref={ref}
-      className={`reveal ${shown ? 'reveal-in' : ''} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
+    <div className="demo-stack">
+      <Input
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+        helperText="We'll never share it."
+      />
+      <Input
+        label="Password"
+        type="password"
+        placeholder="••••••••"
+        error="Must be at least 8 characters."
+      />
     </div>
   );
 }
 
-function Section({
-  id,
-  eyebrow,
-  title,
-  intro,
-  children,
-}: {
-  id: string;
-  eyebrow: string;
-  title: string;
-  intro?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section id={id} className="section">
-      <Reveal className="section-head">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h2>{title}</h2>
-        {intro && <p className="section-intro">{intro}</p>}
-      </Reveal>
-      {children}
-    </section>
-  );
-}
-
-/* --- showcase sections --- */
-
-const VARIANTS: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger'];
-const SIZES: ButtonSize[] = ['sm', 'md', 'lg'];
-
-function ButtonPlayground() {
-  const [variant, setVariant] = useState<ButtonVariant>('primary');
-  const [size, setSize] = useState<ButtonSize>('md');
-  const [isLoading, setLoading] = useState(false);
-  const [isDisabled, setDisabled] = useState(false);
-
-  return (
-    <div className="playground">
-      <div className="playground-stage">
-        <Button
-          variant={variant}
-          size={size}
-          isLoading={isLoading}
-          isDisabled={isDisabled}
-        >
-          {isLoading ? 'Loading…' : 'Button'}
-        </Button>
-      </div>
-
-      <div className="playground-controls">
-        <div className="control-row">
-          <span className="control-label">Variant</span>
-          <div className="chips">
-            {VARIANTS.map((v) => (
-              <button
-                key={v}
-                type="button"
-                className={`chip ${variant === v ? 'chip-active' : ''}`}
-                onClick={() => setVariant(v)}
-              >
-                {v}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="control-row">
-          <span className="control-label">Size</span>
-          <div className="chips">
-            {SIZES.map((s) => (
-              <button
-                key={s}
-                type="button"
-                className={`chip ${size === s ? 'chip-active' : ''}`}
-                onClick={() => setSize(s)}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="control-row">
-          <span className="control-label">State</span>
-          <div className="chips">
-            <button
-              type="button"
-              className={`chip ${isLoading ? 'chip-active' : ''}`}
-              onClick={() => setLoading((x) => !x)}
-            >
-              loading
-            </button>
-            <button
-              type="button"
-              className={`chip ${isDisabled ? 'chip-active' : ''}`}
-              onClick={() => setDisabled((x) => !x)}
-            >
-              disabled
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ButtonsSection() {
-  return (
-    <Section
-      id="buttons"
-      eyebrow="Component"
-      title="Button"
-      intro="Four variants, three sizes, plus loading and disabled states. Forwards every native button attribute and a ref."
-    >
-      <Reveal className="panel">
-        <ButtonPlayground />
-      </Reveal>
-
-      <Reveal className="panel" delay={80}>
-        <div className="demo-grid">
-          {VARIANTS.map((v) => (
-            <div key={v} className="demo-cell">
-              <span className="demo-cell-label">{v}</span>
-              <Button variant={v}>{v}</Button>
-            </div>
-          ))}
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function InputsSection() {
-  const [value, setValue] = useState('');
-  return (
-    <Section
-      id="inputs"
-      eyebrow="Component"
-      title="Input"
-      intro="Labels, helper text, and error states with proper htmlFor / aria-describedby / aria-invalid wiring out of the box."
-    >
-      <Reveal className="panel">
-        <div className="input-grid">
-          <Input
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            helperText="We'll never share your email."
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <Input
-            label="Password"
-            type="password"
-            placeholder="••••••••"
-            error="Must be at least 8 characters."
-          />
-          <Input label="Disabled" placeholder="Unavailable" disabled />
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function CardsSection() {
-  const variants = [
-    { v: 'elevated', desc: 'Soft layered shadow for depth.' },
-    { v: 'outlined', desc: 'Border only, no shadow.' },
-    { v: 'filled', desc: 'Tinted surface with a subtle border.' },
-  ] as const;
-
-  return (
-    <Section
-      id="cards"
-      eyebrow="Component"
-      title="Card"
-      intro="A surface container with three variants for grouping content."
-    >
-      <Reveal>
-        <div className="card-grid">
-          {variants.map(({ v, desc }) => (
-            <Card key={v} variant={v}>
-              <h3 className="card-title">{v}</h3>
-              <p className="card-text">{desc}</p>
-            </Card>
-          ))}
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function FormsSection() {
+function SelectDemo() {
   const [country, setCountry] = useState('us');
-  const [plan, setPlan] = useState('pro');
-  const [notifications, setNotifications] = useState(true);
-
   return (
-    <Section
-      id="forms"
-      eyebrow="Components"
-      title="Form primitives"
-      intro="Checkbox, Radio, Switch, Textarea, and Select — styled natively for full keyboard and screen reader support."
-    >
-      <Reveal className="panel">
-        <div className="forms-grid">
-          <div className="form-demo-cell">
-            <span className="demo-cell-label">Checkbox</span>
-            <Checkbox label="Subscribe to updates" defaultChecked />
-          </div>
-          <div className="form-demo-cell">
-            <span className="demo-cell-label">Radio</span>
-            <RadioGroup name="plan-demo" value={plan} onChange={setPlan}>
-              <Radio value="free" label="Free" />
-              <Radio value="pro" label="Pro" />
-            </RadioGroup>
-          </div>
-          <div className="form-demo-cell">
-            <span className="demo-cell-label">Switch</span>
-            <Switch
-              label="Notifications"
-              checked={notifications}
-              onChange={(e) => setNotifications(e.target.checked)}
-            />
-          </div>
-          <div className="form-demo-cell form-demo-cell-wide">
-            <span className="demo-cell-label">Textarea</span>
-            <Textarea placeholder="Tell us about yourself" helperText="Max 500 characters" />
-          </div>
-          <div className="form-demo-cell form-demo-cell-wide">
-            <span className="demo-cell-label">Select</span>
-            <Select value={country} onChange={setCountry}>
-              <option value="us">United States</option>
-              <option value="bd">Bangladesh</option>
-              <option value="uk">United Kingdom</option>
-            </Select>
-          </div>
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function OverlaysSection() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const { show } = useToast();
-
-  return (
-    <Section
-      id="overlays"
-      eyebrow="Components"
-      title="Overlays"
-      intro="Tooltip, Modal, Toast, and Menu — wrapping Base UI primitives under the hood for real focus traps, keyboard navigation, and collision-aware positioning."
-    >
-      <Reveal className="panel">
-        <div className="overlay-row">
-          <Tooltip content="Saves your changes" placement="top">
-            <Button variant="secondary">Hover for tooltip</Button>
-          </Tooltip>
-
-          <Button variant="secondary" onClick={() => setModalOpen(true)}>
-            Open modal
-          </Button>
-          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Confirm action">
-            <p>This is a portal-rendered dialog with focus handling and Escape-to-close.</p>
-          </Modal>
-
-          <Button
-            variant="secondary"
-            onClick={() =>
-              show({
-                title: 'Saved',
-                description: 'Your changes were saved.',
-                variant: 'success',
-              })
-            }
-          >
-            Show toast
-          </Button>
-
-          <Menu trigger={<Button variant="secondary">Open menu</Button>}>
-            <MenuItem>Edit</MenuItem>
-            <MenuItem destructive>Delete</MenuItem>
-          </Menu>
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function NavigationSection() {
-  const [page, setPage] = useState(5);
-
-  return (
-    <Section
-      id="navigation"
-      eyebrow="Components"
-      title="Navigation"
-      intro="Tabs, Accordion, Breadcrumbs, and Pagination for moving through content."
-    >
-      <Reveal className="panel">
-        <Breadcrumbs>
-          <BreadcrumbItem href="#">Home</BreadcrumbItem>
-          <BreadcrumbItem href="#">Library</BreadcrumbItem>
-          <BreadcrumbItem isCurrent>Components</BreadcrumbItem>
-        </Breadcrumbs>
-      </Reveal>
-
-      <Reveal className="panel" delay={60}>
-        <Tabs defaultValue="profile">
-          <TabList>
-            <Tab value="profile">Profile</Tab>
-            <Tab value="settings">Settings</Tab>
-          </TabList>
-          <TabPanel value="profile">Profile panel content goes here.</TabPanel>
-          <TabPanel value="settings">Settings panel content goes here.</TabPanel>
-        </Tabs>
-      </Reveal>
-
-      <Reveal className="panel" delay={120}>
-        <Accordion type="single" defaultValue="item-1">
-          <AccordionItem value="item-1" title="What is rakibulism-ui?">
-            <p>A code-first React component library with design tokens.</p>
-          </AccordionItem>
-          <AccordionItem value="item-2" title="Does it require Tailwind?">
-            <p>
-              No — tokens are sourced from Tailwind&apos;s palette, but there&apos;s no
-              runtime dependency.
-            </p>
-          </AccordionItem>
-        </Accordion>
-      </Reveal>
-
-      <Reveal className="panel pagination-panel" delay={180}>
-        <Pagination page={page} totalPages={12} onPageChange={setPage} />
-      </Reveal>
-    </Section>
-  );
-}
-
-function FeedbackSection() {
-  return (
-    <Section
-      id="feedback"
-      eyebrow="Components"
-      title="Feedback & display"
-      intro="Alert, Badge, Avatar, Spinner, Skeleton, Progress, and Divider."
-    >
-      <Reveal className="panel">
-        <div className="alert-stack">
-          <Alert variant="info" title="Heads up">
-            A new version is available.
-          </Alert>
-          <Alert variant="success" title="Saved">
-            Your changes were saved.
-          </Alert>
-          <Alert variant="error" title="Something went wrong">
-            The request failed — try again.
-          </Alert>
-          <Alert variant="warning">Your trial ends in 3 days.</Alert>
-        </div>
-      </Reveal>
-
-      <Reveal className="panel" delay={40}>
-        <div className="feedback-row">
-          <Badge variant="primary">New</Badge>
-          <Badge variant="success">Active</Badge>
-          <Badge variant="error">Failed</Badge>
-          <Badge variant="warning">Pending</Badge>
-          <Badge variant="gray" size="sm">
-            v0.2
-          </Badge>
-        </div>
-      </Reveal>
-
-      <Reveal className="panel" delay={60}>
-        <div className="feedback-row">
-          <Avatar name="Ada Lovelace" size="sm" />
-          <Avatar name="Grace Hopper" />
-          <Avatar name="Alan Turing" size="lg" />
-          <Spinner size="sm" />
-          <Spinner />
-        </div>
-      </Reveal>
-
-      <Reveal className="panel" delay={120}>
-        <div className="skeleton-row">
-          <Skeleton variant="circular" width={40} height={40} />
-          <div className="skeleton-lines">
-            <Skeleton variant="text" width="60%" />
-            <Skeleton variant="text" width="90%" />
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal className="panel" delay={180}>
-        <Progress value={65} />
-        <div className="divider-demo">
-          <Divider label="OR" />
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-function Swatch({ name, value }: { name: string; value: string }) {
-  return (
-    <div className="swatch">
-      <span className="swatch-chip" style={{ background: value }} />
-      <span className="swatch-name">{name}</span>
-      <span className="swatch-value">{value}</span>
+    <div className="demo-stack">
+      <Select value={country} onChange={setCountry}>
+        <option value="us">United States</option>
+        <option value="bd">Bangladesh</option>
+        <option value="uk">United Kingdom</option>
+        <option value="de">Germany</option>
+      </Select>
     </div>
   );
 }
 
-function ThemingSection() {
+function FormDemo() {
+  const [on, setOn] = useState(true);
+  const [plan, setPlan] = useState('pro');
   return (
-    <Section
-      id="theming"
-      eyebrow="Foundations"
-      title="Dark mode"
-      intro='Add data-theme="dark" to <html> — or any container — and every component inside re-themes. Brand shades stay put; surfaces, grays, and tints flip.'
-    >
-      <Reveal>
-        <div className="dark-demo" data-theme="dark">
-          <Card variant="elevated">
-            <h3 className="card-title">Scoped dark theme</h3>
-            <p className="card-text">
-              This panel is just a div with <code>data-theme=&quot;dark&quot;</code>.
-            </p>
-            <div className="dark-demo-row">
-              <Button variant="primary">Primary</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Badge variant="success">Active</Badge>
-              <Badge variant="warning">Pending</Badge>
-            </div>
-            <div className="dark-demo-row">
-              <Input label="Email" placeholder="you@example.com" helperText="Dark-mode input" />
-            </div>
-            <Alert variant="info" title="Heads up">
-              Alerts flip their tints automatically.
-            </Alert>
-          </Card>
-        </div>
-      </Reveal>
-    </Section>
+    <div className="demo-stack demo-stack-start">
+      <Checkbox label="Subscribe to updates" defaultChecked />
+      <Switch label="Notifications" checked={on} onChange={(e) => setOn(e.target.checked)} />
+      <RadioGroup name="gallery-plan" value={plan} onChange={setPlan}>
+        <Radio value="free" label="Free" />
+        <Radio value="pro" label="Pro" />
+      </RadioGroup>
+    </div>
   );
 }
 
-function TokensSection() {
-  const primary = Object.entries(colors.primary);
-  const gray = Object.entries(colors.gray);
-  const semantic = [
-    ['success', colors.success[500]],
-    ['error', colors.error[500]],
-    ['warning', colors.warning[500]],
-  ] as const;
-
+function FeedbackDemo() {
   return (
-    <Section
-      id="tokens"
-      eyebrow="Foundations"
-      title="Design tokens"
-      intro="Every value is defined in TypeScript and mirrored as CSS variables. Import them directly to build your own components."
-    >
-      <Reveal className="panel">
-        <h3 className="token-group-title">Color</h3>
-        <div className="scale-row">
-          {primary.map(([k, v]) => (
-            <div key={k} className="scale-step">
-              <span className="scale-chip" style={{ background: v }} />
-              <span className="scale-key">{k}</span>
-            </div>
-          ))}
-        </div>
-        <div className="scale-row">
-          {gray.map(([k, v]) => (
-            <div key={k} className="scale-step">
-              <span className="scale-chip" style={{ background: v }} />
-              <span className="scale-key">{k}</span>
-            </div>
-          ))}
-        </div>
-        <div className="swatch-row">
-          {semantic.map(([name, v]) => (
-            <Swatch key={name} name={name} value={v} />
-          ))}
-        </div>
-      </Reveal>
+    <div className="demo-stack">
+      <div className="demo-cluster">
+        <Badge variant="primary">New</Badge>
+        <Badge variant="success">Active</Badge>
+        <Badge variant="error">Failed</Badge>
+        <Badge variant="warning">Pending</Badge>
+      </div>
+      <div className="demo-cluster">
+        <Avatar name="Ada Lovelace" size="sm" />
+        <Avatar name="Grace Hopper" />
+        <Spinner />
+      </div>
+      <Progress value={65} />
+    </div>
+  );
+}
 
-      <div className="token-columns">
-        <Reveal className="panel" delay={60}>
-          <h3 className="token-group-title">Spacing</h3>
-          <div className="spacing-list">
-            {Object.entries(spacing).map(([k, v]) => (
-              <div key={k} className="spacing-item">
-                <span className="spacing-key">{k}</span>
-                <span className="spacing-bar" style={{ width: v }} />
-                <span className="spacing-value">{v}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+function OverlaysDemo() {
+  const [open, setOpen] = useState(false);
+  const { show } = useToast();
+  return (
+    <div className="demo-cluster">
+      <Tooltip content="Saves your changes" placement="top">
+        <Button variant="secondary">Tooltip</Button>
+      </Tooltip>
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Modal
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() =>
+          show({
+            title: 'Saved',
+            description: 'Your changes were saved.',
+            variant: 'success',
+          })
+        }
+      >
+        Toast
+      </Button>
+      <Menu trigger={<Button variant="secondary">Menu</Button>}>
+        <MenuItem>Edit</MenuItem>
+        <MenuItem destructive>Delete</MenuItem>
+      </Menu>
+      <Modal isOpen={open} onClose={() => setOpen(false)} title="Confirm action">
+        <p>A portal-rendered dialog with a focus trap and Escape-to-close.</p>
+      </Modal>
+    </div>
+  );
+}
 
-        <Reveal className="panel" delay={120}>
-          <h3 className="token-group-title">Radius &amp; shadow</h3>
-          <div className="chip-row">
-            {Object.entries(radius).map(([k, v]) => (
-              <div key={k} className="radius-demo">
-                <span className="radius-box" style={{ borderRadius: v }} />
-                <span className="mini-key">{k}</span>
-              </div>
-            ))}
-          </div>
-          <div className="chip-row chip-row-shadow">
-            {Object.entries(shadows).map(([k, v]) => (
-              <div key={k} className="shadow-demo">
-                <span className="shadow-box" style={{ boxShadow: v }} />
-                <span className="mini-key">{k}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+type CardDef = {
+  id: string;
+  label: string;
+  caption: string;
+  keywords: string;
+  Demo: ComponentType;
+};
+
+const CARDS: CardDef[] = [
+  {
+    id: 'button',
+    label: 'Button',
+    caption: '4 variants · loading & disabled',
+    keywords: 'button variant primary secondary ghost danger loading disabled action',
+    Demo: ButtonDemo,
+  },
+  {
+    id: 'input',
+    label: 'Input',
+    caption: 'labels, helper & error states',
+    keywords: 'input text field form email password helper error label',
+    Demo: InputDemo,
+  },
+  {
+    id: 'select',
+    label: 'Select',
+    caption: 'native, keyboard accessible',
+    keywords: 'select dropdown option country choice picker',
+    Demo: SelectDemo,
+  },
+  {
+    id: 'form',
+    label: 'Form controls',
+    caption: 'checkbox · radio · switch',
+    keywords: 'checkbox radio switch toggle form control choice',
+    Demo: FormDemo,
+  },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    caption: 'badges · avatars · progress',
+    keywords: 'badge avatar spinner progress status feedback loading',
+    Demo: FeedbackDemo,
+  },
+  {
+    id: 'overlays',
+    label: 'Overlays',
+    caption: 'tooltip · modal · toast · menu',
+    keywords: 'tooltip modal dialog toast menu overlay popover portal',
+    Demo: OverlaysDemo,
+  },
+];
+
+/* --- gallery --- */
+
+function GalleryCard({ card }: { card: CardDef }) {
+  const { label, caption, Demo } = card;
+  return (
+    <article className="gcard">
+      <div className="gcard-head">
+        <span className="gcard-label">{label}</span>
+        <span className="gcard-caption">{caption}</span>
+      </div>
+      <div className="gcard-preview">
+        <Demo />
+      </div>
+    </article>
+  );
+}
+
+/* --- header --- */
+
+function Header({
+  query,
+  onQuery,
+  inputRef,
+}: {
+  query: string;
+  onQuery: (value: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+}) {
+  return (
+    <header className="top-bar">
+      <a className="title-image-container" href="#top" aria-label="rakibulism-ui home">
+        <Logo size={24} />
+        <div className="title-text">UI</div>
+      </a>
+
+      <div className="frame-1">
+        <a className="overview-tab-text" href="#components">
+          Components
+        </a>
+        <a className="overview-tab-text" href={`${GH_URL}#readme`} target="_blank" rel="noreferrer">
+          Docs
+        </a>
+        <div className="frame-4">
+          <a className="github" href={GH_URL} target="_blank" rel="noreferrer" aria-label="GitHub">
+            <GitHubIcon />
+          </a>
+          <a className="npm" href={NPM_URL} target="_blank" rel="noreferrer" aria-label="npm">
+            <NpmIcon />
+          </a>
+          <a className="x-twitter" href={X_URL} target="_blank" rel="noreferrer" aria-label="X">
+            <XIcon />
+          </a>
+        </div>
       </div>
 
-      <Reveal className="panel" delay={60}>
-        <h3 className="token-group-title">Type scale</h3>
-        <div className="type-list">
-          {Object.entries(typography.fontSize).map(([k, v]) => (
-            <div key={k} className="type-item">
-              <span className="type-sample" style={{ fontSize: v }}>
-                The quick brown fox
-              </span>
-              <span className="type-meta">
-                {k} · {v}
-              </span>
-            </div>
-          ))}
+      <div className="search-container">
+        <div className="search-box">
+          <span className="search-icon">
+            <SearchIcon />
+          </span>
+          <input
+            ref={inputRef}
+            type="search"
+            className="search-text"
+            placeholder="Search"
+            value={query}
+            onChange={(e) => onQuery(e.target.value)}
+            aria-label="Search components"
+          />
         </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-const USAGE = `import { Button, Input, Card } from 'rakibulism-ui';
-import 'rakibulism-ui/styles'; // optional global CSS variables + reset
-
-export default function App() {
-  return (
-    <Card variant="elevated">
-      <Input label="Email" type="email" placeholder="you@example.com" />
-      <Button variant="primary" size="lg">Submit</Button>
-    </Card>
-  );
-}`;
-
-function UsageSection() {
-  return (
-    <Section
-      id="usage"
-      eyebrow="Get started"
-      title="Drop it in"
-      intro="Install, import, ship. Component styles auto-inject — the global stylesheet is optional."
-    >
-      <Reveal className="install-block">
-        <CopyCommand command={`npm install ${PKG}`} />
-      </Reveal>
-      <Reveal className="panel code-panel" delay={80}>
-        <pre>
-          <code>{USAGE}</code>
-        </pre>
-      </Reveal>
-    </Section>
+        <div className="kbd-group">
+          <div className="overview-navigation-container">
+            <div className="overview-navigation-text">⌘</div>
+          </div>
+          <div className="overview-navigation-container">
+            <div className="overview-navigation-text">K</div>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -760,78 +386,72 @@ export function App() {
 }
 
 function AppContent() {
-  return (
-    <div className="page">
-      <header className="nav">
-        <a className="brand" href="#top">
-          <Logo />
-          <span className="brand-name">rakibulism-ui</span>
-        </a>
-        <nav className="nav-links">
-          <a href="#buttons">Components</a>
-          <a href="#tokens">Tokens</a>
-          <a href="#usage">Usage</a>
-          <a href={GH_URL} target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-        </nav>
-      </header>
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
 
-      <main id="top">
+  // ⌘K / Ctrl+K focuses search; Escape clears + blurs it.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      } else if (e.key === 'Escape' && document.activeElement === searchRef.current) {
+        setQuery('');
+        searchRef.current?.blur();
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return CARDS;
+    return CARDS.filter((c) =>
+      `${c.label} ${c.caption} ${c.keywords}`.toLowerCase().includes(q),
+    );
+  }, [query]);
+
+  return (
+    <div className="page" id="top">
+      <Header query={query} onQuery={setQuery} inputRef={searchRef} />
+
+      <main>
         <section className="hero">
-          <div className="hero-glow" aria-hidden="true" />
-          <Reveal>
-            <Eyebrow>Code-first React design system</Eyebrow>
-          </Reveal>
-          <Reveal delay={90}>
-            <h1>
-              Build interfaces with a{' '}
-              <span className="grad">type-safe</span> component library.
-            </h1>
-          </Reveal>
-          <Reveal delay={180}>
-            <p className="hero-sub">
-              23 accessible components — forms, overlays, navigation, feedback —
-              plus design tokens. Tree-shakeable, themeable via CSS variables,
-              and shipped as ESM + CJS with full TypeScript types.
-            </p>
-          </Reveal>
-          <Reveal delay={270}>
-            <div className="hero-cta">
-              <a href="#usage">
-                <Button variant="primary" size="lg">
-                  Get started
-                </Button>
-              </a>
-              <a href={NPM_URL} target="_blank" rel="noreferrer">
-                <Button variant="secondary" size="lg">
-                  View on npm
-                </Button>
-              </a>
-            </div>
-          </Reveal>
-          <Reveal delay={360} className="hero-install">
-            <CopyCommand command={`npm install ${PKG}`} />
-          </Reveal>
+          <h1>Just imagine to build, tell to AI</h1>
+          <p className="hero-sub">
+            The design work is done. Fully built, accessible UI library — install &amp; start
+            shipping. All that's left is your idea.
+          </p>
         </section>
 
-        <ButtonsSection />
-        <InputsSection />
-        <CardsSection />
-        <FormsSection />
-        <OverlaysSection />
-        <NavigationSection />
-        <FeedbackSection />
-        <ThemingSection />
-        <TokensSection />
-        <UsageSection />
+        <section className="gallery" id="components">
+          <div className="gallery-frame">
+            {results.length > 0 ? (
+              <div className="gallery-grid">
+                {results.map((card) => (
+                  <GalleryCard key={card.id} card={card} />
+                ))}
+              </div>
+            ) : (
+              <div className="gallery-empty">
+                <p>
+                  No components match “{query}”.{' '}
+                  <button type="button" className="link-btn" onClick={() => setQuery('')}>
+                    Clear search
+                  </button>
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
       </main>
 
       <footer className="footer">
         <div className="footer-inner">
           <a className="brand" href="#top">
             <Logo />
-            <span className="brand-name">rakibulism-ui</span>
+            <span className="brand-name">UI</span>
           </a>
           <div className="footer-links">
             <a href={NPM_URL} target="_blank" rel="noreferrer">
@@ -845,9 +465,7 @@ function AppContent() {
             </a>
           </div>
         </div>
-        <p className="footer-note">
-          Built with rakibulism-ui · © Rakibul Islam
-        </p>
+        <p className="footer-note">Built with rakibulism-ui · © Rakibul Islam</p>
       </footer>
     </div>
   );
