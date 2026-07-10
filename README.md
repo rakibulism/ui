@@ -1,3 +1,5 @@
+<img src="./logo/squircle.svg" alt="" width="56" height="56" />
+
 # rakibulism-ui
 
 A code-first design system and React component library — type-safe, tree-shakeable, and themeable via design tokens.

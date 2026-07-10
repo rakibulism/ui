@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   Button,
   Input,
@@ -47,13 +47,53 @@ const GH_URL = 'https://github.com/rakibulism/ui';
 /* --- small building blocks --- */
 
 function Logo() {
+  // Rendered inline (not <img src="/favicon.svg">) so it can appear more
+  // than once per page (header + footer) without an extra network request.
+  // The mask needs a unique id per instance to avoid colliding when both
+  // render at once.
+  const maskId = useId();
   return (
     <span className="logo" aria-hidden="true">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <rect x="2" y="2" width="9" height="9" rx="2.5" fill="currentColor" />
-        <rect x="13" y="2" width="9" height="9" rx="2.5" fill="currentColor" opacity="0.55" />
-        <rect x="2" y="13" width="9" height="9" rx="2.5" fill="currentColor" opacity="0.55" />
-        <rect x="13" y="13" width="9" height="9" rx="2.5" fill="currentColor" opacity="0.25" />
+      <svg width="28" height="28" viewBox="0 0 280 280" fill="none">
+        <mask
+          id={maskId}
+          style={{ maskType: 'alpha' }}
+          maskUnits="userSpaceOnUse"
+          x="0"
+          y="0"
+          width="280"
+          height="280"
+        >
+          <path
+            d="M0 40C0 17.9086 17.9086 0 40 0H240C262.091 0 280 17.9086 280 40V240C280 262.091 262.091 280 240 280H40C17.9086 280 0 262.091 0 240V40Z"
+            fill="#022922"
+          />
+        </mask>
+        <g mask={`url(#${maskId})`}>
+          <path d="M0 0H280V280H0V0Z" fill="#0F453C" />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M140 280C140 202.68 77.3199 140 0 140V150C71.797 150 130 208.203 130 280H140Z"
+            fill="#DAEF3D"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M280 140C202.68 140 140 202.68 140 280H150C150 208.203 208.203 150 280 150V140Z"
+            fill="#DAEF3D"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M80 280C80 235.817 44.1828 200 0 200V280H80ZM280 280H200C200 235.817 235.817 200 280 200V280Z"
+            fill="#DAEF3D"
+          />
+          <path
+            d="M139.5 33C148.692 67.1402 175.36 93.8078 209.5 103C175.36 112.192 148.692 138.86 139.5 173C130.308 138.86 103.64 112.192 69.5 103C103.64 93.8078 130.308 67.1402 139.5 33Z"
+            fill="#DAEF3D"
+          />
+        </g>
       </svg>
     </span>
   );
