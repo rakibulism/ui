@@ -389,10 +389,10 @@ p {
 .container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-4);
-  height: 370px;
+  height: 216px;
   padding: var(--space-4);
   box-sizing: border-box;
   background: var(--color-white);
@@ -425,34 +425,45 @@ p {
   }
 }
 
-/* --- demo layout helpers (inside previews) --- */
+/* --- illustration layout helpers (inside previews) ---
+   Each card now shows one frozen, non-interactive illustration of the real
+   component (rendered via its actual React component or, for
+   portal/overlay components with no "always open" mode, its own CSS
+   Module classes hand-assembled — see catalog.tsx) rather than a live,
+   clickable demo cluster. */
 
-.demo-cluster {
+.illustration-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: var(--space-3);
-  width: 100%;
 }
 
-.demo-stack {
+.illustration-column {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  width: 100%;
-}
-
-.demo-stack-start {
+  gap: var(--space-2);
   align-items: flex-start;
 }
 
-.container :where(.demo-stack) > * {
+.illustration-constrain {
   width: 100%;
+  max-width: 220px;
 }
 
-.container :where(.demo-stack-start) > * {
-  width: auto;
+.illustration-tooltip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.illustration-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 /* --- AI-copy button (gallery card header icon) --- */

@@ -10,7 +10,11 @@ import react from '@vitejs/plugin-react';
  */
 export default defineConfig({
   root: resolve(__dirname, 'site'),
-  base: './', // relative asset paths so it works on GitHub Pages project subpaths
+  // Absolute base — required for react-router's BrowserRouter: a relative
+  // base breaks asset URLs when a nested route (e.g. /components) is
+  // loaded directly, since they'd resolve relative to that path instead
+  // of the actual asset location.
+  base: '/',
   plugins: [react()],
   resolve: {
     alias: {
