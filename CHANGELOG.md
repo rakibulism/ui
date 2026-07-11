@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Toast`: each variant now renders a small colored icon badge (checkmark, ×, !, i, or a dot for `neutral`) so meaning doesn't rely on color alone.
+- `Toast`: new `neutral` variant — a plain, uncolored toast, and the new default when `variant` is omitted (previously `info`).
+- `Toast`: new `actions` option — an array of `{ label, onClick, variant?: 'primary' | 'secondary' }` buttons rendered below the description, tinted to the toast's variant color. Clicking an action also dismisses the toast.
+- `Toast`: new `closable` option (`@default true`) to hide the close (×) button.
+- New `--color-indicator-neutral` design token (aliases `--color-gray-500`), joining the existing `--color-indicator-{info,success,error,warning}` set.
+
+### Changed
+
+- **Breaking:** `Toast`'s `warning` variant is renamed to `alert` (`ToastVariant` is now `'success' | 'error' | 'alert' | 'info' | 'neutral'`). Update any `variant: 'warning'` calls to `variant: 'alert'`.
+- **Breaking:** `Toast`'s default variant changed from `'info'` to `'neutral'` when `variant` is omitted from `show()`.
+- `Toast`'s visual style dropped the colored left border in favor of the new icon badge — the accent color now lives on the icon (and on any `actions`) instead of a border-left stripe.
+
 ## [0.6.5] - 2026-07-10
 
 ### Changed

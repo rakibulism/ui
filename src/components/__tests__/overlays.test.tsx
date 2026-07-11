@@ -187,6 +187,92 @@ describe('Toast', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('defaults to the neutral variant and role="status"', () => {
+    function NeutralTrigger() {
+      const { show } = useToast();
+      return <Button onClick={() => show({ title: 'Heads up', duration: 0 })}>Notify</Button>;
+    }
+    render(
+      <ToastProvider>
+        <NeutralTrigger />
+      </ToastProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Notify' }));
+    const toast = getVisibleToast();
+    expect(toast.className).toContain('neutral');
+  });
+
+  it.each([
+    ['alert', 'alert'],
+    ['error', 'alert'],
+    ['info', 'status'],
+  ] as const)('variant="%s" gets role="%s"', (variant, expectedRole) => {
+    function VariantTrigger() {
+      const { show } = useToast();
+      return (
+        <Button onClick={() => show({ title: 'Notice', variant, duration: 0 })}>Notify</Button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <VariantTrigger />
+      </ToastProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Notify' }));
+    const region = screen.getByRole('region', { name: /Notifications/ });
+    expect(within(region).getByRole(expectedRole)).toHaveTextContent('Notice');
+  });
+
+  it('renders action buttons and dismisses the toast when one is clicked', () => {
+    const onUndo = vi.fn();
+    function ActionTrigger() {
+      const { show } = useToast();
+      return (
+        <Button
+          onClick={() =>
+            show({
+              title: 'Deleted',
+              duration: 0,
+              actions: [{ label: 'Undo', onClick: onUndo, variant: 'primary' }],
+            })
+          }
+        >
+          Notify
+        </Button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <ActionTrigger />
+      </ToastProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Notify' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(onUndo).toHaveBeenCalledTimes(1);
+    expect(
+      within(screen.getByRole('region', { name: /Notifications/ })).queryByRole('status'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides the dismiss button when closable is false', () => {
+    function NonClosableTrigger() {
+      const { show } = useToast();
+      return (
+        <Button onClick={() => show({ title: 'Persistent', duration: 0, closable: false })}>
+          Notify
+        </Button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <NonClosableTrigger />
+      </ToastProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Notify' }));
+    expect(getVisibleToast()).toBeInTheDocument();
+    expect(document.querySelector('[aria-label="Dismiss"]')).not.toBeInTheDocument();
+  });
+
   it('throws when useToast is used outside a provider', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => render(<Trigger />)).toThrow(/within a ToastProvider/);

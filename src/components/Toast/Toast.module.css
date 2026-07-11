@@ -15,9 +15,8 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-3, 12px);
-  padding: var(--space-3, 12px) var(--space-4, 16px);
-  border-radius: var(--radius-md, 8px);
-  border-left: 3px solid var(--color-border-strong, #6b7280);
+  padding: var(--space-4, 16px);
+  border-radius: var(--radius-lg, 12px);
   background: var(--color-surface, #ffffff);
   box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -4px rgba(0, 0, 0, 0.1));
@@ -26,24 +25,48 @@
   animation: ui-toast-in 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.info {
-  border-left-color: var(--color-indicator-info, #3b82f6);
-}
+/* --- variants ---
+   Each sets the two custom properties every other rule below reads from —
+   the solid accent (icon badge, dismiss/action button borders and text)
+   and a soft tint (secondary action hover background). Meaning doesn't
+   rely on color alone: see Toast.tsx's per-variant icon glyphs. */
 
 .success {
-  /* success-600, not -500 — the indicator is the sole visual cue for toast
-     type, a non-text UI element needing 3:1; -500 is only ~2.54:1 on the
-     surface color. */
-  border-left-color: var(--color-indicator-success, #059669);
+  --toast-accent: var(--color-indicator-success, #059669);
+  --toast-accent-soft: var(--color-success-50, #ecfdf5);
 }
 
 .error {
-  border-left-color: var(--color-indicator-error, #ef4444);
+  --toast-accent: var(--color-indicator-error, #ef4444);
+  --toast-accent-soft: var(--color-error-50, #fef2f2);
 }
 
-.warning {
-  /* warning-600, not -500 — -500 is only ~2.15:1 in light mode. */
-  border-left-color: var(--color-indicator-warning, #d97706);
+.alert {
+  --toast-accent: var(--color-indicator-warning, #d97706);
+  --toast-accent-soft: var(--color-warning-50, #fffbeb);
+}
+
+.info {
+  --toast-accent: var(--color-indicator-info, #3b82f6);
+  --toast-accent-soft: var(--color-primary-50, #eff6ff);
+}
+
+.neutral {
+  --toast-accent: var(--color-indicator-neutral, #6b7280);
+  --toast-accent-soft: var(--color-gray-100, #f3f4f6);
+}
+
+.iconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px; /* optical alignment with the title's cap-height */
+  border-radius: var(--radius-full, 9999px);
+  background: var(--toast-accent);
+  color: var(--color-white, #ffffff);
 }
 
 .content {
@@ -51,7 +74,15 @@
   min-width: 0;
 }
 
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 8px);
+}
+
 .title {
+  flex: 1;
+  min-width: 0;
   margin: 0;
   font-size: var(--font-size-sm, 14px);
   font-weight: var(--font-weight-semibold, 600);
@@ -62,6 +93,50 @@
   margin: var(--space-1, 4px) 0 0;
   font-size: var(--font-size-sm, 14px);
   color: var(--color-gray-600, #4b5563);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 8px);
+  margin-top: var(--space-3, 12px);
+}
+
+.actionButton {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm, 6px);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    filter 0.15s ease;
+}
+
+.actionSecondary {
+  border: 1px solid var(--toast-accent);
+  background: transparent;
+  color: var(--toast-accent);
+}
+
+.actionSecondary:hover {
+  background: var(--toast-accent-soft);
+}
+
+.actionPrimary {
+  border: 1px solid var(--toast-accent);
+  background: var(--toast-accent);
+  color: var(--color-white, #ffffff);
+}
+
+.actionPrimary:hover {
+  filter: brightness(0.92);
+}
+
+.actionButton:focus-visible {
+  outline: 2px solid var(--color-primary-500, #3b82f6);
+  outline-offset: 2px;
 }
 
 .dismissButton {
