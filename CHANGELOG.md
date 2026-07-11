@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-11
+
 ### Added
 
 - `Toast`: each variant now renders a small colored icon badge (checkmark, ×, !, i, or a dot for `neutral`) so meaning doesn't rely on color alone.
