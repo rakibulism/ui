@@ -16,6 +16,14 @@ const DEFAULT_CONFIG = {
   stylesDir: 'src/styles/rakibulism-ui',
 };
 
+// Built-in external registries, addressable as "@scope/item" in `add`.
+// Any shadcn-protocol registry.json works: { items: [{ name, url }] }, where
+// each item's url resolves to a registry-item.json with a `files` array.
+// Override or extend via the "registries" field in rakibulism-ui.json.
+const DEFAULT_REGISTRIES = {
+  dotmatrix: 'https://spinnerkit.vercel.app/r/registry.json',
+};
+
 // Extra runtime deps a component needs beyond the baseline (clsx, always
 // checked separately below). Keep in sync with each component's imports.
 const EXTRA_DEPS = {
@@ -58,6 +66,10 @@ function loadConfig() {
   return null;
 }
 
+function resolveRegistries(config) {
+  return { ...DEFAULT_REGISTRIES, ...(config?.registries ?? {}) };
+}
+
 function hasDep(name) {
   try {
     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -68,6 +80,68 @@ function hasDep(name) {
     );
   } catch {
     return false;
+  }
+}
+
+// "@dotmatrix/dotm-square-3" -> { scope: "dotmatrix", item: "dotm-square-3" }
+function parseRegistryRef(name) {
+  const match = /^@([^/]+)\/(.+)$/.exec(name);
+  return match ? { scope: match[1], item: match[2] } : null;
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+  return res.json();
+}
+
+// Registry item file paths are conventionally rooted at "components/ui/…"
+// (the shadcn convention); re-root them under the consumer's componentsDir.
+function resolveTargetPath(filePath, componentsDir) {
+  const prefix = 'components/ui/';
+  const relative = filePath.startsWith(prefix) ? filePath.slice(prefix.length) : path.basename(filePath);
+  return path.join(componentsDir, relative);
+}
+
+async function addFromRegistry(scope, itemName, registryUrl, config, npmDeps, seen = new Set()) {
+  const registryKey = `${scope}/${itemName}`;
+  if (seen.has(registryKey)) return;
+  seen.add(registryKey);
+
+  let registry;
+  try {
+    registry = await fetchJson(registryUrl);
+  } catch (err) {
+    console.error(`✗ Could not reach registry "@${scope}" (${registryUrl}): ${err.message}`);
+    return;
+  }
+
+  const entry = registry.items?.find((i) => i.name === itemName);
+  if (!entry) {
+    console.error(`✗ Unknown component "@${scope}/${itemName}" — not found in ${registry.name ?? scope} registry.`);
+    return;
+  }
+
+  const itemUrl = new URL(entry.url, registryUrl).toString();
+  let item;
+  try {
+    item = await fetchJson(itemUrl);
+  } catch (err) {
+    console.error(`✗ Failed to fetch "@${scope}/${itemName}": ${err.message}`);
+    return;
+  }
+
+  for (const file of item.files ?? []) {
+    const dest = resolveTargetPath(file.path, config.componentsDir);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, file.content ?? '');
+  }
+  console.log(`✓ Added @${scope}/${itemName} → ${config.componentsDir}`);
+
+  for (const dep of item.dependencies ?? []) npmDeps.add(dep);
+
+  for (const depName of item.registryDependencies ?? []) {
+    await addFromRegistry(scope, depName, registryUrl, config, npmDeps, seen);
   }
 }
 
@@ -108,21 +182,41 @@ async function cmdInit(args) {
   console.log(`  import './${path.join(config.stylesDir, 'globals.css')}'`);
   console.log(`\nThen add components:`);
   console.log('  npx rakibulism-ui add button');
+  console.log('  npx rakibulism-ui add @dotmatrix/dotm-square-3');
 }
 
-function cmdAdd(names) {
+async function cmdAdd(names) {
   if (names.length === 0) {
     console.error('Usage: rakibulism-ui add <component> [component...]');
+    console.error('       rakibulism-ui add @<registry>/<component>   (e.g. @dotmatrix/dotm-square-3)');
     process.exit(1);
   }
   const config = loadConfig() ?? DEFAULT_CONFIG;
   if (!loadConfig()) {
     console.log(`No ${CONFIG_FILE} found, using defaults (run "rakibulism-ui init" to customize).`);
   }
+  const registries = resolveRegistries(config);
 
   const neededExtras = new Set();
+  const npmDeps = new Set();
+  let addedLocal = false;
 
   for (const requested of names) {
+    const ref = parseRegistryRef(requested);
+
+    if (ref) {
+      const registryUrl = registries[ref.scope];
+      if (!registryUrl) {
+        console.error(
+          `✗ Unknown registry "@${ref.scope}". Add it to "registries" in ${CONFIG_FILE}, e.g.:\n` +
+            `  { "registries": { "${ref.scope}": "https://example.com/r/registry.json" } }`
+        );
+        continue;
+      }
+      await addFromRegistry(ref.scope, ref.item, registryUrl, config, npmDeps);
+      continue;
+    }
+
     const match = findComponent(requested);
     if (!match) {
       console.error(`✗ Unknown component "${requested}". Run "rakibulism-ui list" to see options.`);
@@ -131,10 +225,12 @@ function cmdAdd(names) {
     const dest = path.join(config.componentsDir, match);
     copyDir(path.join(COMPONENTS_SRC, match), dest);
     console.log(`✓ Added ${match} → ${dest}`);
+    addedLocal = true;
     for (const dep of EXTRA_DEPS[match] ?? []) neededExtras.add(dep);
   }
 
-  const missing = ['clsx', ...neededExtras].filter((dep) => !hasDep(dep));
+  const baseline = addedLocal ? ['clsx'] : [];
+  const missing = [...baseline, ...neededExtras, ...npmDeps].filter((dep) => !hasDep(dep));
   if (missing.length > 0) {
     console.log(`\nInstall the dependencies these components need:`);
     console.log(`  npm install ${missing.join(' ')}`);
@@ -145,6 +241,10 @@ function cmdList() {
   console.log('Available components:\n');
   for (const name of listComponents()) console.log(`  ${name}`);
   console.log('\nAdd one with: npx rakibulism-ui add <component>');
+  console.log('\nExternal registries configured:');
+  for (const [scope, url] of Object.entries(DEFAULT_REGISTRIES)) {
+    console.log(`  @${scope} → ${url}`);
+  }
 }
 
 function printHelp() {
@@ -153,10 +253,22 @@ function printHelp() {
 Usage:
   npx rakibulism-ui init             Set up config, copy design tokens + globals.css
   npx rakibulism-ui add <name...>    Copy one or more components into your project
-  npx rakibulism-ui list             List available components
+  npx rakibulism-ui add @<registry>/<name>
+                                      Copy a component from an external registry
+                                      (e.g. @dotmatrix/dotm-square-3)
+  npx rakibulism-ui list             List available components and configured registries
 
 Options:
-  -y, --yes    Skip prompts in init and use default paths`);
+  -y, --yes    Skip prompts in init and use default paths
+
+Config (rakibulism-ui.json):
+  {
+    "componentsDir": "src/components/ui",
+    "stylesDir": "src/styles/rakibulism-ui",
+    "registries": {
+      "dotmatrix": "https://spinnerkit.vercel.app/r/registry.json"
+    }
+  }`);
 }
 
 const [, , command, ...rest] = process.argv;
@@ -166,7 +278,7 @@ switch (command) {
     await cmdInit(rest);
     break;
   case 'add':
-    cmdAdd(rest);
+    await cmdAdd(rest);
     break;
   case 'list':
     cmdList();
