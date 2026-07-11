@@ -285,14 +285,25 @@ Rendered into a portal at `document.body`. Locks body scroll while open, traps f
 // anywhere inside
 const { show } = useToast();
 show({ title: 'Saved', description: 'Your changes were saved.', variant: 'success' });
+
+// with action buttons — clicking either one also dismisses the toast
+show({
+  title: 'File deleted',
+  variant: 'error',
+  actions: [{ label: 'Undo', onClick: restoreFile, variant: 'primary' }],
+});
 ```
 
-| Option        | Type                                              | Default  | Description                          |
-| ------------- | --------------------------------------------------- | -------- | -------------------------------------- |
-| `title`       | `string`                                            | —        | Toast heading                          |
-| `description` | `string`                                            | —        | Toast body text                        |
-| `variant`     | `'info' \| 'success' \| 'error' \| 'warning'`       | `'info'` | Accent color                           |
-| `duration`    | `number`                                            | `4000`   | Auto-dismiss delay in ms; `0` disables it |
+| Option        | Type                                                          | Default     | Description                                |
+| ------------- | -------------------------------------------------------------- | ----------- | --------------------------------------------- |
+| `title`       | `string`                                                        | —           | Toast heading                                 |
+| `description` | `string`                                                        | —           | Toast body text                               |
+| `variant`     | `'success' \| 'error' \| 'alert' \| 'info' \| 'neutral'`       | `'neutral'` | Icon + accent color                           |
+| `duration`    | `number`                                                        | `4000`      | Auto-dismiss delay in ms; `0` disables it     |
+| `actions`     | `{ label, onClick, variant?: 'primary' \| 'secondary' }[]`     | —           | Buttons rendered below the description        |
+| `closable`    | `boolean`                                                       | `true`      | Shows the close (×) button                    |
+
+Each variant renders a small icon (checkmark, ×, !, i, or a dot for `neutral`) so meaning doesn't rely on color alone. `error` and `alert` announce via `role="alert"`; the others use `role="status"`.
 
 `useToast()` returns `{ show, dismiss }` and must be called within a `ToastProvider`. Toasts render into a portal stacked in the top-right corner. Wraps Base UI `Toast` internally — auto-dismiss pauses on hover/focus.
 

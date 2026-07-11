@@ -104,6 +104,7 @@
   --color-indicator-success: var(--color-success-600);
   --color-indicator-error: var(--color-error-500);
   --color-indicator-warning: var(--color-warning-600);
+  --color-indicator-neutral: var(--color-gray-500);
 
   /* --color-accent: the brand hue used as TEXT/foreground (hover text,
      active tab, checkbox/radio accent-color, spinner arc) rather than as a
