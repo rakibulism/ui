@@ -70,6 +70,23 @@ function resolveRegistries(config) {
   return { ...DEFAULT_REGISTRIES, ...(config?.registries ?? {}) };
 }
 
+// Registry-sourced files import each other via "@/…", the shadcn convention.
+// Detect whether the consumer's tsconfig/jsconfig already maps that alias to
+// the project root so we only warn when it's actually missing.
+function hasAtAlias() {
+  for (const file of ['tsconfig.json', 'jsconfig.json']) {
+    try {
+      if (!fs.existsSync(file)) continue;
+      const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const paths = config.compilerOptions?.paths ?? {};
+      if (Object.keys(paths).some((key) => key === '@/*' || key === '@/')) return true;
+    } catch {
+      // Malformed or unreadable config — treat as "can't confirm", not fatal.
+    }
+  }
+  return false;
+}
+
 function hasDep(name) {
   try {
     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -95,12 +112,18 @@ async function fetchJson(url) {
   return res.json();
 }
 
-// Registry item file paths are conventionally rooted at "components/ui/…"
-// (the shadcn convention); re-root them under the consumer's componentsDir.
-function resolveTargetPath(filePath, componentsDir) {
-  const prefix = 'components/ui/';
-  const relative = filePath.startsWith(prefix) ? filePath.slice(prefix.length) : path.basename(filePath);
-  return path.join(componentsDir, relative);
+// Registry file paths (e.g. "components/ui/button.tsx") are written verbatim,
+// relative to the project root — the same convention the shadcn CLI uses.
+// Remapping them into a different local layout breaks the "@/…" imports
+// baked into the file content, since sibling files reference each other by
+// their declared registry path, not by rakibulism-ui's own componentsDir.
+function resolveRegistryTargetPath(filePath) {
+  const dest = path.resolve(process.cwd(), filePath);
+  const root = path.resolve(process.cwd());
+  if (dest !== root && !dest.startsWith(root + path.sep)) {
+    throw new Error(`Refusing to write outside the project: "${filePath}"`);
+  }
+  return dest;
 }
 
 async function addFromRegistry(scope, itemName, registryUrl, config, npmDeps, seen = new Set()) {
@@ -131,12 +154,21 @@ async function addFromRegistry(scope, itemName, registryUrl, config, npmDeps, se
     return;
   }
 
+  const written = [];
   for (const file of item.files ?? []) {
-    const dest = resolveTargetPath(file.path, config.componentsDir);
+    let dest;
+    try {
+      dest = resolveRegistryTargetPath(file.path);
+    } catch (err) {
+      console.error(`✗ ${err.message}`);
+      continue;
+    }
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, file.content ?? '');
+    written.push(file.path);
   }
-  console.log(`✓ Added @${scope}/${itemName} → ${config.componentsDir}`);
+  console.log(`✓ Added @${scope}/${itemName}`);
+  for (const filePath of written) console.log(`  ${filePath}`);
 
   for (const dep of item.dependencies ?? []) npmDeps.add(dep);
 
@@ -200,6 +232,7 @@ async function cmdAdd(names) {
   const neededExtras = new Set();
   const npmDeps = new Set();
   let addedLocal = false;
+  let addedRegistry = false;
 
   for (const requested of names) {
     const ref = parseRegistryRef(requested);
@@ -214,6 +247,7 @@ async function cmdAdd(names) {
         continue;
       }
       await addFromRegistry(ref.scope, ref.item, registryUrl, config, npmDeps);
+      addedRegistry = true;
       continue;
     }
 
@@ -234,6 +268,14 @@ async function cmdAdd(names) {
   if (missing.length > 0) {
     console.log(`\nInstall the dependencies these components need:`);
     console.log(`  npm install ${missing.join(' ')}`);
+  }
+
+  if (addedRegistry && !hasAtAlias()) {
+    console.log(
+      `\n⚠ These files import via "@/…". Add a "@/*" path alias to your project root in\n` +
+        `  tsconfig.json (or jsconfig.json), e.g.:\n` +
+        `  { "compilerOptions": { "baseUrl": ".", "paths": { "@/*": ["./*"] } } }`
+    );
   }
 }
 
