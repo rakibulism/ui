@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Tooltip, useToast } from 'rakibulism-ui';
 import { CATALOG, type CatalogEntry } from './catalog';
-import { useSearchQuery } from './layout';
 
 // RemixIcon (github.com/Remix-Design/RemixIcon, MIT) — sparkling-2-line and
 // file-copy-line, used as CSS mask-images so the AI-copy button can paint a
@@ -21,7 +20,11 @@ function iconMaskUrl(path: string): string {
 function AiCopyButton({ prompt, label }: { prompt: string; label: string }) {
   const { show } = useToast();
 
-  async function handleCopy() {
+  async function handleCopy(e: React.MouseEvent) {
+    // The button sits inside a card that's otherwise a single stretched
+    // link to the doc page — stop the click from also triggering that.
+    e.preventDefault();
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(prompt);
     } catch {
@@ -67,9 +70,14 @@ function AiCopyButton({ prompt, label }: { prompt: string; label: string }) {
 }
 
 function GalleryCard({ entry }: { entry: CatalogEntry }) {
-  const { name, description, prompt, Illustration } = entry;
+  const { id, name, description, prompt, Illustration } = entry;
   return (
     <article className="component-card-container">
+      <Link
+        to={`/docs/components/${id}`}
+        className="card-link-overlay"
+        aria-label={`View ${name} documentation`}
+      />
       <div className="header">
         <div className="heading">
           <span className="metric-title">{name}</span>
@@ -77,44 +85,24 @@ function GalleryCard({ entry }: { entry: CatalogEntry }) {
         </div>
         <AiCopyButton prompt={prompt} label={name} />
       </div>
-      <div className="container">
+      {/* `inert` freezes the illustration for pointer, keyboard, and
+          assistive tech — it's a picture of the component, not a live demo;
+          clicking anywhere on the card navigates via the overlay above. */}
+      <div className="container" inert="">
         <Illustration />
       </div>
     </article>
   );
 }
 
-/**
- * The searchable grid of component illustration cards. Reads the shared
- * search query from the Layout via `useSearchQuery` so the same header
- * search box filters whichever page renders this.
- */
+/** The grid of component illustration cards — every card links to its doc page. */
 export function ComponentsGrid() {
-  const { query, setQuery } = useSearchQuery();
-
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return CATALOG;
-    return CATALOG.filter((entry) =>
-      `${entry.name} ${entry.description} ${entry.keywords}`.toLowerCase().includes(q),
-    );
-  }, [query]);
-
   return (
     <section className="content-container" id="components">
       <div className="dashboard-container">
-        {results.length > 0 ? (
-          results.map((entry) => <GalleryCard key={entry.id} entry={entry} />)
-        ) : (
-          <div className="gallery-empty">
-            <p>
-              No components match &ldquo;{query}&rdquo;.{' '}
-              <button type="button" className="link-btn" onClick={() => setQuery('')}>
-                Clear search
-              </button>
-            </p>
-          </div>
-        )}
+        {CATALOG.map((entry) => (
+          <GalleryCard key={entry.id} entry={entry} />
+        ))}
       </div>
     </section>
   );

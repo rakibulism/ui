@@ -4,6 +4,8 @@ import { Tabs, TabList, Tab, TabPanel } from '../Tabs/Tabs';
 import { Accordion, AccordionItem } from '../Accordion/Accordion';
 import { Breadcrumbs, BreadcrumbItem } from '../Breadcrumbs/Breadcrumbs';
 import { Pagination } from '../Pagination/Pagination';
+import { Collapsible } from '../Collapsible/Collapsible';
+import { Toolbar, ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../Toolbar/Toolbar';
 
 function renderTabs() {
   return render(
@@ -201,5 +203,78 @@ describe('Pagination', () => {
     expect(onPageChange).toHaveBeenCalledWith(6);
     fireEvent.click(screen.getByRole('button', { name: '1' }));
     expect(onPageChange).toHaveBeenCalledWith(1);
+  });
+});
+
+describe('Collapsible', () => {
+  it('toggles the panel on trigger click', () => {
+    render(
+      <Collapsible trigger="More info">
+        <p>Hidden detail</p>
+      </Collapsible>,
+    );
+    const trigger = screen.getByRole('button', { name: 'More info' });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('Hidden detail')).toBeInTheDocument();
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('respects defaultOpen and reports changes via onChange', () => {
+    const onChange = vi.fn();
+    render(
+      <Collapsible trigger="More info" defaultOpen onChange={onChange}>
+        <p>Hidden detail</p>
+      </Collapsible>,
+    );
+    expect(screen.getByText('Hidden detail')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'More info' }));
+    expect(onChange).toHaveBeenCalledWith(false);
+  });
+
+  it('supports controlled usage', () => {
+    const { rerender } = render(
+      <Collapsible trigger="More info" open={false} onChange={() => {}}>
+        <p>Hidden detail</p>
+      </Collapsible>,
+    );
+    expect(screen.queryByText('Hidden detail')).not.toBeInTheDocument();
+    rerender(
+      <Collapsible trigger="More info" open onChange={() => {}}>
+        <p>Hidden detail</p>
+      </Collapsible>,
+    );
+    expect(screen.getByText('Hidden detail')).toBeInTheDocument();
+  });
+});
+
+describe('Toolbar', () => {
+  it('exposes role="toolbar" grouping its buttons', () => {
+    render(
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarButton>Bold</ToolbarButton>
+          <ToolbarButton>Italic</ToolbarButton>
+        </ToolbarGroup>
+        <ToolbarSeparator />
+        <ToolbarButton>Link</ToolbarButton>
+      </Toolbar>,
+    );
+    expect(screen.getByRole('toolbar')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bold' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Link' })).toBeInTheDocument();
+  });
+
+  it('fires onClick on a toolbar button', () => {
+    const onClick = vi.fn();
+    render(
+      <Toolbar>
+        <ToolbarButton onClick={onClick}>Bold</ToolbarButton>
+      </Toolbar>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Bold' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,0 +1,56 @@
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  width: 100%;
+  font-family: var(--font-sans, sans-serif);
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-gray-700, #374151);
+}
+
+.value {
+  font-size: var(--font-size-sm, 14px);
+  color: var(--color-gray-500, #6b7280);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-gray-200, #e5e7eb);
+  overflow: hidden;
+}
+
+.sm {
+  height: 6px;
+}
+
+.md {
+  height: 10px;
+}
+
+.indicator {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary-600, #0f453c);
+  transition: width 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
+}

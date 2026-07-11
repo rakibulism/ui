@@ -25,16 +25,40 @@ import {
   Progress,
   Divider,
   Alert,
+  Collapsible,
+  Toggle,
+  ToggleGroup,
+  Fieldset,
+  Meter,
+  CheckboxGroup,
+  Slider,
+  NumberField,
+  OtpField,
+  ScrollArea,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarButton,
+  ToolbarSeparator,
+  Menubar,
+  NavigationMenu,
+  Combobox,
+  Autocomplete,
+  MenuItem,
 } from 'rakibulism-ui';
-// Tooltip, Modal, Toast, and Menu are portal/overlay components with no
-// "always open" mode — for a frozen illustration, their own CSS Modules are
-// imported directly and the relevant markup is hand-built inline instead of
-// going through the real portaled component, so the preview stays pixel
-// -accurate to the real styling without requiring a click/hover to see it.
+// Tooltip, Modal, Toast, Menu, Popover, PreviewCard, Drawer, and AlertDialog
+// are portal/overlay components with no "always open" mode — for a frozen
+// illustration, their own CSS Modules are imported directly and the
+// relevant markup is hand-built inline instead of going through the real
+// portaled component, so the preview stays pixel-accurate to the real
+// styling without requiring a click/hover to see it.
 import tooltipStyles from '../../src/components/Tooltip/Tooltip.module.css';
 import modalStyles from '../../src/components/Modal/Modal.module.css';
 import toastStyles from '../../src/components/Toast/Toast.module.css';
 import menuStyles from '../../src/components/Menu/Menu.module.css';
+import popoverStyles from '../../src/components/Popover/Popover.module.css';
+import previewCardStyles from '../../src/components/PreviewCard/PreviewCard.module.css';
+import drawerStyles from '../../src/components/Drawer/Drawer.module.css';
+import alertDialogStyles from '../../src/components/AlertDialog/AlertDialog.module.css';
 
 export interface CatalogEntry {
   id: string;
@@ -294,6 +318,245 @@ function AlertIllustration() {
   );
 }
 
+function CollapsibleIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Collapsible trigger="What is rakibulism-ui?" defaultOpen>
+        A code-first React component library.
+      </Collapsible>
+    </div>
+  );
+}
+
+function ToggleIllustration() {
+  const [pressed, setPressed] = useState(true);
+  return (
+    <div className="illustration-row">
+      <Toggle pressed={pressed} onPressedChange={setPressed}>
+        Bold
+      </Toggle>
+    </div>
+  );
+}
+
+function ToggleGroupIllustration() {
+  const [value, setValue] = useState(['center']);
+  return (
+    <div className="illustration-row">
+      <ToggleGroup value={value} onChange={setValue}>
+        <Toggle value="left" aria-label="Align left">
+          Left
+        </Toggle>
+        <Toggle value="center" aria-label="Align center">
+          Center
+        </Toggle>
+        <Toggle value="right" aria-label="Align right">
+          Right
+        </Toggle>
+      </ToggleGroup>
+    </div>
+  );
+}
+
+function FieldsetIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Fieldset legend="Shipping address">
+        <Input label="Street" placeholder="123 Main St" />
+      </Fieldset>
+    </div>
+  );
+}
+
+function MeterIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Meter value={72} label="Disk usage" />
+    </div>
+  );
+}
+
+function PopoverIllustration() {
+  return (
+    <div className={popoverStyles.popup} style={{ position: 'relative', width: '90%', maxWidth: 240 }}>
+      <div className={popoverStyles.header}>
+        <p className={popoverStyles.title}>Details</p>
+        <span className={popoverStyles.closeButton} aria-hidden="true">
+          {CLOSE_ICON}
+        </span>
+      </div>
+      <div className={popoverStyles.body}>More info about this field.</div>
+    </div>
+  );
+}
+
+function PreviewCardIllustration() {
+  return (
+    <div className={previewCardStyles.popup} style={{ position: 'relative', width: '90%', maxWidth: 240 }}>
+      Rich, interactive preview content.
+    </div>
+  );
+}
+
+function DrawerIllustration() {
+  return (
+    <div className={drawerStyles.panel + ' ' + drawerStyles.right} style={{ position: 'relative', width: '80%', height: '90%' }}>
+      <div className={drawerStyles.header}>
+        <p className={drawerStyles.title}>Filters</p>
+        <span className={drawerStyles.closeButton} aria-hidden="true">
+          {CLOSE_ICON}
+        </span>
+      </div>
+      <div className={drawerStyles.body}>Filter options go here.</div>
+    </div>
+  );
+}
+
+function AlertDialogIllustration() {
+  return (
+    <div className={alertDialogStyles.panel} style={{ position: 'relative', width: '90%', maxWidth: 260 }}>
+      <div className={alertDialogStyles.header}>
+        <p className={alertDialogStyles.title}>Delete file?</p>
+      </div>
+      <div className={alertDialogStyles.body}>This cannot be undone.</div>
+      <div className={alertDialogStyles.footer}>
+        <Button variant="secondary">Cancel</Button>
+        <Button variant="danger">Delete</Button>
+      </div>
+    </div>
+  );
+}
+
+function CheckboxGroupIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <CheckboxGroup label="Permissions" value={['read']} onChange={() => {}}>
+        <Checkbox value="read" label="Read" />
+        <Checkbox value="write" label="Write" />
+      </CheckboxGroup>
+    </div>
+  );
+}
+
+function SliderIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Slider label="Volume" defaultValue={40} showValue />
+    </div>
+  );
+}
+
+function NumberFieldIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <NumberField label="Quantity" defaultValue={3} />
+    </div>
+  );
+}
+
+function OtpFieldIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <OtpField label="Verification code" length={4} />
+    </div>
+  );
+}
+
+function ScrollAreaIllustration() {
+  return (
+    <ScrollArea height={120} className="illustration-constrain">
+      <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <p>Line one of scrollable content.</p>
+        <p>Line two of scrollable content.</p>
+        <p>Line three of scrollable content.</p>
+        <p>Line four of scrollable content.</p>
+      </div>
+    </ScrollArea>
+  );
+}
+
+function ToolbarIllustration() {
+  return (
+    <Toolbar>
+      <ToolbarGroup>
+        <ToolbarButton>Bold</ToolbarButton>
+        <ToolbarButton>Italic</ToolbarButton>
+      </ToolbarGroup>
+      <ToolbarSeparator />
+      <ToolbarButton>Link</ToolbarButton>
+    </Toolbar>
+  );
+}
+
+function ContextMenuIllustration() {
+  return (
+    <div className="illustration-menu">
+      <div
+        style={{
+          border: '1px dashed var(--color-gray-300)',
+          borderRadius: 8,
+          padding: '8px 16px',
+          fontSize: 14,
+          color: 'var(--color-gray-700)',
+        }}
+      >
+        Right-click here
+      </div>
+      <div className={menuStyles.menu} style={{ position: 'relative' }}>
+        <div className={menuStyles.item}>Edit</div>
+        <div className={menuStyles.item + ' ' + menuStyles.destructive}>Delete</div>
+      </div>
+    </div>
+  );
+}
+
+function MenubarIllustration() {
+  return (
+    <Menubar
+      menus={[
+        { label: 'File', items: <MenuItem>Save</MenuItem> },
+        { label: 'Edit', items: <MenuItem>Undo</MenuItem> },
+        { label: 'View', items: <MenuItem>Zoom in</MenuItem> },
+      ]}
+    />
+  );
+}
+
+function NavigationMenuIllustration() {
+  return (
+    <NavigationMenu
+      items={[
+        { label: 'Home', href: '#' },
+        { label: 'Products', content: <p>Product list</p> },
+        { label: 'About', href: '#' },
+      ]}
+    />
+  );
+}
+
+function ComboboxIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Combobox
+        label="Country"
+        items={[
+          { value: 'us', label: 'United States' },
+          { value: 'bd', label: 'Bangladesh' },
+        ]}
+        defaultValue="us"
+      />
+    </div>
+  );
+}
+
+function AutocompleteIllustration() {
+  return (
+    <div className="illustration-constrain">
+      <Autocomplete label="City" items={['Dhaka', 'Berlin']} defaultValue="Dhaka" />
+    </div>
+  );
+}
+
 const UNSORTED_CATALOG: CatalogEntry[] = [
   {
     id: 'button',
@@ -491,6 +754,188 @@ const UNSORTED_CATALOG: CatalogEntry[] = [
     keywords: 'callout notice banner',
     prompt: RAKIBULISM_UI_PREFIX + 'render an Alert with a title and body text in the info variant.',
     Illustration: AlertIllustration,
+  },
+  {
+    id: 'collapsible',
+    name: 'Collapsible',
+    description: 'A single expandable/collapsible panel with a clickable trigger.',
+    keywords: 'expand collapse disclosure toggle panel',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a Collapsible with a trigger and some panel content, open by default.',
+    Illustration: CollapsibleIllustration,
+  },
+  {
+    id: 'toggle',
+    name: 'Toggle',
+    description: 'A two-state button that can be pressed or unpressed.',
+    keywords: 'button pressed switch state',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a Toggle button bound to controlled pressed state.',
+    Illustration: ToggleIllustration,
+  },
+  {
+    id: 'toggle-group',
+    name: 'Toggle Group',
+    description: 'Coordinates a shared pressed state across a row of toggle buttons.',
+    keywords: 'toolbar alignment segmented control',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a ToggleGroup with three Toggle buttons for text alignment (left/center/right), single-select.',
+    Illustration: ToggleGroupIllustration,
+  },
+  {
+    id: 'fieldset',
+    name: 'Fieldset',
+    description: 'Groups related form fields under a shared legend.',
+    keywords: 'form group legend',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a Fieldset with a legend grouping a couple of form fields.',
+    Illustration: FieldsetIllustration,
+  },
+  {
+    id: 'meter',
+    name: 'Meter',
+    description: "Visualizes a value within a known range, like disk usage.",
+    keywords: 'gauge range indicator value',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a Meter with a label showing a value within a range.',
+    Illustration: MeterIllustration,
+  },
+  {
+    id: 'popover',
+    name: 'Popover',
+    description: 'A click-triggered popup for secondary content or actions.',
+    keywords: 'popup overlay click details',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'wrap a trigger Button in a Popover with a title and some body content, shown on click.',
+    Illustration: PopoverIllustration,
+  },
+  {
+    id: 'preview-card',
+    name: 'Preview Card',
+    description: 'A rich, interactive hover preview, unlike a plain Tooltip.',
+    keywords: 'hover preview link unfurl overlay',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'wrap a link trigger in a PreviewCard that shows rich, interactive content after a brief hover delay.',
+    Illustration: PreviewCardIllustration,
+  },
+  {
+    id: 'drawer',
+    name: 'Drawer',
+    description: 'A panel that slides in from an edge of the screen.',
+    keywords: 'panel sidebar slide overlay',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'open a Drawer sliding in from the right, with a title and some body content, that closes on Escape or backdrop click.',
+    Illustration: DrawerIllustration,
+  },
+  {
+    id: 'alert-dialog',
+    name: 'Alert Dialog',
+    description: 'An interruptive dialog for confirming a decision.',
+    keywords: 'confirm destructive dialog overlay',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'open an AlertDialog confirming a delete action, with Cancel and Delete actions, not dismissible via backdrop click.',
+    Illustration: AlertDialogIllustration,
+  },
+  {
+    id: 'checkbox-group',
+    name: 'Checkbox Group',
+    description: 'Groups checkboxes under a shared selected-values array.',
+    keywords: 'multi-select form choice',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render a CheckboxGroup with a couple of Checkbox options bound to controlled string-array state via value/onChange.',
+    Illustration: CheckboxGroupIllustration,
+  },
+  {
+    id: 'slider',
+    name: 'Slider',
+    description: 'A draggable control for selecting a numeric value or range.',
+    keywords: 'range drag value control',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a Slider with a label and its current value shown.',
+    Illustration: SliderIllustration,
+  },
+  {
+    id: 'number-field',
+    name: 'Number Field',
+    description: 'A numeric input with increment/decrement stepper buttons.',
+    keywords: 'stepper quantity numeric input',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a NumberField with a label, min/max, and stepper buttons.',
+    Illustration: NumberFieldIllustration,
+  },
+  {
+    id: 'otp-field',
+    name: 'Otp Field',
+    description: 'A row of single-character inputs for a one-time passcode.',
+    keywords: 'otp verification code pin',
+    prompt: RAKIBULISM_UI_PREFIX + 'render an OtpField with 4 slots bound to controlled state via value/onChange.',
+    Illustration: OtpFieldIllustration,
+  },
+  {
+    id: 'scroll-area',
+    name: 'Scroll Area',
+    description: 'A scrollable container with custom, cross-browser scrollbars.',
+    keywords: 'scroll container viewport overflow',
+    prompt: RAKIBULISM_UI_PREFIX + 'render a ScrollArea with a fixed height wrapping a long block of content.',
+    Illustration: ScrollAreaIllustration,
+  },
+  {
+    id: 'toolbar',
+    name: 'Toolbar',
+    description: 'Groups related controls with roving-tabindex keyboard navigation.',
+    keywords: 'actions buttons group controls',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render a Toolbar with a ToolbarGroup of two ToolbarButtons, a ToolbarSeparator, and one more ToolbarButton.',
+    Illustration: ToolbarIllustration,
+  },
+  {
+    id: 'context-menu',
+    name: 'Context Menu',
+    description: 'Opens a menu at the pointer position on right click or long press.',
+    keywords: 'right-click overlay actions',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'wrap an area in a ContextMenu with a couple of MenuItem entries, opened via right click.',
+    Illustration: ContextMenuIllustration,
+  },
+  {
+    id: 'menubar',
+    name: 'Menubar',
+    description: 'A horizontal row of menus, like a desktop-app File/Edit/View bar.',
+    keywords: 'file edit view app menu',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render a Menubar with a couple of top-level menus, each with a few MenuItem entries.',
+    Illustration: MenubarIllustration,
+  },
+  {
+    id: 'navigation-menu',
+    name: 'Navigation Menu',
+    description: 'A site-navigation bar mixing links and dropdown panels.',
+    keywords: 'site nav header links dropdown',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render a NavigationMenu mixing plain links and one item with a dropdown content panel.',
+    Illustration: NavigationMenuIllustration,
+  },
+  {
+    id: 'combobox',
+    name: 'Combobox',
+    description: 'A searchable dropdown where a value must be picked from the list.',
+    keywords: 'search dropdown filter select',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render a Combobox with a handful of items, filtered as the user types, bound to controlled state via value/onChange.',
+    Illustration: ComboboxIllustration,
+  },
+  {
+    id: 'autocomplete',
+    name: 'Autocomplete',
+    description: 'A free-text input with a filtered suggestion list.',
+    keywords: 'search suggestions typeahead free-text',
+    prompt:
+      RAKIBULISM_UI_PREFIX +
+      'render an Autocomplete with a handful of suggestions, accepting arbitrary typed text as a valid value.',
+    Illustration: AutocompleteIllustration,
   },
 ];
 
