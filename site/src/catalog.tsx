@@ -294,7 +294,7 @@ function AlertIllustration() {
   );
 }
 
-export const CATALOG: CatalogEntry[] = [
+const UNSORTED_CATALOG: CatalogEntry[] = [
   {
     id: 'button',
     name: 'Button',
@@ -493,3 +493,7 @@ export const CATALOG: CatalogEntry[] = [
     Illustration: AlertIllustration,
   },
 ];
+
+export const CATALOG: CatalogEntry[] = [...UNSORTED_CATALOG].sort((a, b) =>
+  a.name.localeCompare(b.name),
+);
