@@ -21,7 +21,7 @@ const DEFAULT_CONFIG = {
 // each item's url resolves to a registry-item.json with a `files` array.
 // Override or extend via the "registries" field in rakibulism-ui.json.
 const DEFAULT_REGISTRIES = {
-  dotmatrix: 'https://spinnerkit.vercel.app/r/registry.json',
+  spinnerkit: 'https://spinnerkit.vercel.app/r/registry.json',
 };
 
 // Extra runtime deps a component needs beyond the baseline (clsx, always
@@ -100,7 +100,7 @@ function hasDep(name) {
   }
 }
 
-// "@dotmatrix/dotm-square-3" -> { scope: "dotmatrix", item: "dotm-square-3" }
+// "@spinnerkit/sk-square-3" -> { scope: "spinnerkit", item: "sk-square-3" }
 function parseRegistryRef(name) {
   const match = /^@([^/]+)\/(.+)$/.exec(name);
   return match ? { scope: match[1], item: match[2] } : null;
@@ -214,13 +214,13 @@ async function cmdInit(args) {
   console.log(`  import './${path.join(config.stylesDir, 'globals.css')}'`);
   console.log(`\nThen add components:`);
   console.log('  npx rakibulism-ui add button');
-  console.log('  npx rakibulism-ui add @dotmatrix/dotm-square-3');
+  console.log('  npx rakibulism-ui add @spinnerkit/sk-square-3');
 }
 
 async function cmdAdd(names) {
   if (names.length === 0) {
     console.error('Usage: rakibulism-ui add <component> [component...]');
-    console.error('       rakibulism-ui add @<registry>/<component>   (e.g. @dotmatrix/dotm-square-3)');
+    console.error('       rakibulism-ui add @<registry>/<component>   (e.g. @spinnerkit/sk-square-3)');
     process.exit(1);
   }
   const config = loadConfig() ?? DEFAULT_CONFIG;
@@ -297,7 +297,7 @@ Usage:
   npx rakibulism-ui add <name...>    Copy one or more components into your project
   npx rakibulism-ui add @<registry>/<name>
                                       Copy a component from an external registry
-                                      (e.g. @dotmatrix/dotm-square-3)
+                                      (e.g. @spinnerkit/sk-square-3)
   npx rakibulism-ui list             List available components and configured registries
 
 Options:
@@ -308,7 +308,7 @@ Config (rakibulism-ui.json):
     "componentsDir": "src/components/ui",
     "stylesDir": "src/styles/rakibulism-ui",
     "registries": {
-      "dotmatrix": "https://spinnerkit.vercel.app/r/registry.json"
+      "spinnerkit": "https://spinnerkit.vercel.app/r/registry.json"
     }
   }`);
 }
