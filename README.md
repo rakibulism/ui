@@ -13,15 +13,15 @@ A code-first design system and React component library — type-safe, tree-shake
 
 ## Features
 
-- ⚛️ **23 React components** — forms, overlays, navigation, and feedback primitives, all fully typed and accessibility-wired (roles, aria attributes, keyboard navigation)
+- ⚛️ **43 React components** — forms, overlays, navigation, and feedback primitives, all fully typed and accessibility-wired (roles, aria attributes, keyboard navigation)
 - 🎨 **Code-first tokens** — colors (a deep-green brand scale plus Tailwind-sourced semantic scales, all 50–950), spacing, typography, shadows, and radii defined in TypeScript
 - 🧩 **CSS Modules** — scoped styles, no global class pollution; component CSS is auto-injected
 - 📦 **ESM + CommonJS** — tree-shakeable, ships both formats with auto-generated `.d.ts` types
 - 🎯 **Themeable** — every component reads CSS variables, so overriding a token re-themes everything
-- ✅ **Tested** — 74 behavior tests gate every change and release
-- ♿ **Base UI under the hood** — Modal, Menu, Tooltip, Toast, Tabs, Accordion, and Select wrap Base UI primitives for real focus traps, keyboard navigation, and collision-aware positioning, styled with this library's own CSS Modules
+- ✅ **Tested** — 119 behavior tests gate every change and release
+- ♿ **Base UI under the hood** — most overlay, forms, and navigation components wrap Base UI primitives for real focus traps, keyboard navigation, and collision-aware positioning, styled with this library's own CSS Modules
 
-**Components:** Button · Input · Textarea · Select · Checkbox · Radio · Switch · Card · Modal · Tooltip · Toast · Menu · Alert · Tabs · Accordion · Breadcrumbs · Pagination · Badge · Avatar · Spinner · Skeleton · Progress · Divider
+**Components:** Button · Input · Textarea · Select · Checkbox · Checkbox Group · Radio · Switch · Card · Modal · Tooltip · Toast · Menu · Alert · Tabs · Accordion · Breadcrumbs · Pagination · Badge · Avatar · Spinner · Skeleton · Progress · Divider · Collapsible · Toggle · Toggle Group · Fieldset · Meter · Popover · Preview Card · Drawer · Alert Dialog · Slider · Number Field · Otp Field · Scroll Area · Toolbar · Context Menu · Menubar · Navigation Menu · Combobox · Autocomplete
 
 ## Installation
 
@@ -490,6 +490,342 @@ A standalone loading indicator (separate from `Button`'s built-in `isLoading` sp
 | `onDismiss` | `() => void`                                        | —        | Shows a dismiss button that calls this when clicked |
 
 An inline, persistent callout — unlike `Toast` (transient, portal-rendered), `Alert` renders in place and stays until removed. Uses `role="alert"` for error/warning so screen readers announce it immediately, `role="status"` otherwise.
+
+### Collapsible
+
+```tsx
+<Collapsible trigger="What is rakibulism-ui?">
+  A code-first React component library.
+</Collapsible>
+```
+
+| Prop         | Type                      | Default | Description                       |
+| ------------ | --------------------------- | ------- | ------------------------------------ |
+| `trigger`    | `ReactNode`                  | —       | Always-visible heading; click toggles the panel |
+| `open`       | `boolean`                    | —       | Controlled open state                |
+| `defaultOpen`| `boolean`                    | `false` | Uncontrolled initial open state      |
+| `onChange`   | `(open: boolean) => void`   | —       | Called when the open state changes   |
+| `disabled`   | `boolean`                    | `false` | Disables the trigger                 |
+
+A single expandable/collapsible panel with a clickable trigger. Unlike `Accordion` (which coordinates multiple panels), this is a standalone show/hide toggle for one piece of content.
+
+### Toggle
+
+```tsx
+<Toggle defaultPressed>Bold</Toggle>
+```
+
+| Prop               | Type                                    | Default | Description                          |
+| ------------------ | ------------------------------------------ | ------- | ---------------------------------------- |
+| `pressed`          | `boolean`                                  | —       | Controlled pressed state                 |
+| `defaultPressed`   | `boolean`                                  | `false` | Uncontrolled initial pressed state       |
+| `onPressedChange`  | `(pressed: boolean) => void`              | —       | Called when the pressed state changes    |
+| `size`             | `'sm' \| 'md' \| 'lg'`                     | `'md'`  | Size                                     |
+| `value`            | `string`                                   | —       | Identifies this toggle inside a `ToggleGroup` |
+
+A two-state button (e.g. a "bold" button in a toolbar). Nest inside `ToggleGroup` to coordinate several toggles as a single/multiple-select group.
+
+### Toggle Group
+
+```tsx
+<ToggleGroup defaultValue={['center']}>
+  <Toggle value="left" aria-label="Align left">Left</Toggle>
+  <Toggle value="center" aria-label="Align center">Center</Toggle>
+  <Toggle value="right" aria-label="Align right">Right</Toggle>
+</ToggleGroup>
+```
+
+| Prop          | Type                              | Default        | Description                                     |
+| ------------- | ------------------------------------ | -------------- | --------------------------------------------------- |
+| `value`       | `string[]`                          | —              | Controlled array of currently-pressed toggle values  |
+| `defaultValue`| `string[]`                          | —              | Uncontrolled initial pressed values                  |
+| `onChange`    | `(value: string[]) => void`         | —              | Called with the array of currently-pressed values    |
+| `multiple`    | `boolean`                           | `false`        | Allow more than one toggle pressed at once           |
+| `orientation` | `'horizontal' \| 'vertical'`         | `'horizontal'` | Arrow-key navigation direction                       |
+| `disabled`    | `boolean`                           | `false`        | Disables every toggle in the group                   |
+
+Coordinates a shared pressed-state across a row of `Toggle` buttons — single-select by default (pressing one un-presses the others).
+
+### Fieldset
+
+```tsx
+<Fieldset legend="Shipping address">
+  <Input label="Street" />
+</Fieldset>
+```
+
+| Prop     | Type        | Default | Description                     |
+| -------- | ------------- | ------- | ---------------------------------- |
+| `legend` | `ReactNode`   | —       | Heading rendered above the grouped fields |
+
+Groups related form fields under a shared legend. Renders a native `<fieldset>`/`<legend>` pair.
+
+### Meter
+
+```tsx
+<Meter value={72} label="Disk usage" />
+```
+
+| Prop    | Type             | Default | Description                                  |
+| ------- | ------------------ | ------- | ------------------------------------------------ |
+| `value` | `number`           | —       | Current value                                    |
+| `min`   | `number`           | `0`     | Minimum value                                    |
+| `max`   | `number`           | `100`   | Maximum value                                    |
+| `label` | `string`           | —       | Accessible label, also shown above the track     |
+| `size`  | `'sm' \| 'md'`      | `'md'`  | Track thickness                                  |
+
+Visualizes a value within a known range (e.g. disk usage, a rating) — unlike `Progress`, which represents completion of a task over time, a meter's value can move in either direction.
+
+### Popover
+
+```tsx
+<Popover title="Details" content="More info about this field.">
+  <button>Show details</button>
+</Popover>
+```
+
+| Prop         | Type                                    | Default    | Description                                    |
+| ------------ | ------------------------------------------ | ---------- | --------------------------------------------------- |
+| `children`   | `ReactElement`                             | —          | Trigger element                                      |
+| `content`    | `ReactNode`                                | —          | Popover body content                                 |
+| `title`      | `string`                                   | —          | Optional heading with a close button                 |
+| `placement`  | `'top' \| 'bottom' \| 'left' \| 'right'`     | `'bottom'` | Preferred side, collision-aware                      |
+| `open`       | `boolean`                                  | —          | Controlled open state                                |
+| `defaultOpen`| `boolean`                                  | `false`    | Initial open state (uncontrolled)                    |
+| `onChange`   | `(open: boolean) => void`                  | —          | Called when the open state changes                   |
+
+A click-triggered popup for secondary content or actions — unlike `Tooltip`, it opens on click (not hover) and can contain interactive elements.
+
+### Preview Card
+
+```tsx
+<PreviewCard content={<UserSummary />}>
+  <a href="/users/jane">@jane</a>
+</PreviewCard>
+```
+
+| Prop        | Type                                    | Default    | Description                          |
+| ----------- | ------------------------------------------ | ---------- | ----------------------------------------- |
+| `children`  | `ReactElement`                             | —          | Hoverable/focusable trigger element        |
+| `content`   | `ReactNode`                                | —          | Rich preview content                       |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'`     | `'bottom'` | Preferred side, collision-aware            |
+
+A rich hover preview (e.g. an unfurled link, a profile summary) shown after a brief hover delay — unlike `Tooltip`, the content can be interactive.
+
+### Drawer
+
+```tsx
+<Drawer isOpen={isOpen} onClose={() => setIsOpen(false)} title="Filters" side="right">
+  <FilterForm />
+</Drawer>
+```
+
+| Prop       | Type                                       | Default   | Description                                  |
+| ---------- | --------------------------------------------- | --------- | ------------------------------------------------- |
+| `isOpen`   | `boolean`                                     | —         | Whether the drawer is visible                      |
+| `onClose`  | `() => void`                                  | —         | Called on Escape, backdrop click, or the close button |
+| `title`    | `string`                                      | —         | Optional heading with a close button               |
+| `side`     | `'left' \| 'right' \| 'top' \| 'bottom'`        | `'right'` | Edge the panel slides in from                      |
+| `children` | `ReactNode`                                   | —         | Drawer body content                                |
+
+A panel that slides in from an edge of the screen — useful for filters, settings, or secondary navigation without leaving the page.
+
+### Alert Dialog
+
+```tsx
+<AlertDialog
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Delete file?"
+  actions={[
+    { label: 'Cancel', onClick: () => setIsOpen(false) },
+    { label: 'Delete', variant: 'danger', onClick: handleDelete },
+  ]}
+>
+  This cannot be undone.
+</AlertDialog>
+```
+
+| Prop       | Type                       | Default | Description                                        |
+| ---------- | ----------------------------- | ------- | ------------------------------------------------------- |
+| `isOpen`   | `boolean`                     | —       | Whether the dialog is visible                            |
+| `onClose`  | `() => void`                  | —       | Called on Escape or an action                            |
+| `title`    | `string`                      | —       | Heading (required — alert dialogs always need one)       |
+| `children` | `ReactNode`                   | —       | Dialog body content                                      |
+| `actions`  | `AlertDialogAction[]`         | —       | Buttons rendered in the footer                           |
+
+An interruptive dialog for confirming a decision (e.g. destructive actions) — unlike `Modal`, it can't be dismissed by clicking the backdrop, only Escape or an explicit action.
+
+### Checkbox Group
+
+```tsx
+<CheckboxGroup label="Permissions" value={value} onChange={setValue}>
+  <Checkbox value="read" label="Read" />
+  <Checkbox value="write" label="Write" />
+</CheckboxGroup>
+```
+
+| Prop       | Type                       | Default | Description                                    |
+| ---------- | ----------------------------- | ------- | ----------------------------------------------------- |
+| `label`    | `string`                      | —       | Optional heading rendered above the group              |
+| `value`    | `string[]`                    | —       | Currently selected values                              |
+| `onChange` | `(value: string[]) => void`   | —       | Called with the full updated array on toggle           |
+
+Groups `Checkbox` inputs under a shared selection array — each `Checkbox` only needs a `value` and `label`, matched against the group's `value` array.
+
+### Slider
+
+```tsx
+<Slider label="Volume" defaultValue={40} showValue />
+```
+
+| Prop        | Type                                  | Default | Description                                     |
+| ----------- | ---------------------------------------- | ------- | ------------------------------------------------------ |
+| `label`     | `string`                                 | —       | Optional label rendered above the slider                |
+| `value`     | `number \| readonly number[]`             | —       | Controlled value — a two-element array renders a range   |
+| `defaultValue` | `number \| readonly number[]`         | `0`     | Uncontrolled initial value                              |
+| `onChange`  | `(value: number \| number[]) => void`     | —       | Called on every value change                             |
+| `min`/`max` | `number`                                 | `0`/`100` | Allowed range                                          |
+| `step`      | `number`                                 | `1`     | Granularity of value changes                             |
+| `showValue` | `boolean`                                | `false` | Shows the current numeric value next to the label        |
+
+A draggable control for a numeric value or, given a two-element `value`/`defaultValue`, a range with two thumbs.
+
+### Number Field
+
+```tsx
+<NumberField label="Quantity" defaultValue={1} min={0} max={10} />
+```
+
+| Prop        | Type                              | Default | Description                     |
+| ----------- | ------------------------------------ | ------- | ------------------------------------- |
+| `label`     | `string`                             | —       | Optional label rendered above the field |
+| `value`     | `number \| null`                     | —       | Controlled numeric value                |
+| `defaultValue` | `number`                          | —       | Uncontrolled initial value               |
+| `onChange`  | `(value: number \| null) => void`    | —       | Called with the new value (or `null` if cleared) |
+| `min`/`max`/`step` | `number`                      | —       | Stepping constraints                     |
+
+A numeric input with increment/decrement stepper buttons and keyboard, scroll-wheel, and pointer-scrub support.
+
+### Otp Field
+
+```tsx
+<OtpField label="Verification code" length={6} onChange={setCode} />
+```
+
+| Prop      | Type                     | Default | Description                          |
+| --------- | --------------------------- | ------- | ------------------------------------------ |
+| `label`   | `string`                    | —       | Optional label rendered above the field      |
+| `length`  | `number`                    | `6`     | Number of character slots                    |
+| `value`   | `string`                    | —       | Controlled OTP value                         |
+| `onChange`| `(value: string) => void`   | —       | Called with the full OTP string on every change |
+| `mask`    | `boolean`                   | `false` | Masks entered characters                     |
+
+A row of single-character inputs for a one-time passcode, with paste-to-fill-all-slots and arrow-key navigation between slots.
+
+### Scroll Area
+
+```tsx
+<ScrollArea height={240}>
+  <LongContent />
+</ScrollArea>
+```
+
+| Prop     | Type              | Default | Description                  |
+| -------- | -------------------- | ------- | ---------------------------------- |
+| `height` | `number \| string`   | `240`   | Fixed height of the viewport         |
+
+A scrollable container with custom, always-consistently-styled scrollbars instead of native ones, which vary across OSes and can't be restyled cross-browser.
+
+### Toolbar
+
+```tsx
+<Toolbar>
+  <ToolbarGroup>
+    <ToolbarButton>Bold</ToolbarButton>
+    <ToolbarButton>Italic</ToolbarButton>
+  </ToolbarGroup>
+  <ToolbarSeparator />
+  <ToolbarButton>Link</ToolbarButton>
+</Toolbar>
+```
+
+A container for grouping related controls (buttons, links, inputs) with roving-tabindex arrow-key navigation between them, so the whole toolbar is a single Tab stop. `ToolbarGroup` clusters related buttons; `ToolbarSeparator` divides sections.
+
+### Context Menu
+
+```tsx
+<ContextMenu items={<MenuItem onClick={handleEdit}>Edit</MenuItem>}>
+  <div>Right-click this area</div>
+</ContextMenu>
+```
+
+| Prop       | Type        | Default | Description                                     |
+| ---------- | -------------- | ------- | -------------------------------------------------------- |
+| `children` | `ReactNode`    | —       | The area that opens the menu on right click or long press |
+| `items`    | `ReactNode`    | —       | `MenuItem` elements (re-exported from `Menu`)              |
+
+Opens a menu at the pointer position on right click (or long press on touch) instead of a fixed trigger element, reusing `Menu`'s popup and item styling.
+
+### Menubar
+
+```tsx
+<Menubar
+  menus={[
+    { label: 'File', items: <MenuItem onClick={handleSave}>Save</MenuItem> },
+    { label: 'Edit', items: <MenuItem onClick={handleUndo}>Undo</MenuItem> },
+  ]}
+/>
+```
+
+A horizontal row of menus (e.g. a desktop-app-style File/Edit/View bar), where arrow keys move focus between top-level menus and opening one closes any other that was open.
+
+### Navigation Menu
+
+```tsx
+<NavigationMenu
+  items={[
+    { label: 'Home', href: '/' },
+    { label: 'Products', content: <ProductsPanel /> },
+  ]}
+/>
+```
+
+A horizontal site-navigation bar where items can be plain links or hover/click-triggered dropdown panels, with a shared animated viewport that resizes and cross-fades between panels.
+
+### Combobox
+
+```tsx
+<Combobox
+  label="Country"
+  items={[{ value: 'us', label: 'United States' }, { value: 'bd', label: 'Bangladesh' }]}
+  onChange={setCountry}
+/>
+```
+
+| Prop      | Type                                | Default | Description                        |
+| --------- | -------------------------------------- | ------- | ----------------------------------------- |
+| `label`   | `string`                               | —       | Optional label rendered above the field      |
+| `items`   | `{ value: string; label: string; disabled?: boolean }[]` | — | Full option list, filtered internally as the user types |
+| `value`   | `string \| null`                        | —       | Controlled selected value                    |
+| `onChange`| `(value: string \| null) => void`       | —       | Called with the newly selected value           |
+
+A searchable dropdown — typing filters `items` to matching labels, but a value must be picked from the list (free text alone isn't accepted). For a field that accepts arbitrary text with suggestions, use `Autocomplete` instead.
+
+### Autocomplete
+
+```tsx
+<Autocomplete label="City" items={['Dhaka', 'Berlin', 'Toronto']} onChange={setCity} />
+```
+
+| Prop      | Type                       | Default | Description                             |
+| --------- | ------------------------------ | ------- | ---------------------------------------------- |
+| `label`   | `string`                       | —       | Optional label rendered above the field           |
+| `items`   | `string[]`                     | —       | Suggestions shown below the input, filtered as the user types |
+| `value`   | `string`                       | —       | Controlled input value                            |
+| `onChange`| `(value: string) => void`      | —       | Called with the input's text on every change, including free typing |
+
+A free-text input with a filtered suggestion list — unlike `Combobox`, the user isn't required to pick a suggestion; any typed text is a valid value.
 
 ## Design Tokens
 

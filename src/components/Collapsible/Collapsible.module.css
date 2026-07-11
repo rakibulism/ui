@@ -1,0 +1,72 @@
+.collapsible {
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  font-family: var(--font-sans, sans-serif);
+  overflow: hidden;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  border: none;
+  background: transparent;
+  color: var(--color-gray-900, #111827);
+  font-family: inherit;
+  font-size: var(--font-size-base, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  text-align: left;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  background: var(--color-gray-50, #f9fafb);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-primary-500, #3b82f6);
+  outline-offset: -2px;
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-icon-default, #6b7280);
+  transition: transform 0.15s ease;
+}
+
+.trigger[data-panel-open] .chevron {
+  transform: rotate(180deg);
+}
+
+.panel {
+  padding: 0 var(--space-4, 16px) var(--space-4, 16px);
+  color: var(--color-gray-600, #4b5563);
+  font-size: var(--font-size-sm, 14px);
+  line-height: var(--line-height-relaxed, 1.75);
+  animation: ui-collapsible-in 0.15s ease;
+}
+
+@keyframes ui-collapsible-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+  .panel {
+    animation: none;
+  }
+}

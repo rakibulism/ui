@@ -2,10 +2,17 @@ import { describe, expect, it, vi } from 'vitest';
 import { useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Checkbox } from '../Checkbox/Checkbox';
+import { CheckboxGroup } from '../CheckboxGroup/CheckboxGroup';
 import { Radio, RadioGroup } from '../Radio/Radio';
 import { Switch } from '../Switch/Switch';
 import { Textarea } from '../Textarea/Textarea';
 import { Select } from '../Select/Select';
+import { Toggle } from '../Toggle/Toggle';
+import { ToggleGroup } from '../ToggleGroup/ToggleGroup';
+import { Fieldset } from '../Fieldset/Fieldset';
+import { Slider } from '../Slider/Slider';
+import { NumberField } from '../NumberField/NumberField';
+import { OtpField } from '../OtpField/OtpField';
 
 describe('Checkbox', () => {
   it('toggles via its label', () => {
@@ -131,5 +138,151 @@ describe('Select', () => {
       </Select>,
     );
     expect(screen.getByText('Pick one')).toBeInTheDocument();
+  });
+});
+
+describe('Toggle', () => {
+  it('toggles aria-pressed on click', () => {
+    render(<Toggle>Bold</Toggle>);
+    const toggle = screen.getByRole('button', { name: 'Bold' });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('supports controlled usage via pressed/onPressedChange', () => {
+    const onPressedChange = vi.fn();
+    render(
+      <Toggle pressed={false} onPressedChange={onPressedChange}>
+        Bold
+      </Toggle>,
+    );
+    const toggle = screen.getByRole('button', { name: 'Bold' });
+    fireEvent.click(toggle);
+    expect(onPressedChange).toHaveBeenCalledWith(true, expect.anything());
+    // still controlled by `pressed`, so it doesn't flip on its own
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  });
+});
+
+describe('ToggleGroup', () => {
+  it('single-select mode: pressing one un-presses the others', () => {
+    render(
+      <ToggleGroup defaultValue={['left']}>
+        <Toggle value="left">Left</Toggle>
+        <Toggle value="center">Center</Toggle>
+      </ToggleGroup>,
+    );
+    const left = screen.getByRole('button', { name: 'Left' });
+    const center = screen.getByRole('button', { name: 'Center' });
+    expect(left).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(center);
+    expect(center).toHaveAttribute('aria-pressed', 'true');
+    expect(left).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('multiple mode allows more than one pressed toggle at once', () => {
+    render(
+      <ToggleGroup multiple defaultValue={['bold']}>
+        <Toggle value="bold">Bold</Toggle>
+        <Toggle value="italic">Italic</Toggle>
+      </ToggleGroup>,
+    );
+    const bold = screen.getByRole('button', { name: 'Bold' });
+    const italic = screen.getByRole('button', { name: 'Italic' });
+    fireEvent.click(italic);
+    expect(bold).toHaveAttribute('aria-pressed', 'true');
+    expect(italic).toHaveAttribute('aria-pressed', 'true');
+  });
+});
+
+describe('Fieldset', () => {
+  it('renders a fieldset with its legend', () => {
+    render(
+      <Fieldset legend="Shipping address">
+        <Textarea label="Street" />
+      </Fieldset>,
+    );
+    expect(screen.getByRole('group', { name: 'Shipping address' })).toBeInTheDocument();
+  });
+});
+
+describe('CheckboxGroup', () => {
+  function Controlled() {
+    const [value, setValue] = useState<string[]>(['read']);
+    return (
+      <CheckboxGroup label="Permissions" value={value} onChange={setValue}>
+        <Checkbox value="read" label="Read" />
+        <Checkbox value="write" label="Write" />
+      </CheckboxGroup>
+    );
+  }
+
+  it('reflects the group value and toggles items in/out of the array', () => {
+    render(<Controlled />);
+    const read = screen.getByRole('checkbox', { name: 'Read' });
+    const write = screen.getByRole('checkbox', { name: 'Write' });
+    expect(read).toBeChecked();
+    expect(write).not.toBeChecked();
+    fireEvent.click(write);
+    expect(write).toBeChecked();
+    fireEvent.click(read);
+    expect(read).not.toBeChecked();
+  });
+
+  it('exposes role="group" labelled by its heading', () => {
+    render(
+      <CheckboxGroup label="Perms" value={[]} onChange={() => {}}>
+        <Checkbox value="a" label="A" />
+      </CheckboxGroup>,
+    );
+    expect(screen.getByRole('group', { name: 'Perms' })).toBeInTheDocument();
+  });
+});
+
+describe('Slider', () => {
+  it('renders a labelled slider at the given value', () => {
+    render(<Slider label="Volume" defaultValue={40} />);
+    const slider = screen.getByRole('slider', { name: 'Volume' });
+    expect(slider).toHaveAttribute('aria-valuenow', '40');
+  });
+
+  it('steps the value on ArrowRight', () => {
+    const onChange = vi.fn();
+    render(<Slider label="Volume" defaultValue={40} step={5} onChange={onChange} />);
+    const slider = screen.getByRole('slider', { name: 'Volume' });
+    fireEvent.keyDown(slider, { key: 'ArrowRight' });
+    expect(onChange).toHaveBeenCalledWith(45);
+  });
+});
+
+describe('NumberField', () => {
+  it('renders a labelled input at the given value', () => {
+    render(<NumberField label="Quantity" defaultValue={3} />);
+    expect(screen.getByRole('textbox', { name: 'Quantity' })).toHaveValue('3');
+  });
+
+  it('increments and decrements via the stepper buttons', () => {
+    const onChange = vi.fn();
+    render(<NumberField label="Quantity" defaultValue={3} onChange={onChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Increase' }));
+    expect(onChange).toHaveBeenCalledWith(4);
+    fireEvent.click(screen.getByRole('button', { name: 'Decrease' }));
+    expect(onChange).toHaveBeenCalledWith(3);
+  });
+});
+
+describe('OtpField', () => {
+  it('renders the requested number of character slots', () => {
+    render(<OtpField label="Code" length={4} />);
+    expect(screen.getAllByRole('textbox')).toHaveLength(4);
+  });
+
+  it('calls onChange as the user types into a slot', () => {
+    const onChange = vi.fn();
+    render(<OtpField label="Code" length={4} onChange={onChange} />);
+    const slots = screen.getAllByRole('textbox');
+    fireEvent.change(slots[0], { target: { value: '1' } });
+    expect(onChange).toHaveBeenCalled();
   });
 });

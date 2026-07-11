@@ -159,6 +159,22 @@ p {
   translate: -50% -50%;
 }
 
+.search-trigger {
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.search-trigger:hover {
+  border-color: var(--color-gray-300);
+  background: var(--color-gray-50);
+}
+
+.search-trigger:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
 .search-box {
   display: flex;
   flex-direction: row;
@@ -179,29 +195,15 @@ p {
 
 .search-text {
   width: 150px;
-  border: none;
-  background: none;
+  text-align: left;
   color: var(--text-dark);
   font-family: var(--font-sans);
   font-size: 11px;
   line-height: 1.4;
-  outline: none;
-  transition: width 0.18s ease;
 }
 
-.search-text::placeholder {
+.search-placeholder {
   color: var(--text-secondary);
-}
-
-.search-text:focus {
-  width: 220px;
-}
-
-/* Hide the native search clear control for a consistent look. */
-.search-text::-webkit-search-decoration,
-.search-text::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .kbd-group {
@@ -333,6 +335,7 @@ p {
   --card-radius: 10px;
   --card-border-width: 1px;
 
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -351,6 +354,15 @@ p {
     transform 0.18s ease;
 }
 
+/* Stretched-link overlay: the whole card navigates to the doc page. Sits
+   above the frozen (`inert`) illustration but below the header, so the
+   AI-copy button there stays independently clickable. */
+.card-link-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .component-card-container:hover {
   border-color: var(--color-gray-300);
   box-shadow: 0 12px 30px -16px rgba(17, 24, 39, 0.22);
@@ -358,6 +370,8 @@ p {
 }
 
 .header {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -610,5 +624,224 @@ p {
   .ai-copy-btn,
   .ai-copy-icon {
     transition: none;
+  }
+}
+
+/* --- search modal --- */
+
+.search-modal {
+  width: 100%;
+  max-width: 520px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.search-modal-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.search-modal-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+}
+
+.search-modal-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  color: var(--text-dark);
+}
+
+.search-modal-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.search-modal-results {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: var(--space-2);
+}
+
+.search-modal-empty {
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.search-modal-group + .search-modal-group {
+  margin-top: var(--space-2);
+}
+
+.search-modal-group-label {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.search-modal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.search-modal-item-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-dark);
+}
+
+.search-modal-item-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.search-modal-item:hover,
+.search-modal-item-highlighted {
+  background: var(--color-gray-100);
+}
+
+/* --- docs --- */
+
+.docs-shell {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: calc(64px + var(--space-6));
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.docs-sidebar-label {
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.docs-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.docs-sidebar-link {
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.docs-sidebar-link:hover {
+  color: var(--text-dark);
+  background: var(--color-gray-100);
+}
+
+.docs-sidebar-link-active {
+  color: var(--text-dark);
+  background: var(--color-gray-100);
+  font-weight: var(--font-weight-medium);
+}
+
+.docs-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.docs-page {
+  max-width: 720px;
+}
+
+.docs-title {
+  margin: 0 0 var(--space-3);
+  font-size: 28px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.docs-lead {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.docs-subheading {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.docs-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  padding: var(--space-6);
+  background: #fafafa;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+}
+
+.docs-code {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-gray-900);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.docs-code code {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-50);
+}
+
+@media (max-width: 860px) {
+  .docs-shell {
+    flex-direction: column;
+    padding: var(--space-4);
+  }
+  .docs-sidebar {
+    position: static;
+    width: 100%;
+  }
+  .docs-sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1);
   }
 }

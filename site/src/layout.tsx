@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import { Link, Outlet, useOutletContext } from 'react-router-dom';
+import { useEffect, useId, useState } from 'react';
+import { Link, Outlet } from 'react-router-dom';
 import { ToastProvider } from 'rakibulism-ui';
+import { SearchModal } from './SearchModal';
 
 const PKG = 'rakibulism-ui';
 export const NPM_URL = `https://www.npmjs.com/package/${PKG}`;
@@ -90,7 +91,7 @@ function XIcon() {
   );
 }
 
-function SearchIcon() {
+export function SearchIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -101,15 +102,7 @@ function SearchIcon() {
 
 /* --- header --- */
 
-function Header({
-  query,
-  onQuery,
-  inputRef,
-}: {
-  query: string;
-  onQuery: (value: string) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-}) {
+function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <header className="top-bar">
       <Link className="title-image-container" to="/" aria-label="rakibulism-ui home">
@@ -121,9 +114,9 @@ function Header({
         <Link className="overview-tab-text" to="/components">
           Components
         </Link>
-        <a className="overview-tab-text" href={`${GH_URL}#readme`} target="_blank" rel="noreferrer">
+        <Link className="overview-tab-text" to="/docs">
           Docs
-        </a>
+        </Link>
         <div className="frame-4">
           <a className="github" href={GH_URL} target="_blank" rel="noreferrer" aria-label="GitHub">
             <GitHubIcon />
@@ -137,20 +130,12 @@ function Header({
         </div>
       </div>
 
-      <div className="search-container">
+      <button type="button" className="search-container search-trigger" onClick={onOpenSearch}>
         <div className="search-box">
           <span className="search-icon">
             <SearchIcon />
           </span>
-          <input
-            ref={inputRef}
-            type="search"
-            className="search-text"
-            placeholder="Search"
-            value={query}
-            onChange={(e) => onQuery(e.target.value)}
-            aria-label="Search components"
-          />
+          <span className="search-text search-placeholder">Search</span>
         </div>
         <div className="kbd-group">
           <div className="overview-navigation-container">
@@ -160,7 +145,7 @@ function Header({
             <div className="overview-navigation-text">K</div>
           </div>
         </div>
-      </div>
+      </button>
     </header>
   );
 }
@@ -190,34 +175,19 @@ function Footer() {
   );
 }
 
-/** Shared search state passed down to whichever page renders the catalog grid. */
-export interface SearchContext {
-  query: string;
-  setQuery: (value: string) => void;
-}
-
-/** Reads the header search query (and its setter, for a "clear search" action) from within a routed page. */
-export function useSearchQuery(): SearchContext {
-  return useOutletContext<SearchContext>();
-}
-
 /**
- * Root layout: header (with the shared search box) + page outlet + footer,
- * wrapped once in ToastProvider so any page can use useToast().
+ * Root layout: header (with the search modal trigger) + page outlet +
+ * footer, wrapped once in ToastProvider so any page can use useToast().
  */
 export function Layout() {
-  const [query, setQuery] = useState('');
-  const searchRef = useRef<HTMLInputElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
 
-  // ⌘K / Ctrl+K focuses search; Escape clears + blurs it.
+  // ⌘K / Ctrl+K opens the search modal (Escape-to-close is handled by Modal).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        searchRef.current?.focus();
-      } else if (e.key === 'Escape' && document.activeElement === searchRef.current) {
-        setQuery('');
-        searchRef.current?.blur();
+        setSearchOpen(true);
       }
     }
     window.addEventListener('keydown', onKey);
@@ -227,10 +197,11 @@ export function Layout() {
   return (
     <ToastProvider>
       <div className="page">
-        <Header query={query} onQuery={setQuery} inputRef={searchRef} />
-        <Outlet context={{ query, setQuery } satisfies SearchContext} />
+        <Header onOpenSearch={() => setSearchOpen(true)} />
+        <Outlet />
         <Footer />
       </div>
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </ToastProvider>
   );
 }

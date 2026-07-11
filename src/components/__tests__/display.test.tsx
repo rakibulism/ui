@@ -6,6 +6,8 @@ import { Spinner } from '../Spinner/Spinner';
 import { Skeleton } from '../Skeleton/Skeleton';
 import { Progress } from '../Progress/Progress';
 import { Divider } from '../Divider/Divider';
+import { Meter } from '../Meter/Meter';
+import { ScrollArea } from '../ScrollArea/ScrollArea';
 
 describe('Badge', () => {
   it('renders with variant and size classes', () => {
@@ -108,5 +110,32 @@ describe('Divider', () => {
   it('renders a centered label', () => {
     render(<Divider label="OR" />);
     expect(screen.getByRole('separator')).toHaveTextContent('OR');
+  });
+});
+
+describe('Meter', () => {
+  it('exposes meter semantics', () => {
+    render(<Meter value={40} label="Disk usage" />);
+    const meter = screen.getByRole('meter', { name: 'Disk usage' });
+    expect(meter).toHaveAttribute('aria-valuenow', '40');
+    expect(meter).toHaveAttribute('aria-valuemin', '0');
+    expect(meter).toHaveAttribute('aria-valuemax', '100');
+  });
+
+  it('sizes the indicator by percentage of the min/max range', () => {
+    const { container } = render(<Meter value={5} min={0} max={20} />);
+    const indicator = container.querySelector('[role="meter"] > div > div') as HTMLElement;
+    expect(indicator.style.width).toBe('25%');
+  });
+});
+
+describe('ScrollArea', () => {
+  it('renders its content inside a scrollable viewport', () => {
+    render(
+      <ScrollArea height={100}>
+        <p>Scrollable content</p>
+      </ScrollArea>,
+    );
+    expect(screen.getByText('Scrollable content')).toBeInTheDocument();
   });
 });

@@ -1,0 +1,32 @@
+.menubar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  padding: var(--space-1, 4px);
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface, #ffffff);
+  font-family: var(--font-sans, sans-serif);
+  width: fit-content;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 var(--space-3, 12px);
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--color-gray-700, #374151);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 14px);
+  cursor: pointer;
+}
+
+.trigger[data-highlighted],
+.trigger[data-popup-open] {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-900, #111827);
+  outline: none;
+}

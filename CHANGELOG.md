@@ -14,6 +14,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Toast`: new `actions` option — an array of `{ label, onClick, variant?: 'primary' | 'secondary' }` buttons rendered below the description, tinted to the toast's variant color. Clicking an action also dismisses the toast.
 - `Toast`: new `closable` option (`@default true`) to hide the close (×) button.
 - New `--color-indicator-neutral` design token (aliases `--color-gray-500`), joining the existing `--color-indicator-{info,success,error,warning}` set.
+- **`Collapsible`** — a single expandable/collapsible panel with a clickable trigger. Wraps Base UI `Collapsible`.
+- **`Toggle`** — a two-state pressed/unpressed button (e.g. a toolbar "bold" button). Wraps Base UI `Toggle`.
+- **`ToggleGroup`** — coordinates a shared pressed state across a row of `Toggle` buttons, single- or multiple-select. Wraps Base UI `ToggleGroup`.
+- **`Fieldset`** — groups related form fields under a shared legend (native `<fieldset>`/`<legend>`). Wraps Base UI `Fieldset`.
+- **`Meter`** — visualizes a value within a known range (e.g. disk usage), distinct from `Progress`'s task-completion semantics. Wraps Base UI `Meter`.
+- **`Popover`** — a click-triggered popup for secondary content or actions, optionally with a titled header and close button. Wraps Base UI `Popover`.
+- **`PreviewCard`** — a rich hover preview (e.g. an unfurled link, a profile summary) whose content can be interactive, unlike `Tooltip`. Wraps Base UI `PreviewCard`.
+- **`Drawer`** — a panel that slides in from an edge of the screen (`left`/`right`/`top`/`bottom`), with swipe-to-dismiss on touch devices. Wraps Base UI `Drawer`.
+- **`AlertDialog`** — an interruptive dialog for confirming a decision, not dismissible via backdrop click, with a required `title` and an `actions` array of `Button`-backed footer buttons. Wraps Base UI `AlertDialog`.
+- **`CheckboxGroup`** — groups `Checkbox` inputs (given a `value` prop) under a shared selected-values array, toggling one adds/removes it from the array. `Checkbox` now accepts an optional `value` prop to participate in a group.
+- **`Slider`** — a draggable control for a numeric value or, given a two-element array, a range with two thumbs. Wraps Base UI `Slider`.
+- **`NumberField`** — a numeric input with increment/decrement stepper buttons and keyboard/scroll-wheel/pointer-scrub support. Wraps Base UI `NumberField`.
+- **`OtpField`** — a row of single-character inputs for one-time passcodes, with paste-to-fill and arrow-key navigation between slots. Wraps Base UI `OTPField`.
+- **`ScrollArea`** — a scrollable container with custom, cross-browser-consistent scrollbars. Wraps Base UI `ScrollArea`.
+- **`Toolbar`** / **`ToolbarGroup`** / **`ToolbarButton`** / **`ToolbarSeparator`** — a container for grouping related controls with roving-tabindex arrow-key navigation. Wraps Base UI `Toolbar`.
+- **`ContextMenu`** — opens a menu at the pointer position on right click or long press, reusing `Menu`'s `MenuItem` for its contents. Wraps Base UI `ContextMenu`.
+- **`Menubar`** — a horizontal row of menus (e.g. a desktop-app-style File/Edit/View bar) where arrow keys move focus between top-level menus. Wraps Base UI `Menubar`.
+- **`NavigationMenu`** — a site-navigation bar mixing plain links and hover/click-triggered dropdown panels with a shared animated viewport. Wraps Base UI `NavigationMenu`.
+- **`Combobox`** — a searchable dropdown where typing filters a fixed list of options and a value must be picked from it. Wraps Base UI `Combobox`.
+- **`Autocomplete`** — a free-text input with a filtered suggestion list; unlike `Combobox`, any typed text is a valid value. Wraps Base UI `Autocomplete`.
 
 ### Changed
 
