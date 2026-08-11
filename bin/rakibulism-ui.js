@@ -36,7 +36,11 @@ const EXTRA_DEPS = {
   Select: ['@base-ui/react'],
 };
 
+// Returns [] while the local component set is being rebuilt from the Figma
+// library — `add` then falls through to the external "@scope/item" registry
+// path, which doesn't depend on these files.
 function listComponents() {
+  if (!fs.existsSync(COMPONENTS_SRC)) return [];
   return fs
     .readdirSync(COMPONENTS_SRC, { withFileTypes: true })
     .filter((d) => d.isDirectory() && d.name !== '__tests__')

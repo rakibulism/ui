@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'rakibulism-ui';
+import { Dialog } from '@base-ui/react/dialog';
 import { CATALOG } from './catalog';
 import { SearchIcon } from './layout';
 
@@ -82,58 +82,70 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="search-modal">
-      <div className="search-modal-input-row">
-        <span className="search-modal-icon">
-          <SearchIcon />
-        </span>
-        <input
-          type="text"
-          className="search-modal-input"
-          placeholder="Search components and docs…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          autoFocus
-          aria-label="Search"
-        />
-      </div>
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Portal>
+        <Dialog.Backdrop className="search-modal-backdrop" />
+        <Dialog.Viewport className="search-modal-viewport">
+          <Dialog.Popup
+            className="search-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search"
+          >
+            <div className="search-modal-input-row">
+              <span className="search-modal-icon">
+                <SearchIcon />
+              </span>
+              <input
+                type="text"
+                className="search-modal-input"
+                placeholder="Search components and docs…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                aria-label="Search"
+              />
+            </div>
 
-      <div className="search-modal-results" role="listbox" aria-label="Search results">
-        {flatResults.length === 0 ? (
-          <p className="search-modal-empty">No results for &ldquo;{query}&rdquo;.</p>
-        ) : (
-          <>
-            {overviewResults.length > 0 && (
-              <div className="search-modal-group">
-                <div className="search-modal-group-label">Overview</div>
-                {overviewResults.map((item) => (
-                  <SearchResultRow
-                    key={item.key}
-                    item={item}
-                    highlighted={flatResults[highlight]?.key === item.key}
-                    onClick={() => go(item.href)}
-                  />
-                ))}
-              </div>
-            )}
-            {componentResults.length > 0 && (
-              <div className="search-modal-group">
-                <div className="search-modal-group-label">Components</div>
-                {componentResults.map((item) => (
-                  <SearchResultRow
-                    key={item.key}
-                    item={item}
-                    highlighted={flatResults[highlight]?.key === item.key}
-                    onClick={() => go(item.href)}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </Modal>
+            <div className="search-modal-results" role="listbox" aria-label="Search results">
+              {flatResults.length === 0 ? (
+                <p className="search-modal-empty">No results for &ldquo;{query}&rdquo;.</p>
+              ) : (
+                <>
+                  {overviewResults.length > 0 && (
+                    <div className="search-modal-group">
+                      <div className="search-modal-group-label">Overview</div>
+                      {overviewResults.map((item) => (
+                        <SearchResultRow
+                          key={item.key}
+                          item={item}
+                          highlighted={flatResults[highlight]?.key === item.key}
+                          onClick={() => go(item.href)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {componentResults.length > 0 && (
+                    <div className="search-modal-group">
+                      <div className="search-modal-group-label">Components</div>
+                      {componentResults.map((item) => (
+                        <SearchResultRow
+                          key={item.key}
+                          item={item}
+                          highlighted={flatResults[highlight]?.key === item.key}
+                          onClick={() => go(item.href)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </Dialog.Popup>
+        </Dialog.Viewport>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

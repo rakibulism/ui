@@ -627,13 +627,71 @@ p {
   }
 }
 
-/* --- search modal --- */
+/* --- search modal ---
+   The backdrop/viewport/panel chrome below was previously inherited from the
+   library's Modal component. It's inlined here so the site's ⌘K search keeps
+   working while the component set is rebuilt from Figma — the markup now
+   drives Base UI's Dialog directly (see SearchModal.tsx). */
+
+.search-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(17, 24, 39, 0.5);
+  animation: search-modal-backdrop-in 0.15s ease;
+}
+
+/* Base UI's Viewport is the positioning container (a sibling of Backdrop,
+   both direct portal children) — it centers Popup via flex, so Popup itself
+   just needs to be a normally-sized flow child. */
+.search-modal-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4, 16px);
+}
 
 .search-modal {
   width: 100%;
   max-width: 520px;
+  max-height: calc(100vh - var(--space-8, 32px));
   padding: 0;
   overflow: hidden;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--color-surface, #ffffff);
+  box-shadow: var(
+    --shadow-xl,
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1)
+  );
+  animation: search-modal-panel-in 0.18s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.search-modal:focus {
+  outline: none;
+}
+
+@keyframes search-modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes search-modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-modal-backdrop,
+  .search-modal {
+    animation: none;
+  }
 }
 
 .search-modal-input-row {
@@ -844,4 +902,29 @@ p {
     flex-wrap: wrap;
     gap: var(--space-1);
   }
+}
+
+/* --- utilities --- */
+
+/* Visually hidden but announced by screen readers — used for the copy
+   button's live-region confirmation. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shown while the catalog is empty during the Figma rebuild. */
+.components-empty {
+  margin: 0;
+  padding: var(--space-16) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
 }

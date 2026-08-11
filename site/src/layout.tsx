@@ -1,6 +1,5 @@
 import { useEffect, useId, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { ToastProvider } from 'rakibulism-ui';
 import { SearchModal } from './SearchModal';
 
 const PKG = 'rakibulism-ui';
@@ -177,12 +176,15 @@ function Footer() {
 
 /**
  * Root layout: header (with the search modal trigger) + page outlet +
- * footer, wrapped once in ToastProvider so any page can use useToast().
+ * footer. The ToastProvider wrapper is gone along with the rest of the
+ * component set being rebuilt from Figma — restore it here once Toast
+ * lands so pages can use useToast() again.
  */
 export function Layout() {
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // ⌘K / Ctrl+K opens the search modal (Escape-to-close is handled by Modal).
+  // ⌘K / Ctrl+K opens the search modal (Escape-to-close is handled by the
+  // Base UI Dialog inside SearchModal).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -195,13 +197,13 @@ export function Layout() {
   }, []);
 
   return (
-    <ToastProvider>
+    <>
       <div className="page">
         <Header onOpenSearch={() => setSearchOpen(true)} />
         <Outlet />
         <Footer />
       </div>
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-    </ToastProvider>
+    </>
   );
 }
