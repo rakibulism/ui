@@ -30,7 +30,6 @@
   "files": [
     "dist",
     "bin",
-    "src/components",
     "src/tokens",
     "src/styles"
   ],

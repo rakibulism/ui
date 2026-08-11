@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Tooltip, useToast } from 'rakibulism-ui';
 import { CATALOG, type CatalogEntry } from './catalog';
 
 // RemixIcon (github.com/Remix-Design/RemixIcon, MIT) — sparkling-2-line and
@@ -17,8 +17,11 @@ function iconMaskUrl(path: string): string {
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
+// Feedback is a transient label on the button itself rather than a Tooltip +
+// Toast, since both of those components were part of the set being rebuilt
+// from Figma. Swap back once they land.
 function AiCopyButton({ prompt, label }: { prompt: string; label: string }) {
-  const { show } = useToast();
+  const [copied, setCopied] = useState(false);
 
   async function handleCopy(e: React.MouseEvent) {
     // The button sits inside a card that's otherwise a single stretched
@@ -30,42 +33,38 @@ function AiCopyButton({ prompt, label }: { prompt: string; label: string }) {
     } catch {
       /* clipboard unavailable — no-op */
     }
-    show({
-      title: 'Copied to clipboard',
-      description: `Paste this into your AI agent to build the ${label} component.`,
-      variant: 'success',
-    });
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
   }
 
   return (
-    <Tooltip
-      content="Click to copy the prompt — paste it into your AI agent to quickly get this component."
-      placement="top"
+    <button
+      type="button"
+      className="ai-copy-btn"
+      onClick={handleCopy}
+      title="Click to copy the prompt — paste it into your AI agent to quickly get this component."
+      aria-label={`Copy an AI prompt for the ${label} component`}
     >
-      <button
-        type="button"
-        className="ai-copy-btn"
-        onClick={handleCopy}
-        aria-label={`Copy an AI prompt for the ${label} component`}
-      >
-        <span
-          className="ai-copy-icon ai-copy-icon-sparkle"
-          aria-hidden="true"
-          style={{
-            maskImage: iconMaskUrl(SPARKLING_PATH),
-            WebkitMaskImage: iconMaskUrl(SPARKLING_PATH),
-          }}
-        />
-        <span
-          className="ai-copy-icon ai-copy-icon-copy"
-          aria-hidden="true"
-          style={{
-            maskImage: iconMaskUrl(FILE_COPY_PATH),
-            WebkitMaskImage: iconMaskUrl(FILE_COPY_PATH),
-          }}
-        />
-      </button>
-    </Tooltip>
+      <span
+        className="ai-copy-icon ai-copy-icon-sparkle"
+        aria-hidden="true"
+        style={{
+          maskImage: iconMaskUrl(SPARKLING_PATH),
+          WebkitMaskImage: iconMaskUrl(SPARKLING_PATH),
+        }}
+      />
+      <span
+        className="ai-copy-icon ai-copy-icon-copy"
+        aria-hidden="true"
+        style={{
+          maskImage: iconMaskUrl(FILE_COPY_PATH),
+          WebkitMaskImage: iconMaskUrl(FILE_COPY_PATH),
+        }}
+      />
+      <span role="status" aria-live="polite" className="sr-only">
+        {copied ? 'Copied to clipboard' : ''}
+      </span>
+    </button>
   );
 }
 
@@ -97,6 +96,17 @@ function GalleryCard({ entry }: { entry: CatalogEntry }) {
 
 /** The grid of component illustration cards — every card links to its doc page. */
 export function ComponentsGrid() {
+  if (CATALOG.length === 0) {
+    return (
+      <section className="content-container" id="components">
+        <p className="components-empty">
+          The component library is being rebuilt from Figma on top of Base UI. Components will
+          appear here as they land.
+        </p>
+      </section>
+    );
+  }
+
   return (
     <section className="content-container" id="components">
       <div className="dashboard-container">
