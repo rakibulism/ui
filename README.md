@@ -922,4 +922,4 @@ Contributions are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) for setup
 
 ## License
 
-[MIT](./LICENSE) © Rakibul Islam
+[MIT](./LICENSE) © [Rakibul Islam](https://rakibulism.space)
